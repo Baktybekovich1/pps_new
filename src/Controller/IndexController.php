@@ -12,7 +12,7 @@ class IndexController extends AbstractController
     public function index(): JsonResponse
     {
         return $this->json([
-            'message' => 'Welcome to your new controller test!',
+            'message' => 'Welcome to your new controller test! sdfsdf',
             'path' => 'src/Controller/IndexController.php',
         ]);
     }
