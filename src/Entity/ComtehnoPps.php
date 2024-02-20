@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ComtehnoPpsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ComtehnoPpsRepository::class)]
 class ComtehnoPps
@@ -14,9 +15,11 @@ class ComtehnoPps
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: "Имя не может быть пустым")]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank(message: "Отдел не может быть пустым")]
     private ?string $department = null;
 
     #[ORM\Column(nullable: true)]

@@ -21,6 +21,17 @@ class ComtehnoPpsRepository extends ServiceEntityRepository
         parent::__construct($registry, ComtehnoPps::class);
     }
 
+    public function save(ComtehnoPps $pps)
+    {
+        $this->getEntityManager()->persist($pps);
+        $this->getEntityManager()->flush();
+    }
+
+    public function delete(ComtehnoPps $pps)
+    {
+        $this->getEntityManager()->remove($pps);
+        $this->getEntityManager()->flush();
+    }
 //    /**
 //     * @return ComtehnoPps[] Returns an array of ComtehnoPps objects
 //     */
