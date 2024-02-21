@@ -31,16 +31,13 @@ class SignUpController extends AbstractController
 //        if ($this->userRepository->existsByUsername($request->request->get('username'))) {
 //            throw new UserAlreadyExistsException();
 //        }
-
-
         $user = new User();
         $user->setUsername($dto->username);
         $user->setPassword($userPasswordHasher->hashPassword($user, $dto->password));
         $this->userRepository->save($user);
 
 
-        return $this->json(['message' => 'saved']);
+        return $this->json(['token' => 'Ilya Salam']);
     }
-
 
 }
