@@ -27,15 +27,15 @@ class SignUpController extends AbstractController
     #[Route('/pps/sign-up', name: 'app_sign_up', methods: ['POST'])]
     public function signUp(#[MapRequestPayload] SignUpDto $dto, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher): JsonResponse
     {
-//
-//        if ($this->userRepository->existsByUsername($request->request->get('username'))) {
-//            throw new UserAlreadyExistsException();
-//        }
+
+        if ($this->userRepository->existsByUsername($dto->username)) {
+            throw new UserAlreadyExistsException();
+        }
         $user = new User();
         $user->setUsername($dto->username);
         $user->setPassword($userPasswordHasher->hashPassword($user, $dto->password));
+        $user->setRoles(["ROLE_USER"]);
         $this->userRepository->save($user);
-
 
         return $this->json(['token' => 'Ilya Salam']);
     }
