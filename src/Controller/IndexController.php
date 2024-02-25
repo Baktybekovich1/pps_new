@@ -50,4 +50,12 @@ class IndexController extends AbstractController
         return new JsonResponse(['AWARDS SAVED SUCCESS'], Response::HTTP_CREATED);
 
     }
+
+    #[Route('/api/test', name: 'app_profile')]
+    public function app_login(): JsonResponse
+    {
+
+        return new JsonResponse(['this is protected page dssfsd.']);
+
+    }
 }
