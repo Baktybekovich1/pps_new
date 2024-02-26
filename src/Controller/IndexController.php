@@ -51,11 +51,4 @@ class IndexController extends AbstractController
 
     }
 
-    #[Route('/api/test', name: 'app_profile')]
-    public function app_login(): JsonResponse
-    {
-
-        return new JsonResponse(['this is protected page dssfsd.']);
-
-    }
 }

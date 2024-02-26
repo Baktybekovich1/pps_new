@@ -6,7 +6,7 @@ cd docker
 ```
 - Поднять контейнеры
 ```bash
-docker-compose up --build -d
+docker compose up -d
 ```
 
 ## Перейти в внутрь php контейнера
