@@ -37,12 +37,5 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/fill', name: 'app_user', methods: ['POST'])]
-    public function index_params(Request $request): JsonResponse
-    {
 
-        return $this->json([
-            $request->request->all()
-        ]);
-    }
 }
