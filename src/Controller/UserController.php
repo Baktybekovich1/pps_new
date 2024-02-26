@@ -8,6 +8,7 @@ use App\Repository\AcademicRankRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionsRepository;
 use App\Repository\StateAwardsRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,10 +30,19 @@ class UserController extends AbstractController
     {
         return $this->json([
             'institutes' => $this->institutionsRepository->findAll(),
-            'positons' => $this->positionsRepository->findAll(),
+            'positions' => $this->positionsRepository->findAll(),
             'degree' => $this->degreeRepository->findAll(),
             'rank' => $this->rankRepository->findAll(),
             'state_awards' => $this->stateAwardsRepository->findAll()
+        ]);
+    }
+
+    #[Route('/user/fill', name: 'app_user', methods: ['POST'])]
+    public function index_params(Request $request): JsonResponse
+    {
+
+        return $this->json([
+            $request->request->all()
         ]);
     }
 }
