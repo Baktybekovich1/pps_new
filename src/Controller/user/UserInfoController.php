@@ -25,7 +25,7 @@ class UserInfoController extends AbstractController
     }
 
 
-    #[Route('/info', name: 'app_user_form', methods: ['GET'])]
+    #[Route('/info', name: 'app_user_info')]
     public function user_form(): JsonResponse
     {
         return $this->json([
@@ -34,7 +34,7 @@ class UserInfoController extends AbstractController
         ]);
     }
 
-    #[Route('/info', name: 'app_user_form', methods: ['POST'])]
+    #[Route('/info/add', name: 'app_user_form', methods: ['POST'])]
     public function user_form_save(UserInterface $user, #[MapRequestPayload] UserInfoDto $dto): JsonResponse
     {
         $id = $user->getUserIdentifier();
