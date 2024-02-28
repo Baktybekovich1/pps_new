@@ -40,7 +40,4 @@ class UserController extends AbstractController
             'position' => $this->positionsRepository->findAll()
         ]);
     }
-
-
-
 }
