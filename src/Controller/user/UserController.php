@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\user;
 
-use App\DataFixtures\IntitutesFixtures;
 use App\Repository\AcademicDegreeRepository;
 use App\Repository\AcademicRankRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionsRepository;
 use App\Repository\StateAwardsRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -25,7 +23,7 @@ class UserController extends AbstractController
     {
     }
 
-    #[Route('/user/fill', name: 'app_user')]
+    #[Route('/fill', name: 'app_user')]
     public function index(): JsonResponse
     {
         return $this->json([
