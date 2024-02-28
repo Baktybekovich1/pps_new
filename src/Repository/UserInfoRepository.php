@@ -45,4 +45,9 @@ class UserInfoRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function save(UserInfo $userInfo) {
+        $this->getEntityManager()->persist($userInfo);
+        $this->getEntityManager()->flush();
+    }
 }
