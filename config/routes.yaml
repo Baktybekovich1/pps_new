@@ -12,3 +12,8 @@ admin_controllers:
   resource: ../src/Controller/admin
   type: attribute
   prefix: /api/admin
+
+user_controllers:
+  resource: ../src/Controller/user
+  type: attribute
+  prefix: /api/user
