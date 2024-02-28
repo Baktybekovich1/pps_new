@@ -16,6 +16,7 @@ class AdminController extends AbstractController
         return $this->json([
             'message' => 'Вы админ',
             'name' => $users->getRoles()
+
         ]);
     }
 }

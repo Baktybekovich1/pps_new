@@ -27,13 +27,20 @@ class UserController extends AbstractController
     public function index(): JsonResponse
     {
         return $this->json([
-            'institutes' => $this->institutionsRepository->findAll(),
-            'positions' => $this->positionsRepository->findAll(),
             'degree' => $this->degreeRepository->findAll(),
             'rank' => $this->rankRepository->findAll(),
             'state_awards' => $this->stateAwardsRepository->findAll()
         ]);
     }
+    #[Route('/form', name: 'app_user_form')]
+    public function user_form(): JsonResponse
+    {
+        return $this->json([
+            'institutes' => $this->institutionsRepository->findAll(),
+            'position' => $this->positionsRepository->findAll()
+        ]);
+    }
+
 
 
 }
