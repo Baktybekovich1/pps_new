@@ -45,4 +45,10 @@ class UserProgressRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function save(UserProgress $userProgress)
+    {
+        $this->getEntityManager()->persist($userProgress);
+        $this->getEntityManager()->flush();
+    }
 }

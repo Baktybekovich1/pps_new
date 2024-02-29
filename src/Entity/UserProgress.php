@@ -24,7 +24,7 @@ class UserProgress
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $rank = null;
 
-    #[ORM\OneToMany(targetEntity: AwardsAndLink::class, mappedBy: 'userProgress')]
+    #[ORM\OneToMany(targetEntity: AwardsAndLink::class, mappedBy: 'userProgress', cascade: ['persist', 'remove'])]
     private Collection $stateAwards;
 
     public function __construct()
