@@ -30,7 +30,7 @@ class UserInfoController extends AbstractController
         $this->userInfoRepository->find($user->getUserIdentifier());
 
         return $this->json([
-            'name' =>$this->userInfoRepository->find($user->getUserIdentifier())
+            'user' => $this->userInfoRepository->findOneBy(['userId' => $user->getUserIdentifier()])
         ]);
     }
 
