@@ -24,6 +24,16 @@ class UserInfoController extends AbstractController
     {
     }
 
+    #[Route('/name', name: 'app_user_name')]
+    public function user_name(UserInterface $user): JsonResponse
+    {
+        $this->userInfoRepository->find($user->getUserIdentifier());
+
+        return $this->json([
+            'name' =>$this->userInfoRepository->find($user->getUserIdentifier())
+        ]);
+    }
+
 
     #[Route('/info', name: 'app_user_info')]
     public function user_form(): JsonResponse
