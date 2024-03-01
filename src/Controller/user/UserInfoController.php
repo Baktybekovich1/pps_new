@@ -10,6 +10,7 @@ use App\Repository\PositionsRepository;
 use App\Repository\UserInfoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,15 +37,21 @@ class UserInfoController extends AbstractController
 
 
     #[Route('/info', name: 'app_user_info')]
-    public function user_form(): JsonResponse
+    public function user_form(Request $request): JsonResponse
     {
+        $user = null;
+        $id = $request->get('id');
+        if ($request->get('id') != null) {
+            $user = $this->userInfoRepository->find($id);
+        }
         return $this->json([
-            'institutes' => $this->institutionsRepository->findAll(),
-            'position' => $this->positionsRepository->findAll()
+            'user' => $user
         ]);
     }
 
-    #[Route('/info/add', name: 'app_user_form', methods: ['POST'])]
+
+    #[
+        Route('/info/add', name: 'app_user_form', methods: ['POST'])]
     public function user_form_save(UserInterface $user, #[MapRequestPayload] UserInfoDto $dto): JsonResponse
     {
         $id = $user->getUserIdentifier();
