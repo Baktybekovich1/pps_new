@@ -4,13 +4,13 @@ namespace App\Controller\user;
 
 
 use App\Dto\UserInfoDto;
+use App\Dto\UserUsDto;
 use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionsRepository;
 use App\Repository\UserInfoRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -44,6 +44,16 @@ class UserInfoController extends AbstractController
         return $this->json([
             'institutes' => $this->institutionsRepository->findAll(),
             'position' => $this->positionsRepository->findAll()
+        ]);
+    }
+
+    #[Route('/us', name: 'app_user_info')]
+    public function us(#[MapRequestPayload] UserUsDto $dto): JsonResponse
+    {
+
+
+        return $this->json([
+            'id' => $this->userInfoRepository->find($dto->id)
         ]);
     }
 
