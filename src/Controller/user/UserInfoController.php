@@ -4,7 +4,6 @@ namespace App\Controller\user;
 
 
 use App\Dto\UserInfoDto;
-use App\Dto\UserUsDto;
 use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionsRepository;
@@ -36,19 +35,17 @@ class UserInfoController extends AbstractController
         ]);
     }
 
-
     #[Route('/info', name: 'app_user_info')]
-    public function user_form(): JsonResponse
+    public function user_info(): JsonResponse
     {
-
-
         return $this->json([
             'institutes' => $this->institutionsRepository->findAll(),
             'position' => $this->positionsRepository->findAll()
         ]);
+
     }
 
-    #[Route('/us/{id}', name: 'app_user_info')]
+    #[Route('/us/{id}', name: 'app_user_us')]
     public function us(Request $request): JsonResponse
     {
 
