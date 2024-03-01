@@ -17,3 +17,8 @@ user_controllers:
   resource: ../src/Controller/user
   type: attribute
   prefix: /api/user
+
+rating_controllers:
+  resource: ../src/Controller/rating
+  type: attribute
+  prefix: /api/rating
