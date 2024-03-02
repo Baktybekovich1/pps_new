@@ -47,8 +47,8 @@ class UserProgressController extends AbstractController
         $userProgress->setUserId($id);
         $userProgress->setDegree($degree->getName());
         $userProgress->setRank($rank->getName());
-        $userInfo = $this->userInfoRepository->findOneBy(['userId'=>$id]);
         $points = $degree->getPoints() + $rank->getPoints();
+        $userProgress->setPoints($points);
 
 
 
@@ -60,9 +60,6 @@ class UserProgressController extends AbstractController
             $awards->setLink($i['link']);
             $userProgress->addStateAward($awards);
         }
-        $userInfo->setTotal($points);
-        $this->userInfoRepository->save($userInfo);
-
         $userProgressRepository->save($userProgress);
 
 
