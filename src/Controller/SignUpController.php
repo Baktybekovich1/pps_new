@@ -20,12 +20,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SignUpController extends AbstractController
 {
-    public function __construct(private UserRepository $userRepository, private EntityManagerInterface $entityManager)
+    public function __construct(private UserRepository $userRepository)
     {
     }
 
     #[Route('/pps/sign-up', name: 'app_sign_up', methods: ['POST'])]
-    public function signUp(#[MapRequestPayload] SignUpDto $dto, SerializerInterface $serializer, ValidatorInterface $validator, UserPasswordHasherInterface $userPasswordHasher): JsonResponse
+    public function signUp(#[MapRequestPayload] SignUpDto $dto, UserPasswordHasherInterface $userPasswordHasher): JsonResponse
     {
 
         if ($this->userRepository->existsByUsername($dto->username)) {

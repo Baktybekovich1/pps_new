@@ -45,4 +45,11 @@ class UserResearchActivitiesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function save(UserResearchActivities $activities)
+    {
+        $this->getEntityManager()->persist($activities);
+        $this->getEntityManager()->flush();
+
+    }
 }

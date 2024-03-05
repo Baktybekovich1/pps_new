@@ -24,7 +24,7 @@ class UserResearchActivities
     #[ORM\Column(nullable: true)]
     private ?int $points = null;
 
-    #[ORM\OneToMany(targetEntity: UserResearchActivitiesAndLink::class, mappedBy: 'ural')]
+    #[ORM\OneToMany(targetEntity: UserResearchActivitiesAndLink::class, mappedBy: 'ural',cascade: ['persist', 'remove'])]
     private Collection $userResearchActivitiesAndLinks;
 
     public function __construct()
