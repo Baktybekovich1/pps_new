@@ -18,11 +18,11 @@ class UserProgress
     #[ORM\Column]
     private ?int $userId = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $degree = null;
+    #[ORM\Column]
+    private ?int $degreeId = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $rank = null;
+    #[ORM\Column]
+    private ?int $rankId = null;
 
     #[ORM\OneToMany(targetEntity: AwardsAndLink::class, mappedBy: 'userProgress', cascade: ['persist', 'remove'])]
     private Collection $stateAwards;
@@ -52,29 +52,28 @@ class UserProgress
         return $this;
     }
 
-    public function getDegree(): ?string
+    public function getDegreeId(): ?int
     {
-        return $this->degree;
+        return $this->degreeId;
     }
 
-    public function setDegree(?string $degree): static
+    public function setDegreeId(?int $degreeId): void
     {
-        $this->degree = $degree;
-
-        return $this;
+        $this->degreeId = $degreeId;
     }
 
-    public function getRank(): ?string
+
+    public function getRankId(): ?int
     {
-        return $this->rank;
+        return $this->rankId;
     }
 
-    public function setRank(?string $rank): static
+    public function setRankId(?int $rankId): void
     {
-        $this->rank = $rank;
-
-        return $this;
+        $this->rankId = $rankId;
     }
+
+
 
     /**
      * @return Collection<int, AwardsAndLink>

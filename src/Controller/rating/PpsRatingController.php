@@ -3,13 +3,15 @@
 namespace App\Controller\rating;
 
 use App\Repository\UserInfoRepository;
+use App\Repository\UserProgressRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 class PpsRatingController extends AbstractController
 {
-    public function __construct(private UserInfoRepository $userInfoRepository)
+    public function __construct(private UserInfoRepository $userInfoRepository
+    )
     {
     }
 
@@ -19,7 +21,7 @@ class PpsRatingController extends AbstractController
         $pps = $this->userInfoRepository->findAll();
 
         return $this->json([
-            'pps' => $pps
+            'pps' => $pps,
         ]);
     }
 }

@@ -14,8 +14,8 @@ class AwardsAndLink
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[ORM\Column]
+    private ?int $nameId = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $link = null;
@@ -29,17 +29,19 @@ class AwardsAndLink
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getNameId(): ?int
     {
-        return $this->name;
+        return $this->nameId;
     }
 
-    public function setName(string $name): static
+    public function setNameId(?int $nameId): void
     {
-        $this->name = $name;
-
-        return $this;
+        $this->nameId = $nameId;
     }
+
+
+
+
 
     public function getLink(): ?string
     {

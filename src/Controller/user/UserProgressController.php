@@ -22,7 +22,8 @@ class UserProgressController extends AbstractController
         private AcademicDegreeRepository $degreeRepository,
         private AcademicRankRepository   $rankRepository,
         private StateAwardsRepository    $stateAwardsRepository,
-        private UserInfoRepository       $userInfoRepository
+        private UserInfoRepository       $userInfoRepository,
+        private UserProgressRepository   $userProgressRepository
     )
     {
     }
@@ -41,26 +42,20 @@ class UserProgressController extends AbstractController
     public function prog_add(#[MapRequestPayload] UserProgressDto $dto, UserInterface $user, UserProgressRepository $userProgressRepository): JsonResponse
     {
         $id = $user->getUserIdentifier();
-        $degree = $this->degreeRepository->find($dto->degree);
-        $rank = $this->rankRepository->find($dto->rank);
-        $userProgress = new UserProgress();
-        $userProgress->setUserId($id);
-        $userProgress->setDegree($degree->getName());
-        $userProgress->setRank($rank->getName());
-        $points = $degree->getPoints() + $rank->getPoints();
-        $userProgress->setPoints($points);
+        $progres = new UserProgress();
+        $progres->setDegreeId($dto->degree);
+        $progres->setRankId($dto->rank);
+        $progres->setUserId($user->getUserIdentifier());
 
-
-
-        foreach ($dto->awards as $i) {
-            $awards = new AwardsAndLink();
-            $award = $this->stateAwardsRepository->find($i['id']);
-            $points = $points + $award->getPoints();
-            $awards->setName($award->getName());
-            $awards->setLink($i['link']);
-            $userProgress->addStateAward($awards);
+        foreach ($dto->awards as $item) {
+            $award = new AwardsAndLink();
+            $award->setNameId($item['id']);
+            $award->setLink($item['link']);
+            $progres->addStateAward($award);
         }
-        $userProgressRepository->save($userProgress);
+
+        $this->userProgressRepository->save($progres);
+
 
 
         return $this->json([

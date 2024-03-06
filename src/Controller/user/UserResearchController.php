@@ -48,9 +48,6 @@ class UserResearchController extends AbstractController
             $this->uralRepository->save($ural);
         }
 
-
-
-
         return $this->json([
             "SUCCESS"
         ]);

@@ -7,8 +7,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class UserProgressDto
 {
     public function __construct(
-        readonly public string $degree,
-        readonly public string $rank,
+        readonly public int $degree,
+        readonly public int $rank,
         readonly public array $awards
     )
     {
