@@ -29,22 +29,11 @@ class UserResearchController extends AbstractController
     #[Route('/research', name: 'app_user_research')]
     public function index(): JsonResponse
     {
-        $one = $this->activitiesListRepository->find(12);
-        $two = $this->activitiesListRepository->find(13);
-        $three = $this->activitiesListRepository->find(14);
-        $four = $this->activitiesListRepository->find(15);
-        $five = $this->activitiesListRepository->find(16);
-        $six = $this->activitiesListRepository->find(17);
-        $seven = $this->activitiesListRepository->find(18);
+            $ural = $this->activitiesListRepository->findAll();
+
 
         return $this->json([
-            'one' => $one,
-            'two' => $two,
-            'three' => $three,
-            'four' => $four,
-            'five' => $five,
-            'six' => $six,
-            'seven' => $seven
+            $ural
         ]);
     }
     #[Route('/research/add',name: 'app_user_research_add',methods: ['POST'])]
