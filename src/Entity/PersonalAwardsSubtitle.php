@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\AcademicDegreeRepository;
+use App\Repository\PersonalAwardsSubtitleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
-#[ORM\Entity(repositoryClass: AcademicDegreeRepository::class)]
-class AcademicDegree
+#[ORM\Entity(repositoryClass: PersonalAwardsSubtitleRepository::class)]
+class PersonalAwardsSubtitle
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,6 +19,11 @@ class AcademicDegree
 
     #[ORM\Column]
     private ?int $points = null;
+
+    #[ORM\ManyToOne(inversedBy: 'personalAwardsSubtitles')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Ignore]
+    private ?PersonalAwards $title = null;
 
     public function getId(): ?int
     {
@@ -44,6 +50,18 @@ class AcademicDegree
     public function setPoints(int $points): static
     {
         $this->points = $points;
+
+        return $this;
+    }
+
+    public function getTitle(): ?PersonalAwards
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?PersonalAwards $title): static
+    {
+        $this->title = $title;
 
         return $this;
     }

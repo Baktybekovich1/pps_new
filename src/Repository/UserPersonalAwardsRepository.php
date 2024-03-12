@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\UserProgress;
+use App\Entity\UserPersonalAwards;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<UserProgress>
+ * @extends ServiceEntityRepository<UserPersonalAwards>
  *
- * @method UserProgress|null find($id, $lockMode = null, $lockVersion = null)
- * @method UserProgress|null findOneBy(array $criteria, array $orderBy = null)
- * @method UserProgress[]    findAll()
- * @method UserProgress[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method UserPersonalAwards|null find($id, $lockMode = null, $lockVersion = null)
+ * @method UserPersonalAwards|null findOneBy(array $criteria, array $orderBy = null)
+ * @method UserPersonalAwards[]    findAll()
+ * @method UserPersonalAwards[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserProgressRepository extends ServiceEntityRepository
+class UserPersonalAwardsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, UserProgress::class);
+        parent::__construct($registry, UserPersonalAwards::class);
     }
 
 //    /**
-//     * @return UserProgress[] Returns an array of UserProgress objects
+//     * @return UserPersonalAwardsController[] Returns an array of UserPersonalAwardsController objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class UserProgressRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?UserProgress
+//    public function findOneBySomeField($value): ?UserPersonalAwardsController
 //    {
 //        return $this->createQueryBuilder('u')
 //            ->andWhere('u.exampleField = :val')
@@ -45,10 +45,4 @@ class UserProgressRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
-    public function save(UserProgress $userProgress)
-    {
-        $this->getEntityManager()->persist($userProgress);
-        $this->getEntityManager()->flush();
-    }
 }

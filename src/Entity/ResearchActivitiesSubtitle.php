@@ -20,8 +20,6 @@ class ResearchActivitiesSubtitle
     #[ORM\Column]
     private ?int $points = null;
 
-
-
     #[ORM\ManyToOne(inversedBy: 'researchActivitiesSubtitles')]
     #[ORM\JoinColumn(nullable: false)]
     #[Ignore]

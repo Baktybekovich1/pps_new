@@ -8,6 +8,7 @@ use App\Entity\ResearchActivitiesSubtitle;
 use App\Entity\UserResearchActivitiesList;
 use App\Repository\ResearchActivitiesListRepository;
 use App\Repository\ResearchActivitiesSubtitleRepository;
+use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserResearchActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +21,9 @@ class UserResearchController extends AbstractController
 {
     public function __construct(
         private ResearchActivitiesListRepository $activitiesListRepository,
-        private UserResearchActivitiesListRepository $uralRepository
+        private UserResearchActivitiesListRepository $uralRepository,
+        private UserRepository $userRepository,
+        private ResearchActivitiesSubtitleRepository $subtitleRepository
 
     )
     {
@@ -37,13 +40,15 @@ class UserResearchController extends AbstractController
         ]);
     }
     #[Route('/research/add',name: 'app_user_research_add',methods: ['POST'])]
-    public function research_add(UserInterface $user,#[MapRequestPayload] UserResearchActivitiesAddDto $dto):JsonResponse
+    public function research_add(UserInterface $userStorage,#[MapRequestPayload] UserResearchActivitiesAddDto $dto):JsonResponse
     {
+        $user = $this->userRepository->find($userStorage->getUserIdentifier());
+
         foreach ($dto->ural as $item)
         {
             $ural = new UserResearchActivitiesList();
-            $ural->setUserId($user->getUserIdentifier());
-            $ural->setRalId($item['subId']);
+            $ural->setUser($user);
+            $ural->setSubtitle($this->subtitleRepository->find($item['subId']));
             $ural->setLink($item['link']);
             $this->uralRepository->save($ural);
         }

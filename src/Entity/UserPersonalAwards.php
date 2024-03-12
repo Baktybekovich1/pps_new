@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\UserResearchActivitiesListRepository;
+use App\Repository\UserPersonalAwardsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UserResearchActivitiesListRepository::class)]
-class UserResearchActivitiesList
+#[ORM\Entity(repositoryClass: UserPersonalAwardsRepository::class)]
+class UserPersonalAwards
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,8 +17,8 @@ class UserResearchActivitiesList
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: ResearchActivitiesSubtitle::class)]
-    private ?ResearchActivitiesSubtitle $subtitle;
+    #[ORM\ManyToOne(targetEntity: PersonalAwardsSubtitle::class)]
+    private ?PersonalAwardsSubtitle $subtitle;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $link = null;
@@ -40,6 +40,7 @@ class UserResearchActivitiesList
         return $this;
     }
 
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -51,18 +52,17 @@ class UserResearchActivitiesList
         $this->user = $user;
     }
 
-    public function getSubtitle(): ?ResearchActivitiesSubtitle
+
+    public function getSubtitle(): ?PersonalAwardsSubtitle
     {
         return $this->subtitle;
     }
 
-    public function setSubtitle(?ResearchActivitiesSubtitle $subtitle): void
+
+    public function setSubtitle(?PersonalAwardsSubtitle $subtitle): void
     {
         $this->subtitle = $subtitle;
     }
 
-    public function getPoints(): int {
-        return $this->subtitle->getPoints();
-    }
 
 }
