@@ -4,8 +4,11 @@ namespace App\Controller\rating;
 
 use App\Dto\PpsProgressDto;
 use App\Dto\PpsRatingDto;
+use App\Entity\UserPersonalAwards;
 use App\Entity\UserResearchActivitiesList;
+use App\Repository\PersonalAwardsRepository;
 use App\Repository\UserInfoRepository;
+use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserProgressRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,9 +17,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PpsRatingController extends AbstractController
 {
-    public function __construct(private UserInfoRepository $userInfoRepository,
-    private UserResearchActivitiesListRepository $activitiesListsRepository,
-//    private UserProgressRepository $userProgressRepository
+    public function __construct(
+        private UserInfoRepository                   $userInfoRepository,
+        private UserResearchActivitiesListRepository $userActivitiesListsRepository,
+        private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
     )
     {
     }
@@ -25,21 +29,26 @@ class PpsRatingController extends AbstractController
     public function index(): JsonResponse
     {
 //        $pps = $this->userInfoRepository->findOneBy(['userId' => 14]);
-        $activities = $this->activitiesListsRepository->findAll();
+        $activities = $this->userActivitiesListsRepository->findAll();
+        $userProgress = $this->userPersonalAwardsRepository->findAll();
 
         $pps = [];
         foreach ($activities as $activity) {
-            if (isset($pps[$activity->getUser()->getId()])) {
-                /** @var PpsRatingDto $item */
-                $item = $pps[$activity->getUser()->getId()];
+            foreach ($userProgress as $progress) {
+                if (isset($pps[$activity->getUser()->getId()])) {
+                    /** @var PpsRatingDto $item */
+                    $item = $pps[$activity->getUser()->getId()];
 
-                $item->uralPoints += $activity->getPoints();
+                    $item->uralPoints += $activity->getPoints();
+                    $item->progressPoints += $progress->getPoints();
 
-            } else {
-                $pps[$activity->getUser()->getId()] = new PpsRatingDto(
-                    $activity->getUser()->getUsername(),
-                    $activity->getPoints()
-                );
+                } else {
+                    $pps[$activity->getUser()->getId()] = new PpsRatingDto(
+                        $activity->getUser()->getUsername(),
+                        $activity->getPoints(),
+                        $progress->getPoints()
+                    );
+                }
             }
         }
 
@@ -48,21 +57,26 @@ class PpsRatingController extends AbstractController
         ]);
     }
 
-//    #[Route('/progress',name: 'app_rating_progress')]
+//    #[Route('/progress', name: 'app_rating_progress')]
 //    public function prog()
 //    {
-//        $userProgress = $this->userProgressRepository->findAll();
+//        $userProgress = $this->userPersonalAwardsRepository->findAll();
 //        $pps = [];
-//        foreach ($userProgress as $progress){
-//            if (isset($pps[$progress->getUser()->getId()])){
+//        foreach ($userProgress as $progress) {
+//            if (isset($pps[$progress->getUser()->getId()])) {
 //                /** @var PpsProgressDto $dto */
 //                $dto = $pps[$progress->getUser()->getId()];
-//                $dto->progressPoints +=
+//                $dto->progressPoints += $progress->getPoints();
+//            } else {
+//                $pps[$progress->getUser()->getId()] = new PpsProgressDto(
+//                    $progress->getUser()->getUsername(),
+//                    $progress->getPoints()
+//                );
 //            }
 //        }
 //
 //        return $this->json([
-//            'ad'
+//            $pps
 //        ]);
 //    }
 }
