@@ -9,7 +9,7 @@ use App\Entity\UserResearchActivitiesList;
 use App\Repository\PersonalAwardsRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserPersonalAwardsRepository;
-use App\Repository\UserProgressRepository;
+use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +21,7 @@ class PpsRatingController extends AbstractController
         private UserInfoRepository                   $userInfoRepository,
         private UserResearchActivitiesListRepository $userActivitiesListsRepository,
         private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
+        private UserRepository                       $userRepository
     )
     {
     }
@@ -29,32 +30,68 @@ class PpsRatingController extends AbstractController
     public function index(): JsonResponse
     {
 //        $pps = $this->userInfoRepository->findOneBy(['userId' => 14]);
-        $activities = $this->userActivitiesListsRepository->findAll();
-        $userProgress = $this->userPersonalAwardsRepository->findAll();
+//        $activities = $this->userActivitiesListsRepository->findAll();
+//        $userProgress = $this->userPersonalAwardsRepository->findAll();
+//
+//        $pps = [];
+//        foreach ($activities as $activity) {
+//            foreach ($userProgress as $progress) {
+//                if (isset($pps[$activity->getUser()->getId()])) {
+//                    /** @var PpsRatingDto $item */
+//                    $item = $pps[$activity->getUser()->getId()];
+//
+//                    $item->uralPoints += $activity->getPoints();
+//                    $item->progressPoints += $progress->getPoints();
+//
+//                } else {
+//                    $pps[$activity->getUser()->getId()] = new PpsRatingDto(
+//                        $activity->getUser()->getUsername(),
+//                        $activity->getPoints(),
+//                        $progress->getPoints()
+//                    );
+//                }
+//            }
+//        }
+
 
         $pps = [];
-        foreach ($activities as $activity) {
-            foreach ($userProgress as $progress) {
-                if (isset($pps[$activity->getUser()->getId()])) {
-                    /** @var PpsRatingDto $item */
-                    $item = $pps[$activity->getUser()->getId()];
+        $users = $this->userRepository->findAll();
+        foreach ($users as $user) {
+            $info = $this->userInfoRepository->findOneBy(['userId' => $user->getId()]);
+            $activity = $this->userActivitiesListsRepository->findBy(['user' => $user]);
+            $activyCall = $this->getPoints($activity);
+            $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+            $upac = $this->getPoints($personalAwards);
+            if (isset($pps[$user->getId()])) {
+                /** @var PpsRatingDto $dto */
 
-                    $item->uralPoints += $activity->getPoints();
-                    $item->progressPoints += $progress->getPoints();
-
-                } else {
-                    $pps[$activity->getUser()->getId()] = new PpsRatingDto(
-                        $activity->getUser()->getUsername(),
-                        $activity->getPoints(),
-                        $progress->getPoints()
-                    );
-                }
+                $dto = $pps[$user->getId()];
+                $dto->id = $user->getId();
+                $dto->uralPoints += $activyCall;
+                $dto->progressPoints += $upac;
+            } else {
+                $pps[$user->getId()] = new PpsRatingDto(
+                    $user->getId(),
+                    $info->getName(),
+                    $activyCall,
+                    $upac
+                );
             }
         }
-
         return $this->json([
             'pps' => $pps
         ]);
+    }
+
+
+    public function getPoints($objects)
+    {
+        $coll = 0;
+        foreach ($objects as $object) {
+            $coll += $object->getPoints();
+        }
+        return $coll;
+
     }
 
 //    #[Route('/progress', name: 'app_rating_progress')]
