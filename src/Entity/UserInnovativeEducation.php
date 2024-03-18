@@ -2,26 +2,26 @@
 
 namespace App\Entity;
 
-use App\Repository\UserResearchActivitiesListRepository;
+use App\Repository\UserInnovativeEducationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UserResearchActivitiesListRepository::class)]
-class UserResearchActivitiesList
+#[ORM\Entity(repositoryClass: UserInnovativeEducationRepository::class)]
+class UserInnovativeEducation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $link = null;
+
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: ResearchActivitiesSubtitle::class)]
-    private ?ResearchActivitiesSubtitle $subtitle;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $link = null;
+    #[ORM\ManyToOne(targetEntity: InnovativeEducationSubtitle::class)]
+    private ?InnovativeEducationSubtitle $innovativeEducationSubtitle;
 
     public function getId(): ?int
     {
@@ -40,25 +40,28 @@ class UserResearchActivitiesList
         return $this;
     }
 
+
     public function getUser(): ?User
     {
         return $this->user;
     }
-
 
     public function setUser(?User $user): void
     {
         $this->user = $user;
     }
 
-    public function getSubtitle(): ?ResearchActivitiesSubtitle
+
+    public function getInnovativeEducationSubtitle(): ?InnovativeEducationSubtitle
     {
-        return $this->subtitle;
+        return $this->innovativeEducationSubtitle;
     }
 
-    public function setSubtitle(?ResearchActivitiesSubtitle $subtitle): void
+
+    public function setInnovativeEducationSubtitle(?InnovativeEducationSubtitle $innovativeEducationSubtitle): void
     {
-        $this->subtitle = $subtitle;
+        $this->innovativeEducationSubtitle = $innovativeEducationSubtitle;
     }
+
 
 }

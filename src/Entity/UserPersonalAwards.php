@@ -64,10 +64,4 @@ class UserPersonalAwards
         $this->subtitle = $subtitle;
     }
 
-    public function getPoints():int
-    {
-        return $this->subtitle->getPoints();
-    }
-
-
 }
