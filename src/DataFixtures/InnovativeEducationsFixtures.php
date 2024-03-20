@@ -26,6 +26,10 @@ class InnovativeEducationsFixtures extends Fixture
 //        $manager->persist((new InnovativeEducationList())->setName('Повышение квалификации (прохождение курсов не менее 48 ч.)')
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
+//                ->setName('В МУИТ;')
+//                ->setPoints(30))
+//            ->addInnovativeEducationSubtitle((
+//            new InnovativeEducationSubtitle())
 //                ->setName('В зарубежных вузах и организациях;')
 //                ->setPoints(20))
 //            ->addInnovativeEducationSubtitle((
@@ -40,18 +44,18 @@ class InnovativeEducationsFixtures extends Fixture
 //                ->setPoints(20))
 //        );
 //
-//        $manager->persist((new InnovativeEducationList())->setName('Создание электронных учебных материалов')
+//        $manager->persist((new InnovativeEducationList())->setName('Создание электронных учебных материалов (Moodle)')
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('Загрузка лекций в moodle;')
+//                ->setName('Наличие лекционных и практических материалов, в т.ч. силлабусы, презентации и др.;')
 //                ->setPoints(5))
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('Загрузка тестов по дисциплине;')
+//                ->setName('Наличие тестов по дисциплине;')
 //                ->setPoints(5))
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('Создание и загрузка видеолекций.')
+//                ->setName('Создание и наличие видеолекций, загруженные в Youtube.')
 //                ->setPoints(15))
 //        );
 //
@@ -64,18 +68,14 @@ class InnovativeEducationsFixtures extends Fixture
 //
 //        );
 //
-//        $manager->persist((new InnovativeEducationList())->setName('Рецензирование и отзывы')
+//        $manager->persist((new InnovativeEducationList())->setName('Рецензирование')
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('Рецензирование учебников и учебных пособий;')
+//                ->setName('Рецензирование учебников и учебных пособий (кроме методичек);')
 //                ->setPoints(20))
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
 //                ->setName('Рецензирование научных статей;')
-//                ->setPoints(10))
-//            ->addInnovativeEducationSubtitle((
-//            new InnovativeEducationSubtitle())
-//                ->setName('Отзывы на авторефераты и научные отчеты.')
 //                ->setPoints(10))
 //        );
 //
@@ -83,23 +83,27 @@ class InnovativeEducationsFixtures extends Fixture
 //        $manager->persist((new InnovativeEducationList())->setName('Руководство работой студентов, занявших призовые места на конкурсах (выставках)')
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('В международном;')
+//                ->setName('На международном;')
 //                ->setPoints(20))
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('В республиканском')
+//                ->setName('На республиканском')
 //                ->setPoints(15))
 //        );
 //
 //        $manager->persist((new InnovativeEducationList())->setName('Участие со своими работами на выставках (конкурсах)')
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('В международном;')
+//                ->setName('На международной;')
 //                ->setPoints(20))
 //            ->addInnovativeEducationSubtitle((
 //            new InnovativeEducationSubtitle())
-//                ->setName('В республиканском')
+//                ->setName('На республиканской;')
 //                ->setPoints(15))
+//            ->addInnovativeEducationSubtitle((
+//            new InnovativeEducationSubtitle())
+//                ->setName('Победитель, занявший призовые места со своими работами;')
+//                ->setPoints(30))
 //        );
 //
 //        $manager->flush();

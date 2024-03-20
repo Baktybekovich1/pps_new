@@ -8,7 +8,8 @@ class PpsRatingDto
         public int $id,
         readonly public string $user,
         public int $uralPoints,
-        public int $progressPoints
+        public int $progressPoints,
+        public int $educationPoints
     )
     {
     }

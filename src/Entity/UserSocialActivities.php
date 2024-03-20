@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\UserInnovativeEducationRepository;
+use App\Repository\UserSocialActivitiesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: UserInnovativeEducationRepository::class)]
-class UserInnovativeEducation
+#[ORM\Entity(repositoryClass: UserSocialActivitiesRepository::class)]
+class UserSocialActivities
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,8 +20,9 @@ class UserInnovativeEducation
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: InnovativeEducationSubtitle::class)]
-    private ?InnovativeEducationSubtitle $innovativeEducationSubtitle;
+    #[ORM\ManyToOne(targetEntity: SocialActivitiesSubtitle::class)]
+    private ?SocialActivitiesSubtitle $socialActivitiesSubtitle;
+
 
     public function getId(): ?int
     {
@@ -40,11 +41,11 @@ class UserInnovativeEducation
         return $this;
     }
 
-
     public function getUser(): ?User
     {
         return $this->user;
     }
+
 
     public function setUser(?User $user): void
     {
@@ -52,20 +53,19 @@ class UserInnovativeEducation
     }
 
 
-    public function getInnovativeEducationSubtitle(): ?InnovativeEducationSubtitle
+    public function getSocialActivitiesSubtitle(): ?SocialActivitiesSubtitle
     {
-        return $this->innovativeEducationSubtitle;
+        return $this->socialActivitiesSubtitle;
     }
 
-
-    public function setInnovativeEducationSubtitle(?InnovativeEducationSubtitle $innovativeEducationSubtitle): void
+    public function setSocialActivitiesSubtitle(?SocialActivitiesSubtitle $socialActivitiesSubtitle): void
     {
-        $this->innovativeEducationSubtitle = $innovativeEducationSubtitle;
+        $this->socialActivitiesSubtitle = $socialActivitiesSubtitle;
     }
 
-    public function getPoints():int
+    public function getPoints(): int
     {
-        return $this->innovativeEducationSubtitle->getPoints();
+        return $this->socialActivitiesSubtitle->getPoints();
     }
 
 

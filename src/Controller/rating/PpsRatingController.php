@@ -8,6 +8,7 @@ use App\Entity\UserPersonalAwards;
 use App\Entity\UserResearchActivitiesList;
 use App\Repository\PersonalAwardsRepository;
 use App\Repository\UserInfoRepository;
+use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
@@ -21,7 +22,8 @@ class PpsRatingController extends AbstractController
         private UserInfoRepository                   $userInfoRepository,
         private UserResearchActivitiesListRepository $userActivitiesListsRepository,
         private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private UserRepository                       $userRepository
+        private UserRepository                       $userRepository,
+        private UserInnovativeEducationRepository    $userInnovativeEducationRepository
     )
     {
     }
@@ -62,6 +64,8 @@ class PpsRatingController extends AbstractController
             $activyCall = $this->getPoints($activity);
             $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
             $upac = $this->getPoints($personalAwards);
+            $educations = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
+            $eduCall = $this->getPoints($educations);
             if (isset($pps[$user->getId()])) {
                 /** @var PpsRatingDto $dto */
 
@@ -69,12 +73,14 @@ class PpsRatingController extends AbstractController
                 $dto->id = $user->getId();
                 $dto->uralPoints += $activyCall;
                 $dto->progressPoints += $upac;
+                $dto->educationPoints += $eduCall;
             } else {
                 $pps[$user->getId()] = new PpsRatingDto(
                     $user->getId(),
                     $info->getName(),
                     $activyCall,
-                    $upac
+                    $upac,
+                    $eduCall
                 );
             }
         }
