@@ -52,6 +52,7 @@ class UserResearchController extends AbstractController
             $ural->setLink($item['link']);
             $this->uralRepository->save($ural);
         }
+        
 
         return $this->json([
             "SUCCESS"

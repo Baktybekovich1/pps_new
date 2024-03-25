@@ -31,6 +31,9 @@ class UserInfo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
 
+    #[ORM\ManyToOne(targetEntity: OffenceList::class)]
+    private ?OffenceList $offenceList;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -107,4 +110,15 @@ class UserInfo
 
         return $this;
     }
+
+    public function getOffenceList(): ?OffenceList
+    {
+        return $this->offenceList;
+    }
+
+    public function setOffenceList(?OffenceList $offenceList): void
+    {
+        $this->offenceList = $offenceList;
+    }
+
 }

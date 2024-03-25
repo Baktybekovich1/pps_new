@@ -31,12 +31,12 @@ class UserInnovativeEducationController extends AbstractController
         $educations = $this->innovativeEducationListRepository->findAll();
 
         return $this->json([
-            'educations' => $educations
+            $educations
         ]);
     }
 
-    #[Route('/education/add', name: 'app_user_innovative_education_add',methods: ['POST'])]
-    public function add(UserInterface $user,#[MapRequestPayload] UserEducationsDto $dto): JsonResponse
+    #[Route('/education/add', name: 'app_user_innovative_education_add', methods: ['POST'])]
+    public function add(UserInterface $user, #[MapRequestPayload] UserEducationsDto $dto): JsonResponse
     {
         $user = $this->userRepository->find($user->getUserIdentifier());
 
