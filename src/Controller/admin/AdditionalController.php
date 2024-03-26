@@ -3,11 +3,12 @@
 namespace App\Controller\admin;
 
 use App\Dto\AdditionalDto;
+use App\Entity\UserOffence;
 use App\Entity\UserResearchActivitiesList;
 use App\Repository\OffenceListRepository;
 use App\Repository\ResearchActivitiesListRepository;
 use App\Repository\ResearchActivitiesSubtitleRepository;
-use App\Repository\UserInfoRepository;
+use App\Repository\UserOffenceRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +25,7 @@ class AdditionalController extends AbstractController
         private UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private UserRepository                       $userRepository,
         private ResearchActivitiesSubtitleRepository $researchActivitiesSubtitleRepository,
-        private UserInfoRepository                   $userInfoRepository
+        private UserOffenceRepository                $userOffenceRepository
     )
     {
     }
@@ -46,23 +47,22 @@ class AdditionalController extends AbstractController
     #[Route('/additional/add', name: 'app_additional_add')]
     public function add(UserInterface $user, #[MapRequestPayload] AdditionalDto $dto): JsonResponse
     {
-//        $user = $this->userRepository->find($user->getUserIdentifier());
-//        foreach ($dto->awards as $item) {
-//            $ural = new UserResearchActivitiesList();
-//            $ural->setUser($user);
-//            $ural->setSubtitle($this->researchActivitiesSubtitleRepository->find($item['subId']));
-//            $ural->setLink($item['link']);
-//            $this->userResearchActivitiesListRepository->save($ural);
-//        }
-//        foreach ($dto->offence as $off) {
-//            $userInfo = $this->userInfoRepository->find($user->getId());
-//            $offence = $this->offenceListRepository->find($off['id']);
-//            $userInfo->setOffenceList($offence);
-//            $this->userInfoRepository->save($userInfo);
-//        }
-//
-//        return $this->json(['Success~']);
+        $user = $this->userRepository->find($user->getUserIdentifier());
+        foreach ($dto->awards as $item) {
+            $ural = new UserResearchActivitiesList();
+            $ural->setUser($user);
+            $ural->setSubtitle($this->researchActivitiesSubtitleRepository->find($item['subId']));
+            $ural->setLink($item['link']);
+            $this->userResearchActivitiesListRepository->save($ural);
+        }
+        foreach ($dto->offence as $off) {
+            $userOff = new UserOffence();
+            $userOff->setUser($user);
+            $userOff->setOffenceList($off['subId']);
+            $this->userOffenceRepository->save($userOff);
+        }
 
-//        Неправильно!!!
+        return $this->json(['Success~']);
+
     }
 }

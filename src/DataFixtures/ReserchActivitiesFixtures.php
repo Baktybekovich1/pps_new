@@ -12,7 +12,7 @@ class ReserchActivitiesFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-
+//
 //        $manager->persist((new ResearchActivitiesList())
 //            ->setName('Публикации в научном журнале «Наука и инновационные технологии» МУИТ')
 //            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
@@ -33,18 +33,8 @@ class ReserchActivitiesFixtures extends Fixture
 //                ->setPoints(10))
 //        );
 //
-//
-//        $manager->persist((new ResearchActivitiesList())
-//            ->setName('Публикации в научном журнале «Наука и инновационные технологии» МУИТ')
-//            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Место работы автора указано «МУИТ»')
-//                ->setPoints(15)
-//            )->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Место работы автора указано другое учреждение')
-//                ->setPoints(5))
-//        );
-//
 //        $manager->persist((new ResearchActivitiesList())->setName('Публикации в базах Scopus и/или Web of Science')->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())->setPoints(150)));
+//
 //
 //
 //        $manager->persist((new ResearchActivitiesList())
@@ -78,6 +68,7 @@ class ReserchActivitiesFixtures extends Fixture
 //                ->setName('Выданный Кыргызпатентом.')
 //                ->setPoints(20))
 //        );
+//
 //        $manager->persist((new ResearchActivitiesList())
 //            ->setName('Защита диссертации')
 //            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
@@ -100,6 +91,31 @@ class ReserchActivitiesFixtures extends Fixture
 //                ->setPoints(15))
 //        );
 //
+//        $manager->persist((new ResearchActivitiesList())
+//            ->setName('Руководство научными работами в период по плану завершения исследований')
+//            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
+//                ->setName('Руководство аспирантами (за каждого аспиранта);')
+//                ->setPoints(30)
+//            )->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
+//                ->setName('Руководство Phd докторантами (за каждого Phd докторанта);')
+//                ->setPoints(30))
+//            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
+//                ->setName('Руководство магистрантами (за каждого магистранта);')
+//                ->setPoints(10))
+//            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
+//                ->setName('Руководитель или исполнитель НИР и проектов по договорам;')
+//                ->setPoints(30))
+//        );
+//
+//        $manager->persist((new ResearchActivitiesList())
+//            ->setName('Участие с докладом на конференциях')
+//            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
+//                ->setName('Доклады на зарубежных конференциях;')
+//                ->setPoints(20)
+//            )->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
+//                ->setName('Доклады на республиканских конференциях;')
+//                ->setPoints(10))
+//        );
 //
 //        $manager->flush();
     }
