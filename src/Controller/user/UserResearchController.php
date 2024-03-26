@@ -50,7 +50,8 @@ class UserResearchController extends AbstractController
                     }
                     $sub[] = new ResearchGetSub(
                         $id,
-                        $name
+                        $name,
+                        'a'
                     );
                 }
                 $uu[] = new UserResearchGetDto(

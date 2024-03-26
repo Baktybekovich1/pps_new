@@ -5,8 +5,9 @@ namespace App\Dto;
 class ResearchGetSub
 {
     public function __construct(
-        public int $int,
-        public string $name
+        public int $id,
+        public string $name,
+        public string $og
     )
     {
     }
