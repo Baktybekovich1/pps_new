@@ -3,6 +3,7 @@
 namespace App\Controller\user;
 
 
+use App\Dto\UserGetName;
 use App\Dto\UserInfoDto;
 use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
@@ -38,10 +39,10 @@ class UserInfoController extends AbstractController
     #[Route('/name', name: 'app_user_name')]
     public function user_name(UserInterface $user): JsonResponse
     {
-        $this->userInfoRepository->find($user->getUserIdentifier());
+        $userInfo = $this->userInfoRepository->find($user->getUserIdentifier());
 
         return $this->json([
-            'user' => $this->userInfoRepository->findOneBy(['userId' => $user->getUserIdentifier()])
+            'name' => $userInfo->getName()
         ]);
     }
 
