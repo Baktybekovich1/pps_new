@@ -2,17 +2,12 @@
 
 namespace App\Controller\user;
 
-use App\Dto\ResearchGetSub;
-use App\Dto\UserResearchActivitiesAddDto;
-use App\Dto\UserResearchGetDto;
-use App\Entity\ResearchActivitiesList;
-use App\Entity\ResearchActivitiesSubtitle;
+use App\Dto\UserStagesAdd\UserResearchActivitiesAddDto;
 use App\Entity\UserResearchActivitiesList;
 use App\Repository\ResearchActivitiesListRepository;
 use App\Repository\ResearchActivitiesSubtitleRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
-use App\Repository\UserResearchActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -35,42 +30,15 @@ class UserResearchController extends AbstractController
     public function index(): JsonResponse
     {
         $ural = $this->activitiesListRepository->findAll();
-        $uu = [];
-        $sub = [];
-        foreach ($ural as $ura) {
-            if ($ura->getName() == 'Индекс Хирша по публикациям' or $ura->getName() == 'Публикации в базах Scopus и/или Web of Science') {
-                continue;
-            } else {
-                foreach ($ura->getResearchActivitiesSubtitles() as $subtitle) {
-                    $id = $subtitle->getId();
-                    $name = $subtitle->getName();
 
-                    if ($name == null) {
-                        $name = 'Выбрать';
-                    }
-                    $sub[] = new ResearchGetSub(
-                        $id,
-                        $name
-                    );
-                }
-                $uu[] = new UserResearchGetDto(
-                    $ura->getId(),
-                    $ura->getName(),
-                    $sub
-                );
-                $sub = [];
-
-            }
-        }
-
-        return $this->json([$uu]);
+        return $this->json([$ural]);
     }
 
     #[Route('/research/add', name: 'app_user_research_add', methods: ['POST'])]
     public function research_add(UserInterface $userStorage, #[MapRequestPayload] UserResearchActivitiesAddDto $dto): JsonResponse
     {
-        $user = $this->userRepository->find($userStorage->getUserIdentifier());
 
+        $user = $this->userRepository->find($userStorage->getUserIdentifier());
         foreach ($dto->ural as $item) {
             $ural = new UserResearchActivitiesList();
             $ural->setUser($user);
@@ -78,11 +46,8 @@ class UserResearchController extends AbstractController
             $ural->setLink($item['link']);
             $this->uralRepository->save($ural);
         }
-
-
         return $this->json([
             "SUCCESS"
         ]);
-
     }
 }

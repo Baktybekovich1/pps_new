@@ -2,7 +2,8 @@
 
 namespace App\Controller\rating;
 
-use App\Dto\PpsRatingDto;
+use App\Dto\RatingDto\PpsRatingDto;
+use App\Dto\RatingDto\UsersDto;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
@@ -63,6 +64,23 @@ class PpsRatingController extends AbstractController
         }
         return $this->json([
             'pps' => $pps
+        ]);
+    }
+
+    #[Route('/users', name: 'app_pps_users')]
+    public function users_list(): JsonResponse
+    {
+        $userInfo = $this->userInfoRepository->findAll();
+        $users = [];
+        foreach ($userInfo as $value) {
+            $item = new UsersDto(
+                $value->getId(),
+                $value->getName()
+            );
+            $users[] = $item;
+        }
+        return $this->json([
+            'users' => $users
         ]);
     }
 

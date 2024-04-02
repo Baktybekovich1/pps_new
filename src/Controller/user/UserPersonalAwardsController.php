@@ -2,8 +2,7 @@
 
 namespace App\Controller\user;
 
-use App\Dto\UserProgressDto;
-use App\Entity\PersonalAwards;
+use App\Dto\UserStagesAdd\UserProgressDto;
 use App\Entity\UserPersonalAwards;
 use App\Repository\PersonalAwardsRepository;
 use App\Repository\PersonalAwardsSubtitleRepository;

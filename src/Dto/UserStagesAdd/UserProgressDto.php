@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Dto;
-
-use Symfony\Component\Validator\Constraints\NotBlank;
+namespace App\Dto\UserStagesAdd;
 
 class UserProgressDto
 {

@@ -34,12 +34,8 @@ class AdditionalController extends AbstractController
     public function index(): JsonResponse
     {
 
-        $scopus = $this->researchActivitiesListRepository->findOneBy(['name' => 'Публикации в базах Scopus и/или Web of Science']);
-        $hyrsh = $this->researchActivitiesListRepository->findOneBy(['name' => 'Индекс Хирша по публикациям']);
         $offence = $this->offenceListRepository->findAll();
         return $this->json([
-            'scopus' => $scopus,
-            'hyrsh' => $hyrsh,
             'offence' => $offence
         ]);
     }

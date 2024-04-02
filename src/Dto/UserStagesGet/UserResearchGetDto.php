@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Dto;
-
-use Doctrine\ORM\Mapping\Entity;
+namespace App\Dto\UserStagesGet;
 
 class UserResearchGetDto
 {

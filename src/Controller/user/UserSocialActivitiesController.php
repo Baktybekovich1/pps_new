@@ -2,9 +2,7 @@
 
 namespace App\Controller\user;
 
-use App\Dto\UserSocialDto;
-use App\Entity\SocialActivitiesSubtitle;
-use App\Entity\User;
+use App\Dto\UserStagesAdd\UserSocialDto;
 use App\Entity\UserSocialActivities;
 use App\Repository\SocialActivitiesListRepository;
 use App\Repository\SocialActivitiesSubtitleRepository;

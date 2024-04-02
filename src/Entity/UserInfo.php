@@ -16,11 +16,11 @@ class UserInfo
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column]
-    private ?int $userId = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $user = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $institut = null;
+    #[ORM\ManyToOne(targetEntity: Institutions::class)]
+    private ?Institutions $institutions = null;
 
     #[ORM\Column(length: 255)]
     private ?string $position = null;
@@ -48,29 +48,31 @@ class UserInfo
         return $this;
     }
 
-    public function getUserId(): ?int
+
+    public function getUser(): ?User
     {
-        return $this->userId;
+        return $this->user;
     }
 
-    public function setUserId(int $userId): static
-    {
-        $this->userId = $userId;
 
-        return $this;
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
     }
 
-    public function getInstitut(): ?string
+
+    public function getInstitutions(): ?Institutions
     {
-        return $this->institut;
+        return $this->institutions;
     }
 
-    public function setInstitut(string $institut): static
-    {
-        $this->institut = $institut;
 
-        return $this;
+    public function setInstitutions(?Institutions $institutions): void
+    {
+        $this->institutions = $institutions;
     }
+
+
 
     public function getPosition(): ?string
     {

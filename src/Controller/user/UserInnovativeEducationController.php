@@ -2,8 +2,7 @@
 
 namespace App\Controller\user;
 
-use App\Dto\UserEducationsDto;
-use App\Entity\InnovativeEducationSubtitle;
+use App\Dto\UserStagesAdd\UserEducationsDto;
 use App\Entity\UserInnovativeEducation;
 use App\Repository\InnovativeEducationListRepository;
 use App\Repository\InnovativeEducationSubtitleRepository;
