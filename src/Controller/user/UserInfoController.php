@@ -5,6 +5,7 @@ namespace App\Controller\user;
 
 use App\Dto\UserGetName;
 use App\Dto\UserInfoDto;
+use App\Dto\UserInfoGetDto;
 use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionsRepository;
@@ -27,7 +28,7 @@ class UserInfoController extends AbstractController
         private InstitutionsRepository               $institutionsRepository,
         private PositionsRepository                  $positionsRepository,
         private UserInfoRepository                   $userInfoRepository,
-        private UserRepository                       $userRepository,
+        private readonly UserRepository              $userRepository,
         private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
@@ -39,10 +40,19 @@ class UserInfoController extends AbstractController
     #[Route('/name', name: 'app_user_name')]
     public function user_name(UserInterface $user): JsonResponse
     {
-        $userInfo = $this->userInfoRepository->find($user->getUserIdentifier());
+        $user = $this->userRepository->find($user->getUserIdentifier());
+        $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
+        $dto = new UserInfoGetDto(
+            $userInfo->getId(),
+            $userInfo->getName(),
+            $userInfo->getInstitutions()->getName(),
+            $userInfo->getPosition(),
+            $userInfo->getRegular(),
+            $userInfo->getEmail()
+        );
 
         return $this->json([
-            'user' => $userInfo
+            'user' => $dto
         ]);
     }
 
@@ -53,7 +63,6 @@ class UserInfoController extends AbstractController
             'institutes' => $this->institutionsRepository->findAll(),
             'position' => $this->positionsRepository->findAll()
         ]);
-
     }
 
     #[Route('/us/{id}', name: 'app_user_us')]
