@@ -31,6 +31,7 @@ class OffenceController extends AbstractController
     {
         $offence = $this->offenceListRepository->findAll();
         $users = $this->userInfoRepository->findAll();
+        $dto = [];
         foreach ($users as $user) {
             $off = [];
             foreach ($offence as $item) {
@@ -39,7 +40,7 @@ class OffenceController extends AbstractController
                     $item->getName()
                 );
             }
-            $dto = new UserOffenceGetDto(
+            $dto[] = new UserOffenceGetDto(
                 $user->getId(),
                 $user->getName(),
                 $off

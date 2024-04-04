@@ -25,14 +25,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserInfoController extends AbstractController
 {
     public function __construct(
-        private InstitutionsRepository               $institutionsRepository,
-        private PositionsRepository                  $positionsRepository,
-        private UserInfoRepository                   $userInfoRepository,
-        private readonly UserRepository              $userRepository,
-        private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private readonly InstitutionsRepository               $institutionsRepository,
+        private readonly PositionsRepository                  $positionsRepository,
+        private readonly UserInfoRepository                   $userInfoRepository,
+        private readonly UserRepository                       $userRepository,
+        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
+        private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
+        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository
     )
     {
     }
