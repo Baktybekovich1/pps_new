@@ -69,7 +69,7 @@ class UserInfoController extends AbstractController
     public function us(Request $request): JsonResponse
     {
         return $this->json([
-            'id' => $this->userInfoRepository->find($request->get('id'))
+            'id' => $this->userInfoRepository->findOneBy(['user' => $this->userRepository->find($request->get('id'))])
         ]);
     }
 

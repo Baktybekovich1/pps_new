@@ -56,13 +56,24 @@ class OffenceController extends AbstractController
     public function add(#[MapRequestPayload] UserOffenceAddDto $dto): JsonResponse
     {
         $offences = $dto->offence;
+        $isset = False;
         foreach ($offences as $offence) {
-            $oldOffence = $this->userOffenceRepository->findOneBy(['user' => $this->userRepository->find($offence['userId'])]);
-            $newOffence = new UserOffence();
-            $newOffence->setUser($this->userRepository->find($offence['userId']));
-            $newOffence->setQuantity($offence['quantity']);
-            $newOffence->setOffenceList($this->offenceListRepository->find($offence['id']));
-            $this->userOffenceRepository->save($newOffence);
+            $oldOffence = $this->userOffenceRepository->findBy(['user' => $this->userRepository->find($offence['userId'])]);
+            foreach ($oldOffence as $item) {
+                if ($item->getOffenceList()->getId() == $offence['id']) {
+                    $isset = True;
+                }
+            }
+            if (!$isset) {
+                $newOffence = new UserOffence();
+                $newOffence->setUser($this->userRepository->find($offence['userId']));
+                $newOffence->setQuantity($offence['quantity']);
+                $newOffence->setOffenceList($this->offenceListRepository->find($offence['id']));
+                $this->userOffenceRepository->save($newOffence);
+            }
+//            else {
+//
+//            }
         }
 
 

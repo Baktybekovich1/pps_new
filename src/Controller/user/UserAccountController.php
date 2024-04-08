@@ -3,6 +3,7 @@
 namespace App\Controller\user;
 
 use App\Dto\UserAccount\UserAwardsGetDto;
+use App\Dto\UserAccount\UserResearchGetDto;
 use App\Dto\UserInfoGetDto;
 use App\Entity\InnovativeEducationSubtitle;
 use App\Entity\PersonalAwardsSubtitle;
@@ -28,15 +29,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserAccountController extends AbstractController
 {
     public function __construct(
-        private UserRepository               $userRepository,
-        private UserInfoRepository           $userInfoRepository,
-        private UserPersonalAwardsRepository $userPersonalAwardsRepository,
+        private readonly UserRepository                       $userRepository,
+        private readonly UserInfoRepository                   $userInfoRepository,
+        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
 //        private PersonalAwardsSubtitleRepository      $personalAwardsSubtitleRepository,
-//        private UserResearchActivitiesListRepository  $userResearchActivitiesListRepository,
+        private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
 //        private ResearchActivitiesSubtitleRepository  $researchActivitiesSubtitleRepository,
-//        private UserInnovativeEducationRepository     $userInnovativeEducationRepository,
+        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
 //        private InnovativeEducationSubtitleRepository $innovativeEducationSubtitleRepository,
-//        private UserSocialActivitiesRepository        $userSocialActivitiesRepository,
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
 //        private SocialActivitiesSubtitleRepository    $socialActivitiesSubtitleRepository,
 //        private PersonalAwardsRepository              $personalAwardsRepository,
 //        private ResearchActivitiesListRepository      $researchActivitiesListRepository,
@@ -51,7 +52,10 @@ class UserAccountController extends AbstractController
     {
         $user = $this->userRepository->find($request->get('id'));
         $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
-        $userAwards = $this->userPersonalAwardsRepository->findOneBy(['user' => $user]);
+        $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+        $userResearch = $this->userResearchActivitiesListRepository->findBy(['user' => $user]);
+        $userInnovative = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
+        $userSocial = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
         $info = new UserInfoGetDto(
             $userInfo->getId(),
             $userInfo->getName(),
@@ -59,15 +63,50 @@ class UserAccountController extends AbstractController
             $userInfo->getPosition(),
             $userInfo->getRegular(),
             $userInfo->getEmail());
-        dd($userAwards);
+        // User Info
+
         $awards = [];
         foreach ($userAwards as $userAward) {
-//            $awards[] = new UserAwardsGetDto(
-//
-//            )
+            $awards[] = new UserAwardsGetDto(
+                $userAward->getId(),
+                $userAward->getSubtitle()->getTitle()->getName() . ': ' . $userAward->getSubtitle()->getName(),
+                $userAward->getLink()
+            );
+        }
+//        User Awards
+
+        $research = [];
+        foreach ($userResearch as $item) {
+            $research[] = new UserResearchGetDto(
+                $item->getId(),
+                $item->getSubtitle()->getCategory()->getName() . ': ' . $item->getSubtitle()->getName(),
+                $item->getLink()
+            );
+        }
+
+        $innovative = [];
+        foreach ($userInnovative as $item) {
+            $innovative[] = new UserResearchGetDto(
+                $item->getId(),
+                $item->getInnovativeEducationSubtitle()->getTitle()->getName() . ': ' . $item->getInnovativeEducationSubtitle()->getName(),
+                $item->getLink()
+            );
+        }
+
+        $social = [];
+        foreach ($userSocial as $item) {
+            $social[] = new UserResearchGetDto(
+                $item->getId(),
+                $item->getSocialActivitiesSubtitle()->getTitle()->getName() . ': ' . $item->getSocialActivitiesSubtitle()->getName(),
+                $item->getLink()
+            );
         }
         return $this->json([
-            'userInfo' => $userAwards->getSubtitle()->getName()
+            'userInfo' => $info,
+            'userAwards' => $awards,
+            'userResearch' => $research,
+            'userInnovative' => $innovative,
+            'userSocial' => $social
         ]);
     }
 }
