@@ -74,7 +74,7 @@ class PpsRatingController extends AbstractController
         $users = [];
         foreach ($userInfo as $value) {
             $item = new UsersDto(
-                $value->getId(),
+                $value->getUser()->getId(),
                 $value->getName()
             );
             $users[] = $item;

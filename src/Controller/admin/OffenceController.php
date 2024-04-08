@@ -62,6 +62,8 @@ class OffenceController extends AbstractController
             foreach ($oldOffence as $item) {
                 if ($item->getOffenceList()->getId() == $offence['id']) {
                     $isset = True;
+                    $off = $item;
+                    break;
                 }
             }
             if (!$isset) {
@@ -71,9 +73,10 @@ class OffenceController extends AbstractController
                 $newOffence->setOffenceList($this->offenceListRepository->find($offence['id']));
                 $this->userOffenceRepository->save($newOffence);
             }
-//            else {
-//
-//            }
+            else {
+                $off->setQuantity($off->getQuantity()+$offence['quantity']);
+                $this->userOffenceRepository->save($off);
+            }
         }
 
 
