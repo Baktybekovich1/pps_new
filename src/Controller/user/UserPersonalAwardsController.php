@@ -46,6 +46,7 @@ class UserPersonalAwardsController extends AbstractController
             $award->setUser($user);
             $personalAwardSubtitle = $this->personalAwardsSubtitleRepository->find($item['subId']);
             $award->setSubtitle($personalAwardSubtitle);
+            $award->setStatus('active');
             if (isset($item['link'])) {
                 $award->setLink($item['link']);
             } else {

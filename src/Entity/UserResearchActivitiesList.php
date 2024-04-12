@@ -23,6 +23,9 @@ class UserResearchActivitiesList
     #[ORM\Column(type: Types::TEXT)]
     private ?string $link = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,6 +66,18 @@ class UserResearchActivitiesList
 
     public function getPoints(): int {
         return $this->subtitle->getPoints();
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
 }

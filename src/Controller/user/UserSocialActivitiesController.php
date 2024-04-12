@@ -45,6 +45,7 @@ class UserSocialActivitiesController extends AbstractController
             $social->setUser($user);
             $social->setSocialActivitiesSubtitle($this->socialActivitiesSubtitleRepository->find($item['subId']));
             $social->setLink($item['link']);
+            $social->setStatus('active');
             $this->userSocialActivitiesRepository->save($social);
         }
 

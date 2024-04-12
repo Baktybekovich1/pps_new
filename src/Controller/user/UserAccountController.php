@@ -56,51 +56,57 @@ class UserAccountController extends AbstractController
         $userResearch = $this->userResearchActivitiesListRepository->findBy(['user' => $user]);
         $userInnovative = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
         $userSocial = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
-        $info = new UserInfoGetDto(
-            $userInfo->getId(),
-            $userInfo->getName(),
-            $userInfo->getInstitutions()->getName(),
-            $userInfo->getPosition(),
-            $userInfo->getRegular(),
-            $userInfo->getEmail());
-        // User Info
+        if ($userInfo != null){
+            $info = new UserInfoGetDto(
+                $userInfo->getId(),
+                $userInfo->getName(),
+                $userInfo->getInstitutions()->getName(),
+                $userInfo->getPosition(),
+                $userInfo->getRegular(),
+                $userInfo->getEmail());
+            // User Info
 
-        $awards = [];
-        foreach ($userAwards as $userAward) {
-            $awards[] = new UserAwardsGetDto(
-                $userAward->getId(),
-                $userAward->getSubtitle()->getTitle()->getName() . ': ' . $userAward->getSubtitle()->getName(),
-                $userAward->getLink()
-            );
-        }
+            $awards = [];
+            foreach ($userAwards as $userAward) {
+                $awards[] = new UserAwardsGetDto(
+                    $userAward->getId(),
+                    $userAward->getSubtitle()->getTitle()->getName() . ': ' . $userAward->getSubtitle()->getName(),
+                    $userAward->getLink()
+                );
+            }
 //        User Awards
 
-        $research = [];
-        foreach ($userResearch as $item) {
-            $research[] = new UserResearchGetDto(
-                $item->getId(),
-                $item->getSubtitle()->getCategory()->getName() . ': ' . $item->getSubtitle()->getName(),
-                $item->getLink()
-            );
+            $research = [];
+            foreach ($userResearch as $item) {
+                $research[] = new UserResearchGetDto(
+                    $item->getId(),
+                    $item->getSubtitle()->getCategory()->getName() . ': ' . $item->getSubtitle()->getName(),
+                    $item->getLink()
+                );
+            }
+
+            $innovative = [];
+            foreach ($userInnovative as $item) {
+                $innovative[] = new UserResearchGetDto(
+                    $item->getId(),
+                    $item->getInnovativeEducationSubtitle()->getTitle()->getName() . ': ' . $item->getInnovativeEducationSubtitle()->getName(),
+                    $item->getLink()
+                );
+            }
+
+            $social = [];
+            foreach ($userSocial as $item) {
+                $social[] = new UserResearchGetDto(
+                    $item->getId(),
+                    $item->getSocialActivitiesSubtitle()->getTitle()->getName() . ': ' . $item->getSocialActivitiesSubtitle()->getName(),
+                    $item->getLink()
+                );
+            }
+        }
+        else{
+            return $this->json('Вы не заполинили "Личные данные"');
         }
 
-        $innovative = [];
-        foreach ($userInnovative as $item) {
-            $innovative[] = new UserResearchGetDto(
-                $item->getId(),
-                $item->getInnovativeEducationSubtitle()->getTitle()->getName() . ': ' . $item->getInnovativeEducationSubtitle()->getName(),
-                $item->getLink()
-            );
-        }
-
-        $social = [];
-        foreach ($userSocial as $item) {
-            $social[] = new UserResearchGetDto(
-                $item->getId(),
-                $item->getSocialActivitiesSubtitle()->getTitle()->getName() . ': ' . $item->getSocialActivitiesSubtitle()->getName(),
-                $item->getLink()
-            );
-        }
         return $this->json([
             'userInfo' => $info,
             'userAwards' => $awards,

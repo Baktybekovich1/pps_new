@@ -44,6 +44,7 @@ class UserResearchController extends AbstractController
             $ural->setUser($user);
             $ural->setSubtitle($this->subtitleRepository->find($item['subId']));
             $ural->setLink($item['link']);
+            $ural->setStatus('active');
             $this->uralRepository->save($ural);
         }
         return $this->json([

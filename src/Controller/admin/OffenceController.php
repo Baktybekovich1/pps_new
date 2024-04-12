@@ -41,7 +41,7 @@ class OffenceController extends AbstractController
                 );
             }
             $dto[] = new UserOffenceGetDto(
-                $user->getId(),
+                $user->getUser()->getId(),
                 $user->getName(),
                 $off
             );

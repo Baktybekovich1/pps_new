@@ -23,6 +23,9 @@ class UserInnovativeEducation
     #[ORM\ManyToOne(targetEntity: InnovativeEducationSubtitle::class)]
     private ?InnovativeEducationSubtitle $innovativeEducationSubtitle;
 
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,6 +69,18 @@ class UserInnovativeEducation
     public function getPoints():int
     {
         return $this->innovativeEducationSubtitle->getPoints();
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
 

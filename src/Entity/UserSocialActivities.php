@@ -23,6 +23,9 @@ class UserSocialActivities
     #[ORM\ManyToOne(targetEntity: SocialActivitiesSubtitle::class)]
     private ?SocialActivitiesSubtitle $socialActivitiesSubtitle;
 
+    #[ORM\Column(length: 255)]
+    private ?string $status = null;
+
 
     public function getId(): ?int
     {
@@ -66,6 +69,18 @@ class UserSocialActivities
     public function getPoints(): int
     {
         return $this->socialActivitiesSubtitle->getPoints();
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
 

@@ -44,6 +44,7 @@ class UserInnovativeEducationController extends AbstractController
             $education->setUser($user);
             $education->setInnovativeEducationSubtitle($this->innovativeEducationSubtitleRepository->find($item['subId']));
             $education->setLink($item['link']);
+            $education->setStatus('active');
             $this->userInnovativeEducationRepository->save($education);
         }
 
