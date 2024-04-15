@@ -71,7 +71,9 @@ class UserAccountController extends AbstractController
                 $awards[] = new UserAwardsGetDto(
                     $userAward->getId(),
                     $userAward->getSubtitle()->getTitle()->getName() . ': ' . $userAward->getSubtitle()->getName(),
-                    $userAward->getLink()
+                    $userAward->getLink(),
+                    "userAwards",
+                    $userAward->getStatus()
                 );
             }
 //        User Awards
@@ -81,7 +83,9 @@ class UserAccountController extends AbstractController
                 $research[] = new UserResearchGetDto(
                     $item->getId(),
                     $item->getSubtitle()->getCategory()->getName() . ': ' . $item->getSubtitle()->getName(),
-                    $item->getLink()
+                    $item->getLink(),
+                    "userResearch",
+                    $item->getStatus()
                 );
             }
 
@@ -90,7 +94,9 @@ class UserAccountController extends AbstractController
                 $innovative[] = new UserResearchGetDto(
                     $item->getId(),
                     $item->getInnovativeEducationSubtitle()->getTitle()->getName() . ': ' . $item->getInnovativeEducationSubtitle()->getName(),
-                    $item->getLink()
+                    $item->getLink(),
+                    "userInnovative",
+                    $item->getStatus()
                 );
             }
 
@@ -99,7 +105,9 @@ class UserAccountController extends AbstractController
                 $social[] = new UserResearchGetDto(
                     $item->getId(),
                     $item->getSocialActivitiesSubtitle()->getTitle()->getName() . ': ' . $item->getSocialActivitiesSubtitle()->getName(),
-                    $item->getLink()
+                    $item->getLink(),
+                    "userSocial",
+                    $item->getStatus()
                 );
             }
         }
