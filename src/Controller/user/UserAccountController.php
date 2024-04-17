@@ -72,7 +72,7 @@ class UserAccountController extends AbstractController
                     $userAward->getId(),
                     $userAward->getSubtitle()->getTitle()->getName() . ': ' . $userAward->getSubtitle()->getName(),
                     $userAward->getLink(),
-                    "userAwards",
+                    "award",
                     $userAward->getStatus()
                 );
             }
@@ -84,7 +84,7 @@ class UserAccountController extends AbstractController
                     $item->getId(),
                     $item->getSubtitle()->getCategory()->getName() . ': ' . $item->getSubtitle()->getName(),
                     $item->getLink(),
-                    "userResearch",
+                    "research",
                     $item->getStatus()
                 );
             }
@@ -95,7 +95,7 @@ class UserAccountController extends AbstractController
                     $item->getId(),
                     $item->getInnovativeEducationSubtitle()->getTitle()->getName() . ': ' . $item->getInnovativeEducationSubtitle()->getName(),
                     $item->getLink(),
-                    "userInnovative",
+                    "innovative",
                     $item->getStatus()
                 );
             }
@@ -106,7 +106,7 @@ class UserAccountController extends AbstractController
                     $item->getId(),
                     $item->getSocialActivitiesSubtitle()->getTitle()->getName() . ': ' . $item->getSocialActivitiesSubtitle()->getName(),
                     $item->getLink(),
-                    "userSocial",
+                    "social",
                     $item->getStatus()
                 );
             }

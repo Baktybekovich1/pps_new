@@ -25,7 +25,7 @@ class AccountFreezedController extends AbstractController
     {
     }
 
-    #[Route('/award/freeze/{id}', name: 'app_admin_award_freeze', methods: ['DELETE'])]
+    #[Route('/award/freeze/{id}', name: 'app_admin_award_freeze', methods: ['PUT'])]
     public function award_freeze(Request $request): JsonResponse
     {
         $id = $request->get('id');
@@ -35,7 +35,7 @@ class AccountFreezedController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/research/freeze/{id}', name: 'app_admin_research_freeze', methods: ['DELETE'])]
+    #[Route('/research/freeze/{id}', name: 'app_admin_research_freeze', methods: ['PUT'])]
     public function research_freeze(Request $request): JsonResponse
     {
         $id = $request->get('id');
@@ -46,7 +46,7 @@ class AccountFreezedController extends AbstractController
     }
 
 
-    #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['DELETE'])]
+    #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
     public function innovative_freeze(Request $request): JsonResponse
     {
         $id = $request->get('id');
@@ -56,7 +56,7 @@ class AccountFreezedController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/social/freeze/{id}', name: 'app_admin_social_freeze', methods: ['DELETE'])]
+    #[Route('/social/freeze/{id}', name: 'app_admin_social_freeze', methods: ['PUT'])]
     public function social_freeze(Request $request): JsonResponse
     {
         $id = $request->get('id');
