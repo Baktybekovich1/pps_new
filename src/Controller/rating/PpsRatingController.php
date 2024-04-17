@@ -44,7 +44,6 @@ class PpsRatingController extends AbstractController
             $eduCall = $this->getPoints($educations);
             $socials = $this->userSocialActivitiesRepository->findBy(['user' => $user,'status' => 'active']);
             $socialCall = $this->getPoints($socials);
-
             $offence = $this->userOffenceRepository->findBy(['user' => $user]);
             $sum = $activyCall + $upac + $eduCall + $socialCall;
             foreach ($offence as $value) {
@@ -65,6 +64,7 @@ class PpsRatingController extends AbstractController
                 $pps[$user->getId()] = new PpsRatingDto(
                     $user->getId(),
                     $info->getName(),
+                    $info->getInstitutions()->getName(),
                     $activyCall,
                     $upac,
                     $eduCall,
