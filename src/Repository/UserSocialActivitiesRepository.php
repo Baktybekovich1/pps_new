@@ -51,4 +51,10 @@ class UserSocialActivitiesRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function remove(UserSocialActivities $social)
+    {
+        $this->getEntityManager()->remove($social);
+        $this->getEntityManager()->flush();
+    }
+
 }

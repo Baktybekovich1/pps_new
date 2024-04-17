@@ -50,4 +50,10 @@ class UserResearchActivitiesListRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($ural);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(UserResearchActivitiesList $research)
+    {
+        $this->getEntityManager()->remove($research);
+        $this->getEntityManager()->flush();
+    }
 }

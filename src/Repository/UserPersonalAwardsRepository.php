@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UserPersonalAwards;
+use Couchbase\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,11 +46,17 @@ class UserPersonalAwardsRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function save(UserPersonalAwards $awards){
+    public function save(UserPersonalAwards $awards)
+    {
         $this->getEntityManager()->persist($awards);
         $this->getEntityManager()->flush();
     }
 
+    public function remove(UserPersonalAwards $awards)
+    {
+        $this->getEntityManager()->remove($awards);
+        $this->getEntityManager()->flush();
+    }
 
 
 }

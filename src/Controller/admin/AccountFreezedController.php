@@ -9,6 +9,7 @@ use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -16,45 +17,52 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class AccountFreezedController extends AbstractController
 {
     public function __construct(
-        private UserPersonalAwardsRepository $userPersonalAwardsRepository,
+        private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private UserInnovativeEducationRepository $userInnovativeEducationRepository,
-        private UserSocialActivitiesRepository $userSocialActivitiesRepository
+        private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
+        private UserSocialActivitiesRepository       $userSocialActivitiesRepository
     )
     {
     }
 
-    #[Route('/account/freezed', name: 'app_account_freezed', methods: ['POST'])]
-    public function index(UserInterface $userStorage, #[MapRequestPayload] AccountFreezedDto $dto): JsonResponse
+    #[Route('/award/freeze/{id}', name: 'app_admin_award_freeze', methods: ['DELETE'])]
+    public function award_freeze(Request $request): JsonResponse
     {
-        $stage = $dto->stage;
-        $id = $dto->id;
-        if ($stage == 'userAwards') {
-            $award = $this->userPersonalAwardsRepository->find($id);
-            $award->setStatus('freezed');
-            $this->userPersonalAwardsRepository->save($award);
-        }
-        elseif ($stage=='userResearch') {
-            $award = $this->userResearchActivitiesListRepository->find($id);
-            $award->setStatus('freezed');
-            $this->userResearchActivitiesListRepository->save($award);
-        }
-        elseif ($stage == 'userInnovative') {
-            $award = $this->userInnovativeEducationRepository->find($id);
-            $award->setStatus('freezed');
-            $this->userInnovativeEducationRepository->save($award);
-        }
-        elseif ($stage == 'userSocial') {
-            $award = $this->userSocialActivitiesRepository->find($id);
-            $award->setStatus('freezed');
-            $this->userSocialActivitiesRepository->save($award);
-        }
-        else{
-            return $this->json(['Такой награды не существует!']);
-        }
+        $id = $request->get('id');
+        $award = $this->userPersonalAwardsRepository->find($id);
+        $award->setStatus('freeze');
+        $this->userPersonalAwardsRepository->save($award);
+        return $this->json(['Success']);
+    }
 
-        return $this->json([
-            'Success'
-        ]);
+    #[Route('/research/freeze/{id}', name: 'app_admin_research_freeze', methods: ['DELETE'])]
+    public function research_freeze(Request $request): JsonResponse
+    {
+        $id = $request->get('id');
+        $award = $this->userResearchActivitiesListRepository->find($id);
+        $award->setStatus('freeze');
+        $this->userResearchActivitiesListRepository->save($award);
+        return $this->json(['Success']);
+    }
+
+
+    #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['DELETE'])]
+    public function innovative_freeze(Request $request): JsonResponse
+    {
+        $id = $request->get('id');
+        $innovative = $this->userInnovativeEducationRepository->find($id);
+        $innovative->setStatus('freeze');
+        $this->userInnovativeEducationRepository->save($innovative);
+        return $this->json(['Success']);
+    }
+
+    #[Route('/social/freeze/{id}', name: 'app_admin_social_freeze', methods: ['DELETE'])]
+    public function social_freeze(Request $request): JsonResponse
+    {
+        $id = $request->get('id');
+        $social = $this->userSocialActivitiesRepository->find($id);
+        $social->setStatus('freeze');
+        $this->userSocialActivitiesRepository->save($social);
+        return $this->json(['Success']);
     }
 }

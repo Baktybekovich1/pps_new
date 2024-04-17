@@ -51,4 +51,9 @@ class UserInnovativeEducationRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
 
     }
+    public function remove(UserInnovativeEducation $innovative)
+    {
+        $this->getEntityManager()->remove($innovative);
+        $this->getEntityManager()->flush();
+    }
 }

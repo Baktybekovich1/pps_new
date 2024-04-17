@@ -6,6 +6,7 @@ use App\Dto\RatingDto\PpsRatingDto;
 use App\Dto\RatingDto\UsersDto;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
+use App\Repository\UserOffenceRepository;
 use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
@@ -22,7 +23,8 @@ class PpsRatingController extends AbstractController
         private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private UserRepository                       $userRepository,
         private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private UserOffenceRepository                $userOffenceRepository
     )
     {
     }
@@ -33,24 +35,32 @@ class PpsRatingController extends AbstractController
         $pps = [];
         $users = $this->userRepository->findAll();
         foreach ($users as $user) {
-            $info = $this->userInfoRepository->findOneBy(['userId' => $user->getId()]);
-            $activity = $this->userActivitiesListsRepository->findBy(['user' => $user]);
+            $info = $this->userInfoRepository->findOneBy(['user' => $user]);
+            $activity = $this->userActivitiesListsRepository->findBy(['user' => $user,'status' => 'active']);
             $activyCall = $this->getPoints($activity);
-            $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+            $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user,'status' => 'active']);
             $upac = $this->getPoints($personalAwards);
-            $educations = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
+            $educations = $this->userInnovativeEducationRepository->findBy(['user' => $user,'status' => 'active']);
             $eduCall = $this->getPoints($educations);
-            $socials = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
+            $socials = $this->userSocialActivitiesRepository->findBy(['user' => $user,'status' => 'active']);
             $socialCall = $this->getPoints($socials);
+
+            $offence = $this->userOffenceRepository->findBy(['user' => $user]);
+            $sum = $activyCall + $upac + $eduCall + $socialCall;
+            foreach ($offence as $value) {
+                $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
+            }
             if (isset($pps[$user->getId()])) {
                 /** @var PpsRatingDto $dto */
 
                 $dto = $pps[$user->getId()];
                 $dto->id = $user->getId();
-                $dto->uralPoints += $activyCall;
-                $dto->progressPoints += $upac;
-                $dto->educationPoints += $eduCall;
+                $dto->researchPoints += $activyCall;
+                $dto->awardPoints += $upac;
+                $dto->innovativePoints += $eduCall;
                 $dto->socialPoints += $socialCall;
+                $dto->sum += $sum;
+
             } else {
                 $pps[$user->getId()] = new PpsRatingDto(
                     $user->getId(),
@@ -58,7 +68,8 @@ class PpsRatingController extends AbstractController
                     $activyCall,
                     $upac,
                     $eduCall,
-                    $socialCall
+                    $socialCall,
+                    $sum
                 );
             }
         }
