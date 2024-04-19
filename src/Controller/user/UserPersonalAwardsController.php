@@ -9,6 +9,7 @@ use App\Repository\PersonalAwardsSubtitleRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
+use phpDocumentor\Reflection\Types\True_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -18,7 +19,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class UserPersonalAwardsController extends AbstractController
 {
     public function __construct(
-        private UserInfoRepository               $userInfoRepository,
         private UserRepository                   $userRepository,
         private PersonalAwardsRepository         $personalAwardsRepository,
         private PersonalAwardsSubtitleRepository $personalAwardsSubtitleRepository,
@@ -40,10 +40,15 @@ class UserPersonalAwardsController extends AbstractController
     public function prog_add(#[MapRequestPayload] UserProgressDto $dto, UserInterface $user): JsonResponse
     {
         $user = $this->userRepository->find($user->getUserIdentifier());
-
         foreach ($dto->awards as $item) {
-            $award = new UserPersonalAwards();
-            $award->setUser($user);
+            if ($this->userPersonalAwardsRepository->findBy(['user' => $user, 'subtitle' => $this->personalAwardsSubtitleRepository->find($item['subId'])])) {
+                $sub = $this->userPersonalAwardsRepository->findOneBy(['subtitle' => $item['subId']]);
+                $award = $this->userPersonalAwardsRepository->find($sub->getId());
+            } else {
+                $award = new UserPersonalAwards();
+                $award->setUser($user);
+            }
+
             $personalAwardSubtitle = $this->personalAwardsSubtitleRepository->find($item['subId']);
             $award->setSubtitle($personalAwardSubtitle);
             $award->setStatus('active');
