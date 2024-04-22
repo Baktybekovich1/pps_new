@@ -16,13 +16,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class InstitutesRatingController extends AbstractController
 {
     public function __construct(
-        private UserInfoRepository                   $userInfoRepository,
-        private UserResearchActivitiesListRepository $userActivitiesListsRepository,
-        private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private UserRepository                       $userRepository,
-        private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private UserOffenceRepository                $userOffenceRepository
+        private readonly UserInfoRepository                   $userInfoRepository,
+        private readonly UserResearchActivitiesListRepository $userActivitiesListsRepository,
+        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
+        private readonly UserRepository                       $userRepository,
+        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly UserOffenceRepository $userOffenceRepository
     )
     {
     }
