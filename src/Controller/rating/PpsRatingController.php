@@ -36,6 +36,9 @@ class PpsRatingController extends AbstractController
         $users = $this->userRepository->findAll();
         foreach ($users as $user) {
             $info = $this->userInfoRepository->findOneBy(['user' => $user]);
+            if ($info == null) {
+                continue;
+            }
             $activity = $this->userActivitiesListsRepository->findBy(['user' => $user,'status' => 'active']);
             $activyCall = $this->getPoints($activity);
             $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user,'status' => 'active']);
