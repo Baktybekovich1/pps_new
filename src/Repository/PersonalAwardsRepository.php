@@ -45,4 +45,10 @@ class PersonalAwardsRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function save(PersonalAwards $award)
+    {
+        $this->getEntityManager()->persist($award);
+        $this->getEntityManager()->flush();
+
+    }
 }

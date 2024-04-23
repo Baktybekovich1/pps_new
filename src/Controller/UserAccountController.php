@@ -1,20 +1,10 @@
 <?php
 
-namespace App\Controller\user;
+namespace App\Controller;
 
 use App\Dto\UserAccount\UserAwardsGetDto;
 use App\Dto\UserAccount\UserResearchGetDto;
 use App\Dto\UserInfoGetDto;
-use App\Entity\InnovativeEducationSubtitle;
-use App\Entity\PersonalAwardsSubtitle;
-use App\Entity\SocialActivitiesSubtitle;
-use App\Repository\InnovativeEducationListRepository;
-use App\Repository\InnovativeEducationSubtitleRepository;
-use App\Repository\PersonalAwardsRepository;
-use App\Repository\ResearchActivitiesListRepository;
-use App\Repository\ResearchActivitiesSubtitleRepository;
-use App\Repository\SocialActivitiesListRepository;
-use App\Repository\SocialActivitiesSubtitleRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
