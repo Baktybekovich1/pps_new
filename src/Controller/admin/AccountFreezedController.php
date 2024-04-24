@@ -29,9 +29,8 @@ class AccountFreezedController extends AbstractController
     #[Route('/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
     public function award_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
-        dd($dto->idBag);
         foreach ($dto->idBag as $id) {
-            $award = $this->userPersonalAwardsRepository->find($id['id']);
+            $award = $this->userPersonalAwardsRepository->find($id);
             $award->setStatus('freeze');
             $this->userPersonalAwardsRepository->save($award);
         }
