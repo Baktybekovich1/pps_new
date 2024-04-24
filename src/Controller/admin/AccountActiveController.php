@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AccountFreezedController extends AbstractController
+class AccountActiveController extends AbstractController
 {
     public function __construct(
         private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
@@ -26,23 +26,23 @@ class AccountFreezedController extends AbstractController
     {
     }
 
-    #[Route('/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
-    public function award_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/award/active', name: 'app_admin_award_active', methods: ['PUT'])]
+    public function award_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $award = $this->userPersonalAwardsRepository->find($id);
-            $award->setStatus('freeze');
+            $award->setStatus('active');
             $this->userPersonalAwardsRepository->save($award);
         }
         return $this->json(['Success']);
     }
 
-    #[Route('/research/freeze', name: 'app_admin_research_freeze', methods: ['PUT'])]
-    public function research_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/research/active', name: 'app_admin_research_active', methods: ['PUT'])]
+    public function research_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $award = $this->userResearchActivitiesListRepository->find($id);
-            $award->setStatus('freeze');
+            $award->setStatus('active');
             $this->userResearchActivitiesListRepository->save($award);
 
         }
@@ -50,24 +50,24 @@ class AccountFreezedController extends AbstractController
     }
 
 
-    #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
-    public function innovative_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/innovative/active', name: 'app_admin_innovative_active', methods: ['PUT'])]
+    public function innovative_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $innovative = $this->userInnovativeEducationRepository->find($id);
-            $innovative->setStatus('freeze');
+            $innovative->setStatus('active');
             $this->userInnovativeEducationRepository->save($innovative);
 
         }
         return $this->json(['Success']);
     }
 
-    #[Route('/social/freeze/{id}', name: 'app_admin_social_freeze', methods: ['PUT'])]
-    public function social_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/social/active', name: 'app_admin_social_active', methods: ['PUT'])]
+    public function social_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $social = $this->userSocialActivitiesRepository->find($id);
-            $social->setStatus('freeze');
+            $social->setStatus('active');
             $this->userSocialActivitiesRepository->save($social);
 
         }
