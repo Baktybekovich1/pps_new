@@ -37,7 +37,7 @@ class UserAccountController extends AbstractController
     {
     }
 
-    #[Route('/account/{id}', name: 'app_user_account')]
+    #[Route('api/user/account/{id}', name: 'app_user_account')]
     public function index(Request $request): JsonResponse
     {
         $user = $this->userRepository->find($request->get('id'));

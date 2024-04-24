@@ -2,6 +2,7 @@
 
 namespace App\Controller\admin;
 
+use App\Dto\AdminFreezeSetAwardDto;
 use App\Dto\UserAccount\AccountFreezedDto;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
@@ -25,25 +26,27 @@ class AccountFreezedController extends AbstractController
     {
     }
 
-    #[Route('/award/freeze/{id}', name: 'app_admin_award_freeze', methods: ['PUT'])]
-    public function award_freeze(Request $request): JsonResponse
+    #[Route('/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
+    public function award_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
-        $id = $request->get('id');
-        $award = $this->userPersonalAwardsRepository->find($id);
-        $award->setStatus('freeze');
-        $this->userPersonalAwardsRepository->save($award);
+        dd($dto->idBag);
+        foreach ($dto->idBag as $id) {
+            $award = $this->userPersonalAwardsRepository->find($id['id']);
+            $award->setStatus('freeze');
+            $this->userPersonalAwardsRepository->save($award);
+        }
         return $this->json(['Success']);
     }
 
-    #[Route('/research/freeze/{id}', name: 'app_admin_research_freeze', methods: ['PUT'])]
-    public function research_freeze(Request $request): JsonResponse
-    {
-        $id = $request->get('id');
-        $award = $this->userResearchActivitiesListRepository->find($id);
-        $award->setStatus('freeze');
-        $this->userResearchActivitiesListRepository->save($award);
-        return $this->json(['Success']);
-    }
+//    #[Route('/research/freeze', name: 'app_admin_research_freeze', methods: ['PUT'])]
+//    public function research_freeze(): JsonResponse
+//    {
+//        $id = $request->get('id');
+//        $award = $this->userResearchActivitiesListRepository->find($id);
+//        $award->setStatus('freeze');
+//        $this->userResearchActivitiesListRepository->save($award);
+//        return $this->json(['Success']);
+//    }
 
 
     #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
