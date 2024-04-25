@@ -110,4 +110,10 @@ class UserInfoController extends AbstractController
         ]);
 
     }
+
+    #[Route('/id', name: 'app_user_id')]
+    public function id(UserInterface $user): JsonResponse
+    {
+        return $this->json(['id' => $user->getUserIdentifier()]);
+    }
 }

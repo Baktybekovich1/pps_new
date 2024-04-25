@@ -11,7 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserAccountAwardsDeleteController extends AbstractController
 {
-    private UserPersonalAwardsRepository $userPersonalAwardsRepository;
+    public function __construct(
+        private UserPersonalAwardsRepository $userPersonalAwardsRepository
+    )
+    {
+    }
+
+
 
     #[Route('/account/award/delete', name: 'app_user_account_award_delete' ,methods: ['DELETE'])]
     public function award(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
@@ -25,4 +31,5 @@ class UserAccountAwardsDeleteController extends AbstractController
             'Success'
         ]);
     }
+
 }
