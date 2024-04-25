@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
-//class UserAccountAwardsEditController extends AbstractController
-//{
+class UserAccountAwardsEditController extends AbstractController
+{
 //    private UserPersonalAwardsRepository $userPersonalAwardsRepository,
 //    private
 //
@@ -25,4 +25,4 @@ use Symfony\Component\Routing\Attribute\Route;
 //            ,
 //        ]);
 //    }
-//}
+}
