@@ -24,7 +24,7 @@ class TitleAndSubController extends AbstractController
     {
     }
 
-    #[Route('/award/sub/{id}', name: 'app_award_sub')]
+    #[Route('/award/sub', name: 'app_award_sub')]
     public function award(): JsonResponse
     {
         $awards = $this->personalAwardsRepository->findAll();
@@ -50,7 +50,7 @@ class TitleAndSubController extends AbstractController
         ]);
     }
 
-    #[Route('/research/sub/{id}', name: 'app_research_sub')]
+    #[Route('/research/sub', name: 'app_research_sub')]
     public function research(): JsonResponse
     {
         $researchs = $this->researchActivitiesListRepository->findAll();
@@ -74,7 +74,7 @@ class TitleAndSubController extends AbstractController
         ]);
     }
 
-    #[Route('/innovative/sub/{id}', name: 'app_innovative_sub')]
+    #[Route('/innovative/sub', name: 'app_innovative_sub')]
     public function innovative(): JsonResponse
     {
         $innovatives = $this->innovativeEducationListRepository->findAll();
@@ -98,7 +98,7 @@ class TitleAndSubController extends AbstractController
         ]);
     }
 
-    #[Route('/social/sub/{id}', name: 'app_social_sub')]
+    #[Route('/social/sub', name: 'app_social_sub')]
     public function social(): JsonResponse
     {
         $socials = $this->socialActivitiesListRepository->findAll();

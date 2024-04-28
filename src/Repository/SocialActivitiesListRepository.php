@@ -50,4 +50,10 @@ class SocialActivitiesListRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($activitiesList);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(SocialActivitiesList $awards)
+    {
+        $this->getEntityManager()->remove($awards);
+        $this->getEntityManager()->flush();
+    }
 }

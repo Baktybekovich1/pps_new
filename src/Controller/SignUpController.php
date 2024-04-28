@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Dto\SignUpDto;
-use App\Entity\Awards;
 use App\Entity\User;
 use App\Exception\UserAlreadyExistsException;
 use App\Repository\UserRepository;

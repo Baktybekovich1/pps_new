@@ -3,7 +3,6 @@
 namespace App\Controller\user;
 
 
-use App\Dto\UserGetName;
 use App\Dto\UserInfoDto;
 use App\Dto\UserInfoGetDto;
 use App\Entity\UserInfo;
@@ -90,26 +89,26 @@ class UserInfoController extends AbstractController
         ]);
     }
 
-    #[Route('/info/list/{id}', name: 'app_user_info_list')]
-    public function user_info_list(Request $request): JsonResponse
-    {
-        $user = $this->userRepository->find($request->get('id'));
-        $name = $this->userInfoRepository->findOneBy(['user' => $user]);
-        $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
-        $researchActivities = $this->userResearchActivitiesListRepository->findBy(['user' => $user]);
-        $innovative = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
-        $social = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
-        $name = $this->userInfoRepository->findOneBy(['user' => $user]);
-
-        return $this->json([
-            'name' => $name->getName(),
-//            'personalAwards' => $this->userPersonalAwardsRepository->findBy(['user' => $user]),
-            'researchActivities' => $this->userResearchActivitiesListRepository->findBy(['user' => $user]),
-            'innovative' => $this->userInnovativeEducationRepository->findBy(['user' => $user]),
-            'social' => $this->userSocialActivitiesRepository->findBy(['user' => $user])
-        ]);
-
-    }
+//    #[Route('/info/list/{id}', name: 'app_user_info_list')]
+//    public function user_info_list(Request $request): JsonResponse
+//    {
+//        $user = $this->userRepository->find($request->get('id'));
+//        $name = $this->userInfoRepository->findOneBy(['user' => $user]);
+//        $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+//        $researchActivities = $this->userResearchActivitiesListRepository->findBy(['user' => $user]);
+//        $innovative = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
+//        $social = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
+//        $name = $this->userInfoRepository->findOneBy(['user' => $user]);
+//
+//        return $this->json([
+//            'name' => $name->getName(),
+////            'personalAwards' => $this->userPersonalAwardsRepository->findBy(['user' => $user]),
+//            'researchActivities' => $this->userResearchActivitiesListRepository->findBy(['user' => $user]),
+//            'innovative' => $this->userInnovativeEducationRepository->findBy(['user' => $user]),
+//            'social' => $this->userSocialActivitiesRepository->findBy(['user' => $user])
+//        ]);
+//
+//    }
 
     #[Route('/id', name: 'app_user_id')]
     public function id(UserInterface $userInterface): JsonResponse

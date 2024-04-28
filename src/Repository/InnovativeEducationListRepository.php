@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\InnovativeEducationList;
-use App\Entity\InnovativeEducationSubtitle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -46,10 +45,15 @@ class InnovativeEducationListRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function save(InnovativeEducationList $educationList)
-    {
-        $this->getEntityManager()->persist($educationList);
-        $this->getEntityManager()->flush();
+    public function save(InnovativeEducationList $award)
+{
+    $this->getEntityManager()->persist($award);
+    $this->getEntityManager()->flush();
+}
 
+    public function remove(InnovativeEducationList $awards)
+    {
+        $this->getEntityManager()->remove($awards);
+        $this->getEntityManager()->flush();
     }
 }

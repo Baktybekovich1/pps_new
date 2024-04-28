@@ -49,6 +49,11 @@ class PersonalAwardsRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($award);
         $this->getEntityManager()->flush();
+    }
 
+    public function remove(PersonalAwards $awards)
+    {
+        $this->getEntityManager()->remove($awards);
+        $this->getEntityManager()->flush();
     }
 }

@@ -45,4 +45,15 @@ class ResearchActivitiesListRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function save(ResearchActivitiesList $award)
+    {
+        $this->getEntityManager()->persist($award);
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove(ResearchActivitiesList $awards)
+    {
+        $this->getEntityManager()->remove($awards);
+        $this->getEntityManager()->flush();
+    }
 }
