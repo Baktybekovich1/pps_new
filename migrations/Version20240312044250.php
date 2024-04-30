@@ -22,9 +22,6 @@ final class Version20240312044250 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE awards_and_link DROP CONSTRAINT fk_113e0979eac04e5c');
         $this->addSql('ALTER TABLE user_progress DROP CONSTRAINT fk_c28c1646a76ed395');
-        $this->addSql('DROP TABLE state_awards');
-        $this->addSql('DROP TABLE academic_degree');
-        $this->addSql('DROP TABLE academic_rank');
         $this->addSql('DROP TABLE awards');
         $this->addSql('DROP TABLE comtehno_pps');
         $this->addSql('DROP TABLE awards_and_link');

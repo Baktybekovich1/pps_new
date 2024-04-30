@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Positions;
+use App\Entity\Position;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -11,10 +11,10 @@ class PositionsFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-//        $manager->persist((new Positions())->setName('Директор'));
-//        $manager->persist((new Positions())->setName('Профессор'));
-//        $manager->persist((new Positions())->setName('Преподователь'));
-//        $manager->persist((new Positions())->setName('Стажёр преподователь'));
+//        $manager->persist((new Position())->setName('Директор'));
+//        $manager->persist((new Position())->setName('Профессор'));
+//        $manager->persist((new Position())->setName('Преподователь'));
+//        $manager->persist((new Position())->setName('Стажёр преподователь'));
 //        $manager->flush();
     }
 }
