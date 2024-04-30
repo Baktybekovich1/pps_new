@@ -7,7 +7,7 @@ use App\Dto\UserInfoDto;
 use App\Dto\UserInfoGetDto;
 use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
-use App\Repository\PositionsRepository;
+use App\Repository\PositionRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
@@ -25,7 +25,7 @@ class UserInfoController extends AbstractController
 {
     public function __construct(
         private readonly InstitutionsRepository               $institutionsRepository,
-        private readonly PositionsRepository                  $positionsRepository,
+        private readonly PositionRepository                  $positionsRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly UserRepository                       $userRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,

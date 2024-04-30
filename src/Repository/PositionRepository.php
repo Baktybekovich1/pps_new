@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Positions;
+use App\Entity\Position;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Positions>
+ * @extends ServiceEntityRepository<Position>
  *
- * @method Positions|null find($id, $lockMode = null, $lockVersion = null)
- * @method Positions|null findOneBy(array $criteria, array $orderBy = null)
- * @method Positions[]    findAll()
- * @method Positions[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Position|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Position|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Position[]    findAll()
+ * @method Position[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class PositionsRepository extends ServiceEntityRepository
+class PositionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Positions::class);
+        parent::__construct($registry, Position::class);
     }
 
 //    /**
-//     * @return Positions[] Returns an array of Positions objects
+//     * @return Position[] Returns an array of Position objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class PositionsRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Positions
+//    public function findOneBySomeField($value): ?Position
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')

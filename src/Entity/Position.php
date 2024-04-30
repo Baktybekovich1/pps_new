@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\PositionsRepository;
+use App\Repository\PositionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: PositionsRepository::class)]
-class Positions
+#[ORM\Entity(repositoryClass: PositionRepository::class)]
+class Position
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
