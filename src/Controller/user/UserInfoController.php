@@ -25,7 +25,7 @@ class UserInfoController extends AbstractController
 {
     public function __construct(
         private readonly InstitutionsRepository               $institutionsRepository,
-        private readonly PositionRepository                  $positionsRepository,
+        private readonly PositionRepository                   $positionsRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly UserRepository                       $userRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
@@ -94,6 +94,6 @@ class UserInfoController extends AbstractController
     public function id(UserInterface $userInterface): JsonResponse
     {
         $user = $this->userRepository->find($userInterface->getUserIdentifier());
-        return $this->json([$user->getId()]);
+        return $this->json(["id" => $user->getId()]);
     }
 }

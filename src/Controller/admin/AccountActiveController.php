@@ -44,7 +44,6 @@ class AccountActiveController extends AbstractController
             $award = $this->userResearchActivitiesListRepository->find($id);
             $award->setStatus('active');
             $this->userResearchActivitiesListRepository->save($award);
-
         }
         return $this->json(['Success']);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Controller\user;
 
+use App\Dto\AdminFreezeSetAwardDto;
 use App\Dto\UserAccount\UserAwardsGetDto;
 use App\Dto\UserAccount\UserResearchGetDto;
 use App\Repository\UserInfoRepository;
@@ -12,6 +13,7 @@ use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -27,66 +29,51 @@ class UserFreezedAwardsController extends AbstractController
     {
     }
 
-    #[Route('/freezed/awards', name: 'app_user_freezed_awards')]
-    public function index(UserInterface $userStorage): JsonResponse
+    #[Route('/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
+    public function award_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
-        $user = $this->userRepository->find($userStorage->getUserIdentifier());
-        $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user, 'status' => 'freezed']);
-        $userResearch = $this->userResearchActivitiesListRepository->findBy(['user' => $user, 'status' => 'freezed']);
-        $userInnovative = $this->userInnovativeEducationRepository->findBy(['user' => $user, 'status' => 'freezed']);
-        $userSocial = $this->userSocialActivitiesRepository->findBy(['user' => $user, 'status' => 'freezed']);
-
-
-        $awards = [];
-        foreach ($userAwards as $userAward) {
-            $awards[] = new UserAwardsGetDto(
-                $userAward->getId(),
-                $userAward->getSubtitle()->getTitle()->getName() . ': ' . $userAward->getSubtitle()->getName(),
-                $userAward->getLink(),
-                "userAwards",
-                $userAward->getStatus()
-            );
+        foreach ($dto->idBag as $id) {
+            $award = $this->userPersonalAwardsRepository->find($id);
+            $award->setStatus('freeze');
+            $this->userPersonalAwardsRepository->save($award);
         }
-//        User Awards
+        return $this->json(['Success']);
+    }
 
-        $research = [];
-        foreach ($userResearch as $item) {
-            $research[] = new UserResearchGetDto(
-                $item->getId(),
-                $item->getSubtitle()->getCategory()->getName() . ': ' . $item->getSubtitle()->getName(),
-                $item->getLink(),
-                "userResearch",
-                $item->getStatus()
-            );
+    #[Route('/research/freeze', name: 'app_admin_research_freeze', methods: ['PUT'])]
+    public function research_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    {
+        foreach ($dto->idBag as $id) {
+            $award = $this->userResearchActivitiesListRepository->find($id);
+            $award->setStatus('freeze');
+            $this->userResearchActivitiesListRepository->save($award);
+
         }
+        return $this->json(['Success']);
+    }
 
-        $innovative = [];
-        foreach ($userInnovative as $item) {
-            $innovative[] = new UserResearchGetDto(
-                $item->getId(),
-                $item->getInnovativeEducationSubtitle()->getTitle()->getName() . ': ' . $item->getInnovativeEducationSubtitle()->getName(),
-                $item->getLink(),
-                "userInnovative",
-                $item->getStatus()
-            );
+
+    #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
+    public function innovative_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    {
+        foreach ($dto->idBag as $id) {
+            $innovative = $this->userInnovativeEducationRepository->find($id);
+            $innovative->setStatus('freeze');
+            $this->userInnovativeEducationRepository->save($innovative);
+
         }
+        return $this->json(['Success']);
+    }
 
-        $social = [];
-        foreach ($userSocial as $item) {
-            $social[] = new UserResearchGetDto(
-                $item->getId(),
-                $item->getSocialActivitiesSubtitle()->getTitle()->getName() . ': ' . $item->getSocialActivitiesSubtitle()->getName(),
-                $item->getLink(),
-                "userSocial",
-                $item->getStatus()
-            );
+    #[Route('/social/freeze/{id}', name: 'app_admin_social_freeze', methods: ['PUT'])]
+    public function social_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    {
+        foreach ($dto->idBag as $id) {
+            $social = $this->userSocialActivitiesRepository->find($id);
+            $social->setStatus('freeze');
+            $this->userSocialActivitiesRepository->save($social);
+
         }
-
-
-        return $this->json([
-            'userAwards' => $awards,
-            'userResearch' => $research,
-            'userInnovative' => $innovative,
-            'userSocial' => $social]);
+        return $this->json(['Success']);
     }
 }
