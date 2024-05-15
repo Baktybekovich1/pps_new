@@ -50,7 +50,7 @@ class AccountFreezedController extends AbstractController
     }
 
 
-    #[Route('/innovative/freeze/{id}', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
+    #[Route('/innovative/freeze', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
     public function innovative_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -62,7 +62,7 @@ class AccountFreezedController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/social/freeze/{id}', name: 'app_admin_social_freeze', methods: ['PUT'])]
+    #[Route('/social/freeze', name: 'app_admin_social_freeze', methods: ['PUT'])]
     public function social_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {

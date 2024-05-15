@@ -22,8 +22,8 @@ class UserInfo
     #[ORM\ManyToOne(targetEntity: Institutions::class)]
     private ?Institutions $institutions = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $position = null;
+    #[ORM\ManyToOne(targetEntity: Position::class)]
+    private ?Position $position = null;
 
     #[ORM\Column(length: 255)]
     private ?string $regular = null;

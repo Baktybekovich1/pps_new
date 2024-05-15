@@ -35,17 +35,19 @@ class UserAccountAwardsEditController extends AbstractController
         $user = $this->userRepository->find($userInterface->getUserIdentifier());
 
         $test = True;
-        if ($dto->stage == "award") {
-            $test = $this->edit($this->userPersonalAwardsRepository, $dto->id, $dto->link, $user);
-        } elseif ($dto->stage == "research") {
-            $test = $this->edit($this->userResearchActivitiesListRepository, $dto->id, $dto->link, $user);
-        } elseif ($dto->stage == "innovative") {
-            $test = $this->edit($this->userInnovativeEducationRepository, $dto->id, $dto->link, $user);
-        } elseif ($dto->stage == "social") {
-            $test = $this->edit($this->userSocialActivitiesRepository, $dto->id, $dto->link, $user);
-        }
-        if (!$test) {
-            throw new NotAccessToAwardExistsException();
+        foreach ($dto->bag as $item) {
+            if ($item['stage'] == "award") {
+                $test = $this->edit($this->userPersonalAwardsRepository, $item['id'], $item['link'], $user);
+            } elseif ($item['stage'] == "research") {
+                $test = $this->edit($this->userResearchActivitiesListRepository, $item['id'], $item['link'], $user);
+            } elseif ($item['stage'] == "innovative") {
+                $test = $this->edit($this->userInnovativeEducationRepository, $item['id'], $item['link'], $user);
+            } elseif ($item['stage'] == "social") {
+                $test = $this->edit($this->userSocialActivitiesRepository, $item['id'], $item['link'], $user);
+            }
+            if (!$test) {
+                throw new NotAccessToAwardExistsException();
+            }
         }
 
         return $this->json([
@@ -60,8 +62,7 @@ class UserAccountAwardsEditController extends AbstractController
             $award->setLink($text);
             $repository->save($award);
             return True;
-        }
-        else {
+        } else {
             return False;
         }
     }

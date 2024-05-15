@@ -45,4 +45,16 @@ class PositionRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function save(Position $position): bool
+    {
+        $this->getEntityManager()->persist($position);
+        $this->getEntityManager()->flush();
+        return True;
+    }
+
+    public function delete(Position $position)
+    {
+        $this->getEntityManager()->remove($position);
+        $this->getEntityManager()->flush();
+    }
 }

@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class UserFreezedAwardsController extends AbstractController
+class UserActiveAwardsController extends AbstractController
 {
     public function __construct(
         private UserRepository                                $userRepository,
@@ -29,15 +29,15 @@ class UserFreezedAwardsController extends AbstractController
     {
     }
 
-    #[Route('/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
-    public function award_freeze(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/award/active', name: 'app_admin_award_active', methods: ['PUT'])]
+    public function award_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
 
             $award = $this->userPersonalAwardsRepository->find($id);
             $user = $this->userRepository->find($userInterface->getUserIdentifier());
             if ($award->getUser()->getId() == $user->getId()) {
-                $award->setStatus('freeze');
+                $award->setStatus('active');
                 $this->userPersonalAwardsRepository->save($award);
             } else {
                 $this->createAccessDeniedException();
@@ -46,14 +46,14 @@ class UserFreezedAwardsController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/research/freeze', name: 'app_admin_research_freeze', methods: ['PUT'])]
-    public function research_freeze(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/research/active', name: 'app_admin_research_active', methods: ['PUT'])]
+    public function research_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $award = $this->userResearchActivitiesListRepository->find($id);
             $user = $this->userRepository->find($userInterface->getUserIdentifier());
             if ($award->getUser()->getId() == $user->getId()) {
-                $award->setStatus('freeze');
+                $award->setStatus('active');
                 $this->userResearchActivitiesListRepository->save($award);
             } else {
                 $this->createAccessDeniedException();
@@ -64,14 +64,14 @@ class UserFreezedAwardsController extends AbstractController
     }
 
 
-    #[Route('/innovative/freeze', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
-    public function innovative_freeze(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/innovative/active', name: 'app_admin_innovative_active', methods: ['PUT'])]
+    public function innovative_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $innovative = $this->userInnovativeEducationRepository->find($id);
             $user = $this->userRepository->find($userInterface->getUserIdentifier());
             if ($innovative->getUser()->getId() == $user->getId()) {
-                $innovative->setStatus('freeze');
+                $innovative->setStatus('active');
                 $this->userInnovativeEducationRepository->save($innovative);
             } else {
                 $this->createAccessDeniedException();
@@ -81,19 +81,18 @@ class UserFreezedAwardsController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/social/freeze', name: 'app_admin_social_freeze', methods: ['PUT'])]
-    public function social_freeze(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
+    #[Route('/social/active', name: 'app_admin_social_active', methods: ['PUT'])]
+    public function social_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
             $social = $this->userSocialActivitiesRepository->find($id);
             $user = $this->userRepository->find($userInterface->getUserIdentifier());
             if ($social->getUser()->getId() == $user->getId()) {
-                $social->setStatus('freeze');
+                $social->setStatus('active');
                 $this->userSocialActivitiesRepository->save($social);
             } else {
                 $this->createAccessDeniedException();
             }
-
         }
         return $this->json(['Success']);
     }

@@ -5,6 +5,7 @@ namespace App\Controller\user;
 
 use App\Dto\UserInfoDto;
 use App\Dto\UserInfoGetDto;
+use App\Entity\Position;
 use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
@@ -31,7 +32,8 @@ class UserInfoController extends AbstractController
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly PositionRepository                   $positionRepository
     )
     {
     }
@@ -80,7 +82,17 @@ class UserInfoController extends AbstractController
         $userInfo->setName($dto->name);
         $userInfo->setUser($this->userRepository->find($user->getUserIdentifier()));
         $userInfo->setInstitutions($this->institutionsRepository->find($this->institutionsRepository->find($dto->institut)));
-        $userInfo->setPosition($dto->position);
+        if ($this->positionRepository->findOneBy(['name' => $dto->position]) != null) {
+            $position = $this->positionRepository->findOneBy(['name' => $dto->position]);
+            $userInfo->setPosition($position);
+        } else {
+            $newPosition = new Position();
+            $newPosition->setName($dto->position);
+            if ($this->positionRepository->save($newPosition)) {
+                $position = $this->positionRepository->findOneBy(['name' => $dto->position]);
+                $userInfo->setPosition($position);
+            }
+        }
         $userInfo->setRegular($dto->regular);
         $userInfo->setEmail($dto->email);
         $this->userInfoRepository->save($userInfo);
