@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use App\Dto\UserInfoGetDto;
+use App\Repository\InstitutionsRepository;
+use App\Repository\PositionRepository;
+use App\Repository\UserInfoRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,7 +15,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class GetRoleController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository $userRepository
+        private readonly UserRepository         $userRepository,
+        private readonly UserInfoRepository     $userInfoRepository,
+        private readonly InstitutionsRepository $institutionsRepository,
+        private readonly PositionRepository     $positionsRepository
     )
     {
     }
@@ -23,12 +30,46 @@ class GetRoleController extends AbstractController
         $role = $user->getRoles();
         if (count($role) > 1) {
             $get = 'admin';
-        }
-        else {
+        } else {
             $get = 'user';
         }
         return $this->json([
             'role' => $get
+        ]);
+    }
+
+    #[Route('api/user/name', name: 'app_user_name')]
+    public function user_name(UserInterface $user): JsonResponse
+    {
+        $user = $this->userRepository->find($user->getUserIdentifier());
+        if ($this->userInfoRepository->findOneBy(['user' => $user]) == null) {
+            return $this->json(['Пусто брат']);
+        } else {
+            $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
+            $dto = new UserInfoGetDto(
+                $userInfo->getId(),
+                $userInfo->getName(),
+                $userInfo->getInstitutions()->getName(),
+                $userInfo->getPosition()->getName(),
+                $userInfo->getRegular(),
+                $userInfo->getEmail()
+            );
+        }
+
+
+        return $this->json([
+            'user' => $dto
+        ]);
+    }
+
+    #[Route('api/user/info', name: 'app_user_info')]
+    public function user_info(): JsonResponse
+    {
+        $institutes = $this->institutionsRepository->findAll();
+        $positions = $this->positionsRepository->findAll();
+        return $this->json([
+            'institutes' => $institutes,
+            'position' => $positions
         ]);
     }
 

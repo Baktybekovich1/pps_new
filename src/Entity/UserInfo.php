@@ -74,16 +74,15 @@ class UserInfo
 
 
 
-    public function getPosition(): ?string
+    public function getPosition(): ?Position
     {
         return $this->position;
     }
 
-    public function setPosition(string $position): static
+    public function setPosition(?Position $position): void
     {
         $this->position = $position;
 
-        return $this;
     }
 
     public function getRegular(): ?string
