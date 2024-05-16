@@ -43,7 +43,7 @@ class GetRoleController extends AbstractController
     {
         $user = $this->userRepository->find($user->getUserIdentifier());
         if ($this->userInfoRepository->findOneBy(['user' => $user]) == null) {
-            return $this->json(['Пусто брат']);
+            return $this->json([null]);
         } else {
             $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
             $dto = new UserInfoGetDto(
