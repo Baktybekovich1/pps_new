@@ -39,8 +39,6 @@ class UserInfoController extends AbstractController
     }
 
 
-
-
     #[Route('/us/{id}', name: 'app_user_us')]
     public function us(Request $request): JsonResponse
     {
@@ -56,7 +54,7 @@ class UserInfoController extends AbstractController
         $userInfo = new UserInfo();
         $userInfo->setName($dto->name);
         $userInfo->setUser($this->userRepository->find($user->getUserIdentifier()));
-        $userInfo->setInstitutions($this->institutionsRepository->find($this->institutionsRepository->find($dto->institut)));
+        $userInfo->setInstitutions($this->institutionsRepository->findOneBy(["name" => $this->institutionsRepository->find($dto->institut)]));
         if ($this->positionRepository->findOneBy(['name' => $dto->position]) != null) {
             $position = $this->positionRepository->findOneBy(['name' => $dto->position]);
             $userInfo->setPosition($position);
