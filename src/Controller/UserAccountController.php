@@ -51,7 +51,7 @@ class UserAccountController extends AbstractController
                 $userInfo->getId(),
                 $userInfo->getName(),
                 $userInfo->getInstitutions()->getName(),
-                $userInfo->getPosition(),
+                $userInfo->getPosition()->getName(),
                 $userInfo->getRegular(),
                 $userInfo->getEmail());
             // User Info

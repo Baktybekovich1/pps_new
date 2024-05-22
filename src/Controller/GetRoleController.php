@@ -26,18 +26,23 @@ class GetRoleController extends AbstractController
     #[Route('/api/get/role', name: 'app_get_role')]
     public function index(UserInterface $userStorage): JsonResponse
     {
-        $user = $this->userRepository->find($userStorage->getUserIdentifier());
-        $role = $user->getRoles();
-        if (count($role) > 1) {
-            $get = 'admin';
+        if ($userStorage->getUserIdentifier() != null) {
+            $user = $this->userRepository->find($userStorage->getUserIdentifier());
+            $role = $user->getRoles();
+            if (count($role) > 1) {
+                $get = 'admin';
+            } else {
+                $get = 'user';
+            }
+            return $this->json([
+                'role' => $get
+            ]);
         } else {
-            $get = 'user';
+            return $this->json([
+                'role' => 'visitor'
+            ]);
         }
-        return $this->json([
-            'role' => $get
-        ]);
     }
-
 
 
     #[Route('api/user/info', name: 'app_user_info')]
