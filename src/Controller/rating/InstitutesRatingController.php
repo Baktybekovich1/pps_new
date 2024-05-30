@@ -52,14 +52,13 @@ class InstitutesRatingController extends AbstractController
             if ($coll == 0) {
                 continue;
             }
-            $institutionsJson[] = [
+            $institutionsJson[] =
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
                     $instSum / $coll,
                     $instSum
-                )
-            ];
+                );
         }
         return $this->json(["institutions" => $institutionsJson]);
     }
