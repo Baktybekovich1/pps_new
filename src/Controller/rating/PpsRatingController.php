@@ -33,7 +33,7 @@ class PpsRatingController extends AbstractController
     public function index(): JsonResponse
     {
         $pps = [];
-        $users = $this->userRepository->findBy(['username']);
+        $users = $this->userRepository->findOneBy(['username']);
 
         foreach ($users as $user) {
             $info = $this->userInfoRepository->findOneBy(['user' => $user]);
