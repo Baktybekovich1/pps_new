@@ -50,4 +50,8 @@ class UserInfoRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($userInfo);
         $this->getEntityManager()->flush();
     }
+    public function remove(UserInfo $userInfo) {
+        $this->getEntityManager()->remove($userInfo);
+        $this->getEntityManager()->flush();
+    }
 }

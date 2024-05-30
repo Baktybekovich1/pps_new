@@ -9,7 +9,6 @@ class InstitutRatingDto
         public int $id,
         public string $name,
         public int $middlePoints,
-        public int $instPoints,
         public int $sum
     )
     {
