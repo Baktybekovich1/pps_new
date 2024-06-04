@@ -66,9 +66,19 @@ class PpsRatingController extends AbstractController
                 );
             }
         }
+
+//        $arr = [];
+//        $l = [];
+//        foreach ($pps as $user) {
+//            $arr += [$user->id => $user->sum];
+//        }
+//        rsort($arr);
+
         return $this->json([
             'pps' => $pps
+//            $arr
         ]);
+
     }
 
     public function getBigPoints($user)

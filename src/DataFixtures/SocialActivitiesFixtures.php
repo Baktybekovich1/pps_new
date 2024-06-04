@@ -21,36 +21,36 @@ class SocialActivitiesFixtures extends Fixture
 //        $manager->persist((new SocialActivitiesList())->setName('Работа в качестве действующего члена')
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Совета государственной организации;')
+//                ->setName('Совета государственной организации')
 //                ->setPoints(30))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Совета других организаций;')
+//                ->setName('Совета других организаций')
 //                ->setPoints(20))
 //        );
 //        $manager->persist((new SocialActivitiesList())->setName('Работа в качестве эксперта в составе Аккредитационной комиссии')
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('На международном уровне;')
+//                ->setName('На международном уровне')
 //                ->setPoints(50))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('На республиканском уровне;')
+//                ->setName('На республиканском уровне')
 //                ->setPoints(20))
 //        );
 //
 //        $manager->persist((new SocialActivitiesList())->setName('Работа в составе редколлегии')
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Научного журнала «Наука и инновационные технологии» МУИТ;')
+//                ->setName('Научного журнала «Наука и инновационные технологии» МУИТ')
 //                ->setPoints(30))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Научного журнала, входящего в базу РИНЦ, кроме научного журнала МУИТ;')
+//                ->setName('Научного журнала, входящего в базу РИНЦ, кроме научного журнала МУИТ')
 //                ->setPoints(20))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Научного журнала, входящего в базу Scopus и Web of Science;')
+//                ->setName('Научного журнала, входящего в базу Scopus и Web of Science')
 //                ->setPoints(50))
 //        );
 //
@@ -65,11 +65,11 @@ class SocialActivitiesFixtures extends Fixture
 //        $manager->persist((new SocialActivitiesList())->setName('Победитель')
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Лучший преподаватель глазами студентов / родителей / работодателей;')
+//                ->setName('Лучший преподаватель глазами студентов / родителей / работодателей')
 //                ->setPoints(20))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Лучший преподаватель/сотрудник года МУИТ или других организаций в КР;')
+//                ->setName('Лучший преподаватель/сотрудник года МУИТ или других организаций в КР')
 //                ->setPoints(20))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
@@ -81,19 +81,19 @@ class SocialActivitiesFixtures extends Fixture
 //        $manager->persist((new SocialActivitiesList())->setName('Присуждение ученых званий общественных объединений')
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Академик;')
+//                ->setName('Академик')
 //                ->setPoints(30))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Чл.-корреспондент;')
+//                ->setName('Чл.-корреспондент')
 //                ->setPoints(30))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Доктор наук;')
+//                ->setName('Доктор наук')
 //                ->setPoints(30))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())
-//                ->setName('Профессор, почетный профессор;')
+//                ->setName('Профессор, почетный профессор')
 //                ->setPoints(30))
 //            ->addSocialActivitiesSubtitle((
 //            new SocialActivitiesSubtitle())

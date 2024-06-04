@@ -3,6 +3,7 @@
 namespace App\Controller\user;
 
 
+use App\Controller\user\UserInnovativeEducationController;
 use App\Dto\UserInfoDto;
 use App\Dto\UserInfoGetDto;
 use App\Entity\Position;
@@ -33,7 +34,7 @@ class UserInfoController extends AbstractController
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly PositionRepository                   $positionRepository
+        private readonly PositionRepository                   $positionRepository, private readonly UserInnovativeEducationController $userInnovativeEducationController
     )
     {
     }
@@ -50,10 +51,14 @@ class UserInfoController extends AbstractController
     #[Route('/info/add', name: 'app_user_form', methods: ['POST'])]
     public function user_form_save(UserInterface $user, #[MapRequestPayload] UserInfoDto $dto): JsonResponse
     {
-        $id = $user->getUserIdentifier();
-        $userInfo = new UserInfo();
+        $user = $this->userRepository->find($user->getUserIdentifier());
+        if ($this->userInfoRepository->find($user) != null) {
+            $userInfo = $this->userInfoRepository->find($user->getId());
+        } else {
+            $userInfo = new UserInfo();
+        }
         $userInfo->setName($dto->name);
-        $userInfo->setUser($this->userRepository->find($user->getUserIdentifier()));
+        $userInfo->setUser($user);
         $userInfo->setInstitutions($this->institutionsRepository->findOneBy(["name" => $dto->institut]));
         if ($this->positionRepository->findOneBy(['name' => $dto->position]) != null) {
             $position = $this->positionRepository->findOneBy(['name' => $dto->position]);

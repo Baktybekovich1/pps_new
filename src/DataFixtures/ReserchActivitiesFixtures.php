@@ -65,7 +65,7 @@ class ReserchActivitiesFixtures extends Fixture
 //                ->setName('Зарубежных стран')
 //                ->setPoints(100)
 //            )->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Выданный Кыргызпатентом.')
+//                ->setName('Выданный Кыргызпатентом')
 //                ->setPoints(20))
 //        );
 //
@@ -94,26 +94,26 @@ class ReserchActivitiesFixtures extends Fixture
 //        $manager->persist((new ResearchActivitiesList())
 //            ->setName('Руководство научными работами в период по плану завершения исследований')
 //            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Руководство аспирантами (за каждого аспиранта);')
+//                ->setName('Руководство аспирантами (за каждого аспиранта)')
 //                ->setPoints(30)
 //            )->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Руководство Phd докторантами (за каждого Phd докторанта);')
+//                ->setName('Руководство Phd докторантами (за каждого Phd докторанта)')
 //                ->setPoints(30))
 //            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Руководство магистрантами (за каждого магистранта);')
+//                ->setName('Руководство магистрантами (за каждого магистранта)')
 //                ->setPoints(10))
 //            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Руководитель или исполнитель НИР и проектов по договорам;')
+//                ->setName('Руководитель или исполнитель НИР и проектов по договорам')
 //                ->setPoints(30))
 //        );
 //
 //        $manager->persist((new ResearchActivitiesList())
 //            ->setName('Участие с докладом на конференциях')
 //            ->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Доклады на зарубежных конференциях;')
+//                ->setName('Доклады на зарубежных конференциях')
 //                ->setPoints(20)
 //            )->addResearchActivitiesSubtitle((new ResearchActivitiesSubtitle())
-//                ->setName('Доклады на республиканских конференциях;')
+//                ->setName('Доклады на республиканских конференциях')
 //                ->setPoints(10))
 //        );
 //
