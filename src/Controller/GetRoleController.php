@@ -60,16 +60,18 @@ class GetRoleController extends AbstractController
     {
         $positions = $this->positionsRepository->findAll();
         $institutes = $this->institutionsRepository->findAll();
-        $inst = [];
+        $university = ["МУИТ", "КИТЭ", "Комтехно"];
         $post = [];
-        foreach ($institutes as $institute) {
-            $inst[] = $institute->getName();
-        }
+//        foreach ($institutes as $institute) {
+//            $inst[] = $institute->getName();
+//        }
         foreach ($positions as $position) {
             $post[] = $position->getName();
         }
+
         return $this->json([
-            'institutes' => $inst,
+            'university' => $university,
+            'institutes' => $institutes,
             'position' => $post
         ]);
     }

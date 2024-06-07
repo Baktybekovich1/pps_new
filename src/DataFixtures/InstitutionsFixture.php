@@ -52,6 +52,25 @@ class InstitutionsFixture extends Fixture
 //            ->setUniversity('МУИТ')
 //            ->setReduction('ИМЭК'));
 //
+//        $manager->persist((new Institutions())
+//            ->setName('Гуманитарных и экономических дисциплин')
+//            ->setUniversity('КИТЭ')
+//            ->setReduction('ГЭД'));
+//
+//        $manager->persist((new Institutions())
+//            ->setName('Естественных и технических дисциплин')
+//            ->setUniversity('КИТЭ')
+//            ->setReduction('ЕТД'));
+//        $manager->persist((new Institutions())
+//            ->setName('Информатики вычислительной техники и дизайна')
+//            ->setUniversity('Комтехно')
+//            ->setReduction('ИВТД'));
+//        $manager->persist((new Institutions())
+//            ->setName('Экономики, бухгалтерского учёта и банковского дела')
+//            ->setUniversity('Комтехно')
+//            ->setReduction('ЭБУБД'));
+//
+//
 //        $manager->flush();
 
 

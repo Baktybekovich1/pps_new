@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-class InstitutesRatingController extends AbstractController
+class ItecRatingController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository                       $userRepository,
@@ -32,10 +32,10 @@ class InstitutesRatingController extends AbstractController
     {
     }
 
-    #[Route('institutes', name: 'app_rating_institutes')]
+    #[Route('itec/departments', name: 'app_rating_itec_departments')]
     public function index(): JsonResponse
     {
-        $institutions = $this->institutionsRepository->findBy(['university' => 'МУИТ']);
+        $institutions = $this->institutionsRepository->findBy(['university' => 'КИТЭ']);
 
 
         $institutionsJson = [];

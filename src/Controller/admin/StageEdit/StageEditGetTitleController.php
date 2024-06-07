@@ -2,6 +2,7 @@
 
 namespace App\Controller\admin\StageEdit;
 
+use App\Dto\UserStagesGet\TitleGetDto;
 use App\Repository\InnovativeEducationListRepository;
 use App\Repository\PersonalAwardsRepository;
 use App\Repository\ResearchActivitiesListRepository;
@@ -25,8 +26,15 @@ class StageEditGetTitleController extends AbstractController
     public function award(): JsonResponse
     {
         $titles = $this->personalAwardsRepository->findAll();
+        $getTitle = [];
+        foreach ($titles as $title) {
+            $getTitle[] = new TitleGetDto(
+                $title->getId(),
+                $title->getName()
+            );
+        }
         return $this->json([
-            'titles' => $titles
+            'titles' => $getTitle
         ]);
     }
 
@@ -34,8 +42,15 @@ class StageEditGetTitleController extends AbstractController
     public function research(): JsonResponse
     {
         $titles = $this->researchActivitiesListRepository->findAll();
+        $getTitle = [];
+        foreach ($titles as $title) {
+            $getTitle[] = new TitleGetDto(
+                $title->getId(),
+                $title->getName()
+            );
+        }
         return $this->json([
-            'titles' => $titles
+            'titles' => $getTitle
         ]);
     }
 
@@ -43,8 +58,15 @@ class StageEditGetTitleController extends AbstractController
     public function innovative(): JsonResponse
     {
         $titles = $this->innovativeEducationListRepository->findAll();
+        $getTitle = [];
+        foreach ($titles as $title) {
+            $getTitle[] = new TitleGetDto(
+                $title->getId(),
+                $title->getName()
+            );
+        }
         return $this->json([
-            'titles' => $titles
+            'titles' => $getTitle
         ]);
     }
 
@@ -52,8 +74,15 @@ class StageEditGetTitleController extends AbstractController
     public function social(): JsonResponse
     {
         $titles = $this->socialActivitiesListRepository->findAll();
+        $getTitle = [];
+        foreach ($titles as $title) {
+            $getTitle[] = new TitleGetDto(
+                $title->getId(),
+                $title->getName()
+            );
+        }
         return $this->json([
-            'titles' => $titles
+            'titles' => $getTitle
         ]);
     }
 }
