@@ -36,7 +36,9 @@ RUN mkdir -p config/jwt && \
     chmod -R 777 config/jwt
 
 # Генерация ключей JWT
-RUN openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:<your-secret-passphrase>; openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:<your-secret-passphrase>
+RUN openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:<your-secret-passphrase> \
+    && openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:<your-secret-passphrase>
+
 
 RUN composer install
 
