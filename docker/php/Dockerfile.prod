@@ -17,6 +17,8 @@ RUN useradd -u 1000 -m user
 WORKDIR /app
 COPY . /app
 
+USER user
+
 RUN chown -R user:user /app
 RUN mkdir /app/vendor
 
