@@ -27,6 +27,8 @@ RUN mkdir /app/vendor
 
 RUN composer install
 
+USER root
+
 #RUN mkdir -p /app/config/jwt && \
 #    chown -R user:user /app/config && \
 #    chmod -R 700 /app/config/jwt && \
