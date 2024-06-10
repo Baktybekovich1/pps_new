@@ -14,11 +14,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Создаем пользователя и рабочую директорию
 RUN useradd -u 1000 -m user
-COPY . /app
-RUN chown -R user:user /app
-USER user
 WORKDIR /app
+COPY . /app
 
+RUN chown -R user:user /app
 RUN mkdir /app/vendor
 
 RUN composer install
