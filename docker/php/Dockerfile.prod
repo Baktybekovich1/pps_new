@@ -17,6 +17,9 @@ RUN useradd -u 1000 -m user
 WORKDIR /app
 COPY --chown=user:user . /app
 
+# Создаем директорию /app/vendor
+RUN mkdir -p /app/vendor
+
 USER user
 # Устанавливаем зависимости через Composer
 RUN composer install
