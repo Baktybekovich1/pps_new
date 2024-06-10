@@ -12,6 +12,8 @@ RUN docker-php-ext-install pdo pdo_pgsql pgsql zip
 # Устанавливаем Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN mkdir -p /app
+
 # Создаем пользователя и рабочую директорию
 RUN useradd -u 1000 -m user
 RUN chown -R user:user /app \
