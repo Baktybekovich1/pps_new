@@ -35,9 +35,10 @@ WORKDIR /app
 # Копируем файлы и устанавливаем зависимости через Composer
 COPY --chown=user:user . /app
 
+RUN chmod -R 777 /app
+
 # Создаем директорию для хранения ключей JWT и устанавливаем права доступа
-RUN mkdir -p config/jwt && \
-    chmod -R 777 config/jwt
+RUN mkdir -p config/jwt
 
 # Генерируем ключи JWT
 RUN openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:kuma \
