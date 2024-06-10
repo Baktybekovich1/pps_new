@@ -22,7 +22,7 @@ USER user
 RUN chown -R user:user /app
 RUN mkdir /app/vendor
 
-RUN composer install --ignore-platform-reqs
+RUN composer install
 
 RUN mkdir -p config/jwt && \
     chmod -R 700 config/jwt && \
