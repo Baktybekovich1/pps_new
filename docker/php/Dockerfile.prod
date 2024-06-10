@@ -14,26 +14,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN mkdir -p /app
 
-# Создаем пользователя и рабочую директорию
-RUN useradd -u 1000 -m user
-RUN chown -R user:user /app \
-    && chmod -R u+rwX /app
 WORKDIR /app
-COPY . /app
-
-USER user
-
-RUN mkdir /app/vendor
-
-RUN composer install
 
 USER root
-
-#RUN mkdir -p /app/config/jwt && \
-#    chown -R user:user /app/config && \
-#    chmod -R 700 /app/config/jwt && \
-#    openssl genpkey -algorithm RSA -out /app/config/jwt/private.pem -aes256 -pass pass:kuma && \
-#    openssl pkey -in /app/config/jwt/private.pem -out /app/config/jwt/public.pem -pubout -passin pass:kuma
-
-# Запускаем PHP-FPM
-CMD ["php-fpm"]
