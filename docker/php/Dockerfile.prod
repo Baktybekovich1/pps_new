@@ -17,9 +17,11 @@ RUN useradd -u 1000 -m user
 WORKDIR /app
 COPY --chown=user:user . /app
 
+USER user
 # Устанавливаем зависимости через Composer
 RUN composer install
 
+USER root
 # Создаем директорию для ключей JWT и генерируем ключи
 RUN mkdir -p config/jwt && \
     chmod -R 700 config/jwt && \
