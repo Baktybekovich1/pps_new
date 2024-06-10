@@ -14,14 +14,15 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Создаем пользователя и рабочую директорию
 RUN useradd -u 1000 -m user
-WORKDIR /app
 COPY . /app
 RUN chown -R user:user /app
-
 USER user
+WORKDIR /app
+
+RUN mkdir /app/vendor
+
 RUN composer install
 
-USER root
 RUN mkdir -p config/jwt && \
     chmod -R 700 config/jwt && \
     openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:kuma && \
