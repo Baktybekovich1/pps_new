@@ -4,7 +4,7 @@ services:
   php:
     build:
       context: ../
-      dockerfile: php/Dockerfile.prod
+      dockerfile: docker/php/Dockerfile.prod
     container_name: ${PHP_CONTAINER_NAME}
     env_file: .env
     volumes:
