@@ -1,22 +1,27 @@
-# Используем образ PHP 8.2 FPM
 FROM php:8.2-fpm
+RUN apt-get update
 
-# Устанавливаем зависимости и необходимые расширения
-RUN apt-get update && apt-get install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip \
-    && docker-php-ext-install intl opcache pdo pdo_mysql \
-    && pecl install apcu \
-    && docker-php-ext-enable apcu \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install zip
+# postgres extension
+RUN apt-get update && \
+    apt-get install -y libpq-dev && \
+    docker-php-ext-install pdo pdo_pgsql pgsql && \
+        apt-get install -y git
 
-# Устанавливаем Composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libzip-dev
+RUN docker-php-ext-install zip
 
-# Создаем и настраиваем пользователя
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN mkdir -p /app
+
+
 RUN useradd -u 1000 -m user
-# Создаем и настраиваем рабочую директорию
-RUN mkdir -p /app && \
-    chown -R user:user /app
+
+RUN chown user:user /app
+
 USER user
 
 # Устанавливаем директорию по умолчанию для приложения
