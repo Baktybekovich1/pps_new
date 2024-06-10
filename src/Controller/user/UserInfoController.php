@@ -52,8 +52,9 @@ class UserInfoController extends AbstractController
     public function user_form_save(UserInterface $user, #[MapRequestPayload] UserInfoDto $dto): JsonResponse
     {
         $user = $this->userRepository->find($user->getUserIdentifier());
-        if ($this->userInfoRepository->find($user) != null) {
-            $userInfo = $this->userInfoRepository->find($user->getId());
+        if ($this->userInfoRepository->findOneBy(['user' => $user]) != null) {
+            $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
+
         } else {
             $userInfo = new UserInfo();
         }
