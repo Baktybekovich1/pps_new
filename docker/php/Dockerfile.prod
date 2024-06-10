@@ -18,7 +18,7 @@ WORKDIR /app
 COPY . /app
 
 USER user
-RUN sudo composer install
+RUN composer install
 
 USER root
 RUN mkdir -p config/jwt && \
