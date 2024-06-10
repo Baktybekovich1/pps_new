@@ -30,7 +30,8 @@ USER user
 WORKDIR /app
 
 # Копирование файлов и установка зависимостей через Composer
-COPY --chown=user:user ../../composer.json ../../composer.lock /app/
+COPY --chown=user:user ../../composer.json /app/
+COPY --chown=user:user ../../composer.lock /app/
 RUN composer install --no-dev --optimize-autoloader
 
 CMD ["php-fpm"]
