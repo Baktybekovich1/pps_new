@@ -19,6 +19,7 @@ COPY . /app
 
 RUN chown -R user:user /app
 RUN mkdir /app/vendor
+RUN chown -R user:user /app/vendor
 
 RUN composer install
 
