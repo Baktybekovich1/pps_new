@@ -1,29 +1,36 @@
 FROM php:8.2-fpm
-RUN apt-get update
 
-# postgres extension
+# Установка зависимостей и необходимых расширений
 RUN apt-get update && \
-    apt-get install -y libpq-dev && \
-    docker-php-ext-install pdo pdo_pgsql pgsql && \
-        apt-get install -y git
+    apt-get install -y \
+        libpq-dev \
+        git \
+        zlib1g-dev \
+        libzip-dev && \
+    docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        pgsql \
+        zip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    libzip-dev
-RUN docker-php-ext-install zip
+# Установка Composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN mkdir -p /app
-
-
+# Создание и настройка пользователя
 RUN useradd -u 1000 -m user
 
-RUN chown user:user /app
+# Создание и настройка рабочей директории
+RUN mkdir -p /app && \
+    chown user:user /app
 
 USER user
 
-
-
 WORKDIR /app
+
+# Копирование файлов и установка зависимостей через Composer
+COPY --chown=user:user . /app
+RUN composer install --no-dev --optimize-autoloader
+
+CMD ["php-fpm"]
