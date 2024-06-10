@@ -31,6 +31,8 @@ WORKDIR /app
 
 # Копирование файлов и установка зависимостей через Composer
 COPY --chown=user:user . /app
+USER root
+
 
 RUN mkdir -p config/jwt && \
     chmod -R 777 config/jwt
@@ -38,8 +40,6 @@ RUN mkdir -p config/jwt && \
 # Генерация ключей JWT
 RUN openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:kuma \
     && openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:kuma
-
-USER root
 
 RUN composer install
 
