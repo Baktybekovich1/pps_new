@@ -17,8 +17,10 @@ RUN useradd -u 1000 -m user
 WORKDIR /app
 COPY --chown=user:user . /app
 
-# Создаем директорию /app/vendor
-RUN mkdir -p /app/vendor
+# Создаем директорию /app/vendor и устанавливаем права доступа для пользователя user
+RUN mkdir -p /app/vendor && \
+    chown -R user:user /app/vendor && \
+    chmod -R 755 /app/vendor
 
 USER user
 # Устанавливаем зависимости через Composer
