@@ -27,11 +27,11 @@ RUN mkdir /app/vendor
 
 RUN composer install
 
-RUN mkdir -p /app/config/jwt && \
-    chown -R user:user /app/config && \
-    chmod -R 700 /app/config/jwt && \
-    openssl genpkey -algorithm RSA -out /app/config/jwt/private.pem -aes256 -pass pass:kuma && \
-    openssl pkey -in /app/config/jwt/private.pem -out /app/config/jwt/public.pem -pubout -passin pass:kuma
+#RUN mkdir -p /app/config/jwt && \
+#    chown -R user:user /app/config && \
+#    chmod -R 700 /app/config/jwt && \
+#    openssl genpkey -algorithm RSA -out /app/config/jwt/private.pem -aes256 -pass pass:kuma && \
+#    openssl pkey -in /app/config/jwt/private.pem -out /app/config/jwt/public.pem -pubout -passin pass:kuma
 
 # Запускаем PHP-FPM
 CMD ["php-fpm"]
