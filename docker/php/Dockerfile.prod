@@ -1,45 +1,30 @@
 FROM php:8.2-fpm
-RUN apt-get update
 
-# postgres extension
+# Обновляем список пакетов и устанавливаем необходимые зависимости
 RUN apt-get update && \
-    apt-get install -y libpq-dev && \
-    docker-php-ext-install pdo pdo_pgsql pgsql && \
-        apt-get install -y git
+    apt-get install -y libpq-dev git zlib1g-dev libzip-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y \
-    zlib1g-dev \
-    libzip-dev
-RUN docker-php-ext-install zip
+# Устанавливаем расширения PHP
+RUN docker-php-ext-install pdo pdo_pgsql pgsql zip
 
-# Install Composer
+# Устанавливаем Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN mkdir -p /app
-
-
+# Создаем пользователя и рабочую директорию
 RUN useradd -u 1000 -m user
-
-RUN chown user:user /app
-
-USER user
-
-# Устанавливаем директорию по умолчанию для приложения
 WORKDIR /app
-
-# Копируем файлы и устанавливаем зависимости через Composer
 COPY --chown=user:user . /app
 
-# **Установка Composer без изменения прав доступа**
+# Устанавливаем зависимости через Composer
 RUN composer install
 
-# **Создаем директорию для хранения ключей JWT и устанавливаем права доступа**
+# Создаем директорию для ключей JWT и генерируем ключи
 RUN mkdir -p config/jwt && \
-    mkdir -p vendor && \
-    chmod -R 755 config/jwt
-# Генерируем ключи JWT
-RUN openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:kuma \
-    && openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:kuma
+    chmod -R 700 config/jwt && \
+    openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:kuma && \
+    openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:kuma
 
 # Запускаем PHP-FPM
 CMD ["php-fpm"]
