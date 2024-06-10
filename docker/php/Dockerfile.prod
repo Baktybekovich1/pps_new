@@ -30,8 +30,7 @@ USER user
 WORKDIR /app
 
 # Копирование файлов и установка зависимостей через Composer
-COPY --chown=user:user composer.json /app/
-COPY --chown=user:user composer.lock /app/
+COPY --chown=user:user . /app
 
 RUN composer install --no-dev --optimize-autoloader
 
