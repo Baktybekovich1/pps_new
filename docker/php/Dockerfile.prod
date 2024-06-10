@@ -25,7 +25,7 @@ RUN useradd -u 1000 -m user
 
 # Создаем и настраиваем рабочую директорию
 RUN mkdir -p /app && \
-    chown user:user /app
+    chown -R user:user /app
 
 USER user
 
@@ -34,16 +34,20 @@ WORKDIR /app
 
 # Копируем файлы и устанавливаем зависимости через Composer
 COPY --chown=user:user . /app
-RUN chmod -R 777 /app
+
+# **Устанавливаем права доступа для /app перед установкой Composer**
+RUN chmod -R 755 /app
+
+# **Установка Composer без изменения прав доступа**
 RUN composer install
 
-# Создаем директорию для хранения ключей JWT и устанавливаем права доступа
-RUN mkdir -p config/jwt
+# **Создаем директорию для хранения ключей JWT и устанавливаем права доступа**
+RUN mkdir -p config/jwt && \
+    chmod -R 755 config/jwt
 
 # Генерируем ключи JWT
 RUN openssl genpkey -algorithm RSA -out config/jwt/private.pem -aes256 -pass pass:kuma \
     && openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:kuma
-
 
 # Запускаем PHP-FPM
 CMD ["php-fpm"]
