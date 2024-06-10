@@ -19,9 +19,8 @@ COPY . /app
 
 RUN chown -R user:user /app
 RUN mkdir /app/vendor
-RUN chown -R user:user /app/vendor
 
-RUN composer install
+RUN composer install --ignore-platform-reqs
 
 RUN mkdir -p config/jwt && \
     chmod -R 700 config/jwt && \
