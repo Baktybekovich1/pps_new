@@ -21,12 +21,12 @@ security:
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-    main:
-      pattern: ^/
-      stateless: true
-      # Включите поддержку SSL
-      https: true
-      secure: true
+#    main:
+#      pattern: ^/
+#      stateless: true
+#      # Включите поддержку SSL
+#      https: true
+#      secure: true
 
     api:
       pattern: ^/api
