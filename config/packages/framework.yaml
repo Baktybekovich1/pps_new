@@ -18,8 +18,7 @@ framework:
   php_errors:
     log: true
 
-  framework:
-    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+  trusted_proxies: '127.0.0.1,REMOTE_ADDR'
 
 when@test:
   framework:
