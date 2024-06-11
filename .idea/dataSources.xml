@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5456/pps</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="pps@api.pps.makalabox.com" uuid="d50805e2-00c9-4622-ab39-da40bf170e3c">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://api.pps.makalabox.com:5456/pps</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
