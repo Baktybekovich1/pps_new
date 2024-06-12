@@ -37,9 +37,16 @@ class PpsRatingController extends AbstractController
 
         foreach ($users as $user) {
             $info = $this->userInfoRepository->findOneBy(['user' => $user]);
-            if ($info == null and $info->getInstitutions()->getUniversity() != 'МУИТ') {
+
+            if ($info == null) {
+
+                continue;
+
+            }
+            if ($info->getInstitutions()->getUniversity() != 'МУИТ') {
                 continue;
             }
+
             $fun = $this->getBigPoints($user);
 
             if (isset($pps[$user->getId()])) {
@@ -66,6 +73,10 @@ class PpsRatingController extends AbstractController
                 );
             }
         }
+        return $this->json(['pps' => $pps]);
+
+    }
+
 
 //        $arr = [];
 //        $l = [];
@@ -74,14 +85,9 @@ class PpsRatingController extends AbstractController
 //        }
 //        rsort($arr);
 
-        return $this->json([
-            'pps' => $pps
-//            $arr
-        ]);
 
-    }
-
-    public function getBigPoints($user)
+    public
+    function getBigPoints($user)
     {
         $activity = $this->userActivitiesListsRepository->findBy(['user' => $user, 'status' => 'active']);
         $activyCall = $this->getPoints($activity);
@@ -101,7 +107,8 @@ class PpsRatingController extends AbstractController
 
     }
 
-    #[Route('/users', name: 'app_pps_users')]
+    #[
+        Route('/users', name: 'app_pps_users')]
     public function users_list(): JsonResponse
     {
         $userInfo = $this->userInfoRepository->findAll();
