@@ -14,6 +14,7 @@ use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -103,6 +104,18 @@ class GetRoleController extends AbstractController
         foreach ($awards as $award) {
             $repository->remove($award);
         }
+    }
+
+    #[Route('api/user/account/award/get/{id}', name: 'app_user_account_award_get')]
+    public function award(Request $request): JsonResponse
+    {
+        $award = $this->userPersonalAwardsRepository->find($request->get('id'));
+        $name = $award->getSubtitle()->getTitle()->getName() . ': ' . $award->getSubtitle()->getName();
+        return $this->json([
+            "name" => $name,
+            "link" => $award->getLink(),
+            "stage" => "award"
+        ]);
     }
 
 }

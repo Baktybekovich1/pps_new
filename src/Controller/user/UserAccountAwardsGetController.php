@@ -24,19 +24,6 @@ class UserAccountAwardsGetController extends AbstractController
     }
 
 
-    #[Route('/account/award/get/{id}', name: 'app_user_account_award_get')]
-    public function award(Request $request): JsonResponse
-    {
-        $award = $this->userPersonalAwardsRepository->find($request->get('id'));
-        $name = $award->getSubtitle()->getTitle()->getName() . ': ' . $award->getSubtitle()->getName();
-        return $this->json([
-            "name" => $name,
-            "link" => $award->getLink(),
-            "stage" => "award"
-        ]);
-    }
-
-
     #[Route('/account/research/get/{id}', name: 'app_user_account_research_get')]
     public function research(Request $request): JsonResponse
     {
