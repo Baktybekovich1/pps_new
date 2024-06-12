@@ -37,7 +37,7 @@ class PpsRatingController extends AbstractController
 
         foreach ($users as $user) {
             $info = $this->userInfoRepository->findOneBy(['user' => $user]);
-            if ($info == null) {
+            if ($info == null and $info->getInstitutions()->getUniversity() != 'МУИТ') {
                 continue;
             }
             $fun = $this->getBigPoints($user);
