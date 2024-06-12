@@ -3,7 +3,6 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
-use App\Dto\RatingDto\UsersDto;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -15,23 +14,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-class PpsRatingController extends AbstractController
+class ComtehnoPpsRatingController extends AbstractController
 {
+
+
     public function __construct(
-        private UserInfoRepository                   $userInfoRepository,
-        private UserResearchActivitiesListRepository $userActivitiesListsRepository,
-        private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private UserRepository                       $userRepository,
-        private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private UserOffenceRepository                $userOffenceRepository
+        private readonly UserInfoRepository                   $userInfoRepository,
+        private readonly UserResearchActivitiesListRepository $userActivitiesListsRepository,
+        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
+        private readonly UserRepository                       $userRepository,
+        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly UserOffenceRepository                $userOffenceRepository
     )
     {
     }
 
-    #[Route('/pps', name: 'app_pps_rating')]
+    #[Route('comtehno/pps', name: 'comtehno_pps_rating')]
     public function index(): JsonResponse
     {
+
         $pps = [];
         $users = $this->userRepository->findAll();
 
@@ -43,7 +45,7 @@ class PpsRatingController extends AbstractController
                 continue;
 
             }
-            if ($info->getInstitutions()->getUniversity() != 'МУИТ') {
+            if ($info->getInstitutions()->getUniversity() != 'Комтехно') {
                 continue;
             }
 
@@ -73,18 +75,10 @@ class PpsRatingController extends AbstractController
                 );
             }
         }
+
+
         return $this->json(['pps' => $pps]);
-
     }
-
-
-//        $arr = [];
-//        $l = [];
-//        foreach ($pps as $user) {
-//            $arr += [$user->id => $user->sum];
-//        }
-//        rsort($arr);
-
 
     public function getBigPoints($user)
     {
@@ -106,24 +100,6 @@ class PpsRatingController extends AbstractController
 
     }
 
-    #[Route('/users', name: 'app_pps_users')]
-    public function users_list(): JsonResponse
-    {
-        $userInfo = $this->userInfoRepository->findAll();
-        $users = [];
-        foreach ($userInfo as $value) {
-            $item = new UsersDto(
-                $value->getUser()->getId(),
-                $value->getName()
-            );
-            $users[] = $item;
-        }
-        return $this->json([
-            'users' => $users
-        ]);
-    }
-
-
     public function getPoints($objects)
     {
         $coll = 0;
@@ -133,5 +109,6 @@ class PpsRatingController extends AbstractController
         return $coll;
 
     }
+
 
 }
