@@ -41,7 +41,7 @@ class UserPersonalAwardsController extends AbstractController
     {
         $user = $this->userRepository->find($user->getUserIdentifier());
         foreach ($dto->awards as $item) {
-            if ($this->userPersonalAwardsRepository->findBy(['user' => $user, 'subtitle' => $this->personalAwardsSubtitleRepository->find($item['subId'])])) {
+            if ($this->userPersonalAwardsRepository->findBy(['user' => $user, 'subtitle' => $this->userPersonalAwardsRepository->find($item['subId'])])) {
                 $sub = $this->userPersonalAwardsRepository->findOneBy(['subtitle' => $item['subId']]);
                 $award = $this->userPersonalAwardsRepository->find($sub->getId());
             } else {
