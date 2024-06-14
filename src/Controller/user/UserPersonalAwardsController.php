@@ -41,16 +41,22 @@ class UserPersonalAwardsController extends AbstractController
     {
         $user = $this->userRepository->find($user->getUserIdentifier());
         foreach ($dto->awards as $item) {
-            if ($this->userPersonalAwardsRepository->findBy(['user' => $user, 'subtitle' => $this->userPersonalAwardsRepository->find($item['subId'])])) {
-                $sub = $this->userPersonalAwardsRepository->findOneBy(['subtitle' => $item['subId']]);
-                $award = $this->userPersonalAwardsRepository->find($sub->getId());
-            } else {
-                $award = new UserPersonalAwards();
-                $award->setUser($user);
-            }
+            $subtitle = $this->personalAwardsSubtitleRepository->find($item['subId']);
+            $title = $subtitle->getTitle();
+            $award = null;
 
-            $personalAwardSubtitle = $this->personalAwardsSubtitleRepository->find($item['subId']);
-            $award->setSubtitle($personalAwardSubtitle);
+            if ($title->getId() == 1) {
+                $award = $this->issetAward($title, $user);
+            } elseif ($title->getId() == 2) {
+                $award = $this->issetAward($title, $user);
+            } elseif ($title->getId() == 3) {
+                $award = $this->issetGosAward($subtitle, $user);
+            }
+            if ($award == null) {
+                $award = new UserPersonalAwards();
+            }
+            $award->setSubtitle($subtitle);
+            $award->setUser($user);
             $award->setStatus('active');
             if (isset($item['link'])) {
                 $award->setLink($item['link']);
@@ -63,6 +69,29 @@ class UserPersonalAwardsController extends AbstractController
         return $this->json([
             'Всё ОКЕЙ!'
         ]);
+    }
+
+    public function issetAward($title, $user)
+    {
+        $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+        foreach ($userAwards as $userAward) {
+            if ($userAward->getSubtitle()->getTitle() == $title) {
+                return $userAward;
+            }
+        }
+        return null;
+    }
+
+
+    public function issetGosAward($subtitle, $user)
+    {
+        $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+        foreach ($userAwards as $userAward) {
+            if ($userAward->getSubtitle() == $subtitle) {
+                return $userAward;
+            }
+        }
+        return null;
     }
 
 
