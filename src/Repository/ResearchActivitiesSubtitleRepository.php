@@ -45,4 +45,5 @@ class ResearchActivitiesSubtitleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
 }
