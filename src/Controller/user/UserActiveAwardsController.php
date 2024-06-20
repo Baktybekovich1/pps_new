@@ -29,7 +29,7 @@ class UserActiveAwardsController extends AbstractController
     {
     }
 
-    #[Route('/award/active', name: 'app_admin_award_active', methods: ['PUT'])]
+    #[Route('/award/active', name: 'app_award_active', methods: ['PUT'])]
     public function award_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -46,7 +46,7 @@ class UserActiveAwardsController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/research/active', name: 'app_admin_research_active', methods: ['PUT'])]
+    #[Route('/research/active', name: 'app_research_active', methods: ['PUT'])]
     public function research_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -64,7 +64,7 @@ class UserActiveAwardsController extends AbstractController
     }
 
 
-    #[Route('/innovative/active', name: 'app_admin_innovative_active', methods: ['PUT'])]
+    #[Route('/innovative/active', name: 'app_innovative_active', methods: ['PUT'])]
     public function innovative_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -81,7 +81,7 @@ class UserActiveAwardsController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/social/active', name: 'app_admin_social_active', methods: ['PUT'])]
+    #[Route('/social/active', name: 'app_social_active', methods: ['PUT'])]
     public function social_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {

@@ -68,7 +68,6 @@ class AccountActiveController extends AbstractController
             $social = $this->userSocialActivitiesRepository->find($id);
             $social->setStatus('active');
             $this->userSocialActivitiesRepository->save($social);
-
         }
         return $this->json(['Success']);
     }
