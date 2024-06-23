@@ -46,7 +46,7 @@ class ItecRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $user = $userInfo->getUser();
                 $sum = $this->getBigPoints($user);
-                $instSum = $sum;
+                $instSum += $sum;
                 $coll++;
             }
             if ($coll == 0) {
@@ -59,6 +59,7 @@ class ItecRatingController extends AbstractController
                     $instSum / $coll,
                     $instSum
                 );
+            $instSum = 0;
         }
         return $this->json(["institutions" => $institutionsJson]);
     }
