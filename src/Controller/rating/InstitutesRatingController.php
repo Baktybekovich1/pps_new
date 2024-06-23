@@ -46,7 +46,7 @@ class InstitutesRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $user = $userInfo->getUser();
                 $sum = $this->getBigPoints($user);
-                $instSum += $sum;
+                $instSum = $sum;
                 $coll++;
             }
             if ($coll == 0) {
