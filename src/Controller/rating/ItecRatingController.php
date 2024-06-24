@@ -56,7 +56,7 @@ class ItecRatingController extends AbstractController
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / $coll,
+                    $instSum / 16,
                     $instSum
                 );
             $instSum = 0;

@@ -56,7 +56,7 @@ class ComtehnoRatingController extends AbstractController
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / $coll,
+                    $instSum / 31,
                     $instSum
                 );
             $instSum = 0;
