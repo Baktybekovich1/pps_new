@@ -40,7 +40,14 @@ class ComtehnoRatingController extends AbstractController
 
         $institutionsJson = [];
         $instSum = 0;
+        $aff = 0;
         foreach ($institutions as $institution) {
+            if ($institution->getReduction() == 'ИВТД') {
+                $aff = 25;
+            }
+            else{
+                $aff = 17;
+            }
             $userInfos = $this->userInfoRepository->findBy(['institutions' => $institution]);
             $coll = 0;
             foreach ($userInfos as $userInfo) {
@@ -52,11 +59,12 @@ class ComtehnoRatingController extends AbstractController
             if ($coll == 0) {
                 continue;
             }
+
             $institutionsJson[] =
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / 31,
+                    $instSum / $aff,
                     $instSum
                 );
             $instSum = 0;

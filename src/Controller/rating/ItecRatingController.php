@@ -41,6 +41,12 @@ class ItecRatingController extends AbstractController
         $institutionsJson = [];
         $instSum = 0;
         foreach ($institutions as $institution) {
+            if ($institution->getReduction() == 'ГЭД') {
+                $aff = 7;
+            }
+            else{
+                $aff = 16;
+            }
             $userInfos = $this->userInfoRepository->findBy(['institutions' => $institution]);
             $coll = 0;
             foreach ($userInfos as $userInfo) {
@@ -56,7 +62,7 @@ class ItecRatingController extends AbstractController
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / 16,
+                    $instSum / $aff,
                     $instSum
                 );
             $instSum = 0;
