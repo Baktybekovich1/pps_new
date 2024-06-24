@@ -43,8 +43,9 @@ class QuestionPpsRatingController extends AbstractController
             $title = $this->personalAwardsRepository->find($request->get('titleId'));
             $userInfos = $this->userInfoRepository->findAll();
             $pps = [];
-            $points = 0;
+
             foreach ($userInfos as $userInfo) {
+                $points = 0;
                 $user = $userInfo->getUser();
                 if ($userInfo->getInstitutions()->getUniversity() != 'МУИТ') {
                     continue;
@@ -61,7 +62,7 @@ class QuestionPpsRatingController extends AbstractController
                             continue;
                         }
                     }
-                    $points += $personalAward->getPoints();
+                    $points += $personalAward->getSubtitle()->getPoints();
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
