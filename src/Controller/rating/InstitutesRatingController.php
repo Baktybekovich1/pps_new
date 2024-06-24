@@ -3,6 +3,7 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\InstitutRatingDto;
+use App\Dto\RatingDto\PpsRatingDto;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
 use App\Repository\UserInfoRepository;
@@ -14,6 +15,7 @@ use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 class InstitutesRatingController extends AbstractController
@@ -46,7 +48,7 @@ class InstitutesRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $user = $userInfo->getUser();
                 $sum = $this->getBigPoints($user);
-                $instSum += $sum;
+                $instSum += $sum['sum'];
                 $coll++;
             }
             if ($coll == 0) {
@@ -80,7 +82,7 @@ class InstitutesRatingController extends AbstractController
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
         }
 
-        return $sum;
+        return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
 
     }
 
@@ -93,5 +95,58 @@ class InstitutesRatingController extends AbstractController
         return $coll;
 
     }
+
+    #[Route('/institute/{id}', name: 'app_rating_institute')]
+    public function getInstitutesPPS(Request $request): JsonResponse
+    {
+        $institute = $this->institutionsRepository->find($request->get('id'));
+
+
+        $pps = [];
+        $users = $this->userRepository->findAll();
+
+        foreach ($users as $user) {
+            $info = $this->userInfoRepository->findOneBy(['user' => $user]);
+
+            if ($info == null) {
+
+                continue;
+
+            }
+            if ($info->getInstitutions() !== $institute) {
+                continue;
+            }
+
+            $fun = $this->getBigPoints($user);
+
+            if (isset($pps[$user->getId()])) {
+                /** @var PpsRatingDto $dto */
+
+                $dto = $pps[$user->getId()];
+                $dto->id = $user->getId();
+                $dto->researchPoints += $fun['research'];
+                $dto->awardPoints += $fun['awards'];
+                $dto->innovativePoints += $fun['innovative'];
+                $dto->socialPoints += $fun['social'];
+                $dto->sum += $fun['sum'];
+
+            } else {
+                $pps[$user->getId()] = new PpsRatingDto(
+                    $user->getId(),
+                    $info->getName(),
+                    $info->getInstitutions()->getName(),
+                    $fun['research'],
+                    $fun['awards'],
+                    $fun['innovative'],
+                    $fun['social'],
+                    $fun['sum']
+                );
+            }
+        }
+
+        return $this->json([$pps]);
+
+    }
+
 
 }

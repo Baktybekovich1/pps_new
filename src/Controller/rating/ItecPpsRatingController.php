@@ -51,6 +51,7 @@ class ItecPpsRatingController extends AbstractController
 
             $fun = $this->getBigPoints($user);
 
+
             if (isset($pps[$user->getId()])) {
                 /** @var PpsRatingDto $dto */
 
