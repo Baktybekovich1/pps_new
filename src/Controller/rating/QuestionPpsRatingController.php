@@ -74,6 +74,9 @@ class QuestionPpsRatingController extends AbstractController
                     }
                     $points += $personalAward->getSubtitle()->getPoints();
                 }
+                if ($points == 0) {
+                    continue;
+                }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
                     $userInfo->getName(),
@@ -113,6 +116,9 @@ class QuestionPpsRatingController extends AbstractController
                         }
                     }
                     $points += $personalAward->getSubtitle()->getPoints();
+                }
+                if ($points == 0) {
+                    continue;
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
@@ -156,6 +162,9 @@ class QuestionPpsRatingController extends AbstractController
                     }
                     $points += $personalAward->getInnovativeEducationSubtitle()->getPoints();
                 }
+                if ($points == 0) {
+                    continue;
+                }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
                     $userInfo->getName(),
@@ -197,6 +206,9 @@ class QuestionPpsRatingController extends AbstractController
                         }
                     }
                     $points += $personalAward->getSocialActivitiesSubtitle()->getPoints();
+                }
+                if ($points == 0) {
+                    continue;
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),

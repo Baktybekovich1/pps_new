@@ -29,24 +29,24 @@ class QuestionItecRatingController extends AbstractController
 
 
     public function __construct(
-        private readonly UserInfoRepository                   $userInfoRepository,
-        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly PersonalAwardsRepository             $personalAwardsRepository,
-        private readonly PersonalAwardsSubtitleRepository     $personalAwardsSubtitleRepository,
-        private readonly ResearchActivitiesListRepository     $researchActivitiesListRepository,
-        private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private readonly ResearchActivitiesSubtitleRepository $researchActivitiesSubtitleRepository,
-        private readonly InnovativeEducationListRepository $innovativeEducationListRepository,
+        private readonly UserInfoRepository                    $userInfoRepository,
+        private readonly UserPersonalAwardsRepository          $userPersonalAwardsRepository,
+        private readonly UserInnovativeEducationRepository     $userInnovativeEducationRepository,
+        private readonly UserSocialActivitiesRepository        $userSocialActivitiesRepository,
+        private readonly PersonalAwardsRepository              $personalAwardsRepository,
+        private readonly PersonalAwardsSubtitleRepository      $personalAwardsSubtitleRepository,
+        private readonly ResearchActivitiesListRepository      $researchActivitiesListRepository,
+        private readonly UserResearchActivitiesListRepository  $userResearchActivitiesListRepository,
+        private readonly ResearchActivitiesSubtitleRepository  $researchActivitiesSubtitleRepository,
+        private readonly InnovativeEducationListRepository     $innovativeEducationListRepository,
         private readonly InnovativeEducationSubtitleRepository $innovativeEducationSubtitleRepository,
-        private readonly SocialActivitiesListRepository $socialActivitiesListRepository,
-        private readonly SocialActivitiesSubtitleRepository $socialActivitiesSubtitleRepository
+        private readonly SocialActivitiesListRepository        $socialActivitiesListRepository,
+        private readonly SocialActivitiesSubtitleRepository    $socialActivitiesSubtitleRepository
     )
     {
     }
 
-    #[Route('/question/comtehno/awards/{titleId}/{subId}',name: 'app_question_itec_awards')]
+    #[Route('/question/comtehno/awards/{titleId}/{subId}', name: 'app_question_itec_awards')]
     public function getPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -61,7 +61,7 @@ class QuestionItecRatingController extends AbstractController
                     continue;
                 }
 
-                $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user,'status' => 'active']);
+                $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user, 'status' => 'active']);
                 foreach ($personalAwards as $personalAward) {
                     if ($personalAward->getSubtitle()->getTitle() !== $title) {
                         continue;
@@ -73,6 +73,9 @@ class QuestionItecRatingController extends AbstractController
                         }
                     }
                     $points += $personalAward->getSubtitle()->getPoints();
+                }
+                if ($points == 0) {
+                    continue;
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
@@ -86,7 +89,7 @@ class QuestionItecRatingController extends AbstractController
 
     }
 
-    #[Route('/question/comtehno/research/{titleId}/{subId}',name: 'app_question_itec_research')]
+    #[Route('/question/comtehno/research/{titleId}/{subId}', name: 'app_question_itec_research')]
     public function getResearchPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -101,7 +104,7 @@ class QuestionItecRatingController extends AbstractController
                     continue;
                 }
 
-                $personalAwards = $this->userResearchActivitiesListRepository->findBy(['user' => $user,'status' => 'active']);
+                $personalAwards = $this->userResearchActivitiesListRepository->findBy(['user' => $user, 'status' => 'active']);
                 foreach ($personalAwards as $personalAward) {
                     if ($personalAward->getSubtitle()->getCategory() !== $title) {
                         continue;
@@ -113,6 +116,9 @@ class QuestionItecRatingController extends AbstractController
                         }
                     }
                     $points += $personalAward->getSubtitle()->getPoints();
+                }
+                if ($points == 0) {
+                    continue;
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
@@ -127,8 +133,7 @@ class QuestionItecRatingController extends AbstractController
     }
 
 
-
-    #[Route('/question/comtehno/innovative/{titleId}/{subId}',name: 'app_question_itec_innovative')]
+    #[Route('/question/comtehno/innovative/{titleId}/{subId}', name: 'app_question_itec_innovative')]
     public function getInnovativePps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -143,7 +148,7 @@ class QuestionItecRatingController extends AbstractController
                     continue;
                 }
 
-                $personalAwards = $this->userInnovativeEducationRepository->findBy(['user' => $user,'status' => 'active']);
+                $personalAwards = $this->userInnovativeEducationRepository->findBy(['user' => $user, 'status' => 'active']);
                 foreach ($personalAwards as $personalAward) {
                     if ($personalAward->getInnovativeEducationSubtitle()->getTitle() !== $title) {
                         continue;
@@ -155,6 +160,9 @@ class QuestionItecRatingController extends AbstractController
                         }
                     }
                     $points += $personalAward->getInnovativeEducationSubtitle()->getPoints();
+                }
+                if ($points == 0) {
+                    continue;
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
@@ -169,8 +177,7 @@ class QuestionItecRatingController extends AbstractController
     }
 
 
-
-    #[Route('/question/comtehno/social/{titleId}/{subId}',name: 'app_question_itec_social')]
+    #[Route('/question/comtehno/social/{titleId}/{subId}', name: 'app_question_itec_social')]
     public function getSocialPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -185,7 +192,7 @@ class QuestionItecRatingController extends AbstractController
                     continue;
                 }
 
-                $personalAwards = $this->userSocialActivitiesRepository->findBy(['user' => $user,'status' => 'active']);
+                $personalAwards = $this->userSocialActivitiesRepository->findBy(['user' => $user, 'status' => 'active']);
                 foreach ($personalAwards as $personalAward) {
                     if ($personalAward->getSocialActivitiesSubtitle()->getTitle() !== $title) {
                         continue;
@@ -197,6 +204,9 @@ class QuestionItecRatingController extends AbstractController
                         }
                     }
                     $points += $personalAward->getSocialActivitiesSubtitle()->getPoints();
+                }
+                if ($points == 0) {
+                    continue;
                 }
                 $pps[] = new QuestionPPSRatingDto(
                     $user->getId(),
