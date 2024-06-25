@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-class QuestionPpsRatingController extends AbstractController
+class QuestionItecRatingController extends AbstractController
 {
 
 
@@ -46,7 +46,7 @@ class QuestionPpsRatingController extends AbstractController
     {
     }
 
-    #[Route('/question/awards/{titleId}/{subId}',name: 'app_question_awards')]
+    #[Route('/question/comtehno/awards/{titleId}/{subId}',name: 'app_question_itec_awards')]
     public function getPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -57,7 +57,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'КИТЭ') {
                     continue;
                 }
 
@@ -86,7 +86,7 @@ class QuestionPpsRatingController extends AbstractController
 
     }
 
-    #[Route('/question/research/{titleId}/{subId}',name: 'app_question_research')]
+    #[Route('/question/comtehno/research/{titleId}/{subId}',name: 'app_question_itec_research')]
     public function getResearchPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -97,7 +97,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'КИТЭ') {
                     continue;
                 }
 
@@ -128,7 +128,7 @@ class QuestionPpsRatingController extends AbstractController
 
 
 
-    #[Route('/question/innovative/{titleId}/{subId}',name: 'app_question_innovative')]
+    #[Route('/question/comtehno/innovative/{titleId}/{subId}',name: 'app_question_itec_innovative')]
     public function getInnovativePps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -139,7 +139,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'МУИТ') {
                     continue;
                 }
 
@@ -170,7 +170,7 @@ class QuestionPpsRatingController extends AbstractController
 
 
 
-    #[Route('/question/social/{titleId}/{subId}',name: 'app_question_social')]
+    #[Route('/question/comtehno/social/{titleId}/{subId}',name: 'app_question_itec_social')]
     public function getSocialPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -181,7 +181,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'КИТЭ') {
                     continue;
                 }
 
