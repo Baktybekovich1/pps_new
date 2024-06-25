@@ -57,7 +57,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'МУИТ') {
                     continue;
                 }
 
@@ -97,7 +97,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'МУИТ') {
                     continue;
                 }
 
@@ -139,7 +139,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'МУИТ') {
                     continue;
                 }
 
@@ -181,7 +181,7 @@ class QuestionPpsRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $points = 0;
                 $user = $userInfo->getUser();
-                if ($userInfo->getInstitutions()->getUniversity() != 'Комтехно') {
+                if ($userInfo->getInstitutions()->getUniversity() != 'МУИТ') {
                     continue;
                 }
 
