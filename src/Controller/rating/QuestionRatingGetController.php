@@ -112,9 +112,8 @@ class QuestionRatingGetController extends AbstractController
         $as = [];
         foreach ($awards as $award) {
             $sub = $this->socialActivitiesSubtitleRepository->findBy(['title' => $award]);
-
+            $os = [];
             foreach ($sub as $item) {
-                $os = [];
                 $os[] = new QuestionGetSubDto(
                     $item->getId(),
                     $item->getName()
