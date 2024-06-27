@@ -28,10 +28,10 @@ class QuestionRatingGetController extends AbstractController
         $awards = $this->personalAwardsRepository->findAll();
 
         $as = [];
-        $os = [];
+
         foreach ($awards as $award) {
             $sub = $this->personalAwardsSubtitleRepository->findBy(['title' => $award]);
-
+            $os = [];
             foreach ($sub as $item) {
 
                 $os[] = new QuestionGetSubDto(
@@ -56,9 +56,9 @@ class QuestionRatingGetController extends AbstractController
         $awards = $this->researchActivitiesListRepository->findAll();
 
         $as = [];
-        $os = [];
         foreach ($awards as $award) {
             $sub = $this->researchActivitiesSubtitleRepository->findBy(['category' => $award]);
+            $os = [];
 
             foreach ($sub as $item) {
 
@@ -83,9 +83,9 @@ class QuestionRatingGetController extends AbstractController
         $awards = $this->innovativeEducationListRepository->findAll();
 
         $as = [];
-        $os = [];
         foreach ($awards as $award) {
             $sub = $this->innovativeEducationSubtitleRepository->findBy(['title' => $award]);
+            $os = [];
 
             foreach ($sub as $item) {
 
@@ -110,12 +110,11 @@ class QuestionRatingGetController extends AbstractController
         $awards = $this->socialActivitiesListRepository->findAll();
 
         $as = [];
-        $os = [];
         foreach ($awards as $award) {
             $sub = $this->socialActivitiesSubtitleRepository->findBy(['title' => $award]);
 
             foreach ($sub as $item) {
-
+                $os = [];
                 $os[] = new QuestionGetSubDto(
                     $item->getId(),
                     $item->getName()
