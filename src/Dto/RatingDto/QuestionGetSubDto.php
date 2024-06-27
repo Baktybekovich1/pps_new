@@ -10,8 +10,7 @@ class QuestionGetSubDto
 {
     public function __construct(
         public int $id,
-        #[isNull]
-        public string $name,
+        public ?string $name,
     )
     {
     }
