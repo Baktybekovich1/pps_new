@@ -45,4 +45,10 @@ class PersonalAwardsSubtitleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function remove(PersonalAwardsSubtitle $personalAwardsSubtitle): void
+    {
+        $this->getEntityManager()->remove($personalAwardsSubtitle);
+        $this->getEntityManager()->flush();
+    }
 }

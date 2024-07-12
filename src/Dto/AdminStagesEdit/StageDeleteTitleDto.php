@@ -2,10 +2,10 @@
 
 namespace App\Dto\AdminStagesEdit;
 
-class StagesDeleteSubtitleDto
+class StageDeleteTitleDto
 {
     public function __construct(
-        public int $subId
+        public int $titleId,
     )
     {
     }

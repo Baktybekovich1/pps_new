@@ -45,4 +45,9 @@ class InnovativeEducationSubtitleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function remove(InnovativeEducationSubtitle $obj): void
+    {
+        $this->getEntityManager()->remove($obj);
+        $this->getEntityManager()->flush();
+    }
 }

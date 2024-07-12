@@ -5,12 +5,14 @@ namespace App\Controller\admin\StageEdit;
 use App\Dto\AdminStagesEdit\StagesDeleteSubtitleDto;
 use App\Repository\InnovativeEducationListRepository;
 use App\Repository\InnovativeEducationSubtitleRepository;
-use App\Repository\PersonalAwardsRepository;
 use App\Repository\PersonalAwardsSubtitleRepository;
-use App\Repository\ResearchActivitiesListRepository;
 use App\Repository\ResearchActivitiesSubtitleRepository;
 use App\Repository\SocialActivitiesListRepository;
 use App\Repository\SocialActivitiesSubtitleRepository;
+use App\Repository\UserInnovativeEducationRepository;
+use App\Repository\UserPersonalAwardsRepository;
+use App\Repository\UserResearchActivitiesListRepository;
+use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -19,35 +21,65 @@ use Symfony\Component\Routing\Attribute\Route;
 class SubtitleDeleteController extends AbstractController
 {
     public function __construct(
-        private PersonalAwardsRepository                       $personalAwardsRepository,
-        private readonly ResearchActivitiesListRepository      $researchActivitiesListRepository,
-        private readonly InnovativeEducationListRepository     $innovativeEducationListRepository,
-        private readonly SocialActivitiesListRepository        $socialActivitiesListRepository,
         private readonly PersonalAwardsSubtitleRepository      $personalAwardsSubtitleRepository,
         private readonly ResearchActivitiesSubtitleRepository  $researchActivitiesSubtitleRepository,
         private readonly InnovativeEducationSubtitleRepository $innovativeEducationSubtitleRepository,
-        private readonly SocialActivitiesSubtitleRepository    $socialActivitiesSubtitleRepository
-    )
+        private readonly SocialActivitiesSubtitleRepository    $socialActivitiesSubtitleRepository,
+        private readonly UserPersonalAwardsRepository          $userPersonalAwardsRepository,
+        private readonly UserResearchActivitiesListRepository  $userResearchActivitiesListRepository,
+        private readonly InnovativeEducationListRepository     $innovativeEducationListRepository,
+        private readonly UserInnovativeEducationRepository     $userInnovativeEducationRepository,
+        private readonly SocialActivitiesListRepository        $socialActivitiesListRepository,
+        private readonly UserSocialActivitiesRepository        $userSocialActivitiesRepository)
     {
     }
 
-    #[Route('/subtitle/delete/award', name: 'app_subtitle_delete_award', methods: ['DELETE'])]
-    public function index(#[MapRequestPayload] StagesDeleteSubtitleDto $dto): JsonResponse
+    #[Route('/subtitle/delete/awards', name: 'subtitle_delete_awards', methods: ['DELETE'])]
+    public function awardDelete(#[MapRequestPayload] StagesDeleteSubtitleDto $dto): JsonResponse
     {
-        $award = $this->personalAwardsSubtitleRepository->find($dto->id);
-        $this->personalAwardsRepository->remove($award);
-
-        return $this->json(['message']);
+        $sub = $this->personalAwardsSubtitleRepository->find($dto->subId);
+        $awards = $this->userPersonalAwardsRepository->findBy(['subtitle' => $sub]);
+        foreach ($awards as $award) {
+            $this->userPersonalAwardsRepository->remove($award);
+        }
+        $this->personalAwardsSubtitleRepository->remove($sub);
+        return $this->json(['Успешно удалено']);
     }
 
-
-    #[Route('/subtitle/delete/research', name: 'app_subtitle_delete_research', methods: ['DELETE'])]
-    public function research(#[MapRequestPayload] StagesDeleteSubtitleDto $dto): JsonResponse
+    #[Route('/subtitle/delete/research', name: 'subtitle_delete_research', methods: ['DELETE'])]
+    public function researchDelete(#[MapRequestPayload] StagesDeleteSubtitleDto $dto): JsonResponse
     {
-        $award = $this->researchActivitiesSubtitleRepository->find($dto->id);
-        $this->researchActivitiesSubtitleRepository->remove($award);
+        $sub = $this->researchActivitiesSubtitleRepository->find($dto->subId);
+        $research = $this->researchActivitiesSubtitleRepository->findBy(['subtitle' => $sub]);
+        foreach ($research as $item) {
+            $this->userResearchActivitiesListRepository->remove($item);
+        }
+        $this->researchActivitiesSubtitleRepository->remove($sub);
+        return $this->json(['Успешно удалено']);
+    }
 
-        return $this->json(['message']);
+    #[Route('/subtitle/delete/innovative', name: 'subtitle_delete_innovative', methods: ['DELETE'])]
+    public function innovativeDelete(#[MapRequestPayload] StagesDeleteSubtitleDto $dto): JsonResponse
+    {
+        $sub = $this->innovativeEducationSubtitleRepository->find($dto->subId);
+        $research = $this->innovativeEducationListRepository->findBy(['subtitle' => $sub]);
+        foreach ($research as $item) {
+            $this->userInnovativeEducationRepository->remove($item);
+        }
+        $this->innovativeEducationSubtitleRepository->remove($sub);
+        return $this->json(['Успешно удалено']);
+    }
+
+    #[Route('/subtitle/delete/social', name: 'subtitle_delete_social', methods: ['DELETE'])]
+    public function socialDelete(#[MapRequestPayload] StagesDeleteSubtitleDto $dto): JsonResponse
+    {
+        $sub = $this->socialActivitiesSubtitleRepository->find($dto->subId);
+        $research = $this->socialActivitiesListRepository->findBy(['subtitle' => $sub]);
+        foreach ($research as $item) {
+            $this->userSocialActivitiesRepository->remove($item);
+        }
+        $this->socialActivitiesSubtitleRepository->remove($sub);
+        return $this->json(['Успешно удалено']);
     }
 
 }

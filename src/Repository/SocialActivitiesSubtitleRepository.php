@@ -45,9 +45,15 @@ class SocialActivitiesSubtitleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function save(SocialActivitiesSubtitle $activitiesSubtitle)
+    public function save(SocialActivitiesSubtitle $activitiesSubtitle): void
     {
         $this->getEntityManager()->persist($activitiesSubtitle);
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove(SocialActivitiesSubtitle $obj): void
+    {
+        $this->getEntityManager()->remove($obj);
         $this->getEntityManager()->flush();
     }
 }

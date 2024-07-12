@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ResearchActivitiesSubtitle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ResearchActivitiesSubtitle[]    findAll()
  * @method ResearchActivitiesSubtitle[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'research_activities_subtitle_repository')]
 class ResearchActivitiesSubtitleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -45,5 +48,12 @@ class ResearchActivitiesSubtitleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    public function remove(ResearchActivitiesSubtitle $obj): void
+    {
+        $this->getEntityManager()->remove($obj);
+        $this->getEntityManager()->flush();
+    }
 
 }
