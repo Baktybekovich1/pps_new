@@ -22,40 +22,40 @@ class StageEditGetSubtitleController extends AbstractController
     {
     }
 
-    #[Route('/stage/edit/award/subtitle/{titleId}', name: 'app_stage_edit_award_title')]
+    #[Route('/stage/edit/award/subtitle/{titleId}', name: 'app_stage_edit_award_subtitle')]
     public function award(Request $request): JsonResponse
     {
-        $titles = $this->personalAwardsRepository->find($request->get('id'));
+        $titles = $this->personalAwardsRepository->find($request->get('titleId'));
         $subtitles = $titles->getPersonalAwardsSubtitles();
         return $this->json([
             'subtitles' => $subtitles
         ]);
     }
 
-    #[Route('/stage/edit/research/subtitle/{titleId}', name: 'app_stage_edit_research_title')]
+    #[Route('/stage/edit/research/subtitle/{titleId}', name: 'app_stage_edit_research_subtitle')]
     public function research(Request $request): JsonResponse
     {
-        $title = $this->researchActivitiesListRepository->find($request->get('id'));
+        $title = $this->researchActivitiesListRepository->find($request->get('titleId'));
         $subtitles = $title->getResearchActivitiesSubtitles();
         return $this->json([
             'subtitles' => $subtitles
         ]);
     }
 
-    #[Route('/stage/edit/innovative/subtitle/{titleId}', name: 'app_stage_edit_innovative_title')]
+    #[Route('/stage/edit/innovative/subtitle/{titleId}', name: 'app_stage_edit_innovative_subtitle')]
     public function innovative(Request $request): JsonResponse
     {
-        $title = $this->innovativeEducationListRepository->find($request->get('id'));
+        $title = $this->innovativeEducationListRepository->find($request->get('titleId'));
         $subtitles = $title->getInnovativeEducationSubtitles();
         return $this->json([
             'subtitles' => $subtitles
         ]);
     }
 
-    #[Route('/stage/edit/social/subtitle/{titleId}', name: 'app_stage_edit_social_title')]
+    #[Route('/stage/edit/social/subtitle/{titleId}', name: 'app_stage_edit_social_subtitle')]
     public function social(Request $request): JsonResponse
     {
-        $title = $this->socialActivitiesListRepository->find($request->get('id'));
+        $title = $this->socialActivitiesListRepository->find($request->get('titleId'));
         $subtitles = $title->getSocialActivitiesSubtitles();
         return $this->json([
             'subtitles' => $subtitles
