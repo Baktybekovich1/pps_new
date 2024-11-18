@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,6 +26,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(targetEntity: Directors::class, mappedBy: '–≥—user')]
+    private Collection $directors;
+
+    public function __construct()
+    {
+        $this->directors = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -93,5 +103,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Directors>
+     */
+    public function getDirectors(): Collection
+    {
+        return $this->directors;
+    }
+
+    public function addDirector(Directors $director): static
+    {
+        if (!$this->directors->contains($director)) {
+            $this->directors->add($director);
+            $director->set–≥—user($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDirector(Directors $director): static
+    {
+        if ($this->directors->removeElement($director)) {
+            // set the owning side to null (unless already changed)
+            if ($director->get–≥—user() === $this) {
+                $director->set–≥—user(null);
+            }
+        }
+
+        return $this;
     }
 }

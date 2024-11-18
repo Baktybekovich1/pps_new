@@ -24,7 +24,7 @@ class UserAccountAwardsGetController extends AbstractController
     }
 
 
-    #[Route('/account/research/get/{id}', name: 'app_user_account_research_get')]
+    #[Route('/account/research/get/{id}', name: 'app_user_account_research_get',methods: ['GET'])]
     public function research(Request $request): JsonResponse
     {
         $award = $this->userResearchActivitiesListRepository->find($request->get('id'));
@@ -37,7 +37,7 @@ class UserAccountAwardsGetController extends AbstractController
         ]);
     }
 
-    #[Route('/account/innovative/get/{id}', name: 'app_user_account_innovative_get')]
+    #[Route('/account/innovative/get/{id}', name: 'app_user_account_innovative_get',methods: ['GET'])]
     public function innovative(Request $request): JsonResponse
     {
         $award = $this->userInnovativeEducationRepository->find($request->get('id'));
@@ -50,7 +50,7 @@ class UserAccountAwardsGetController extends AbstractController
         ]);
     }
 
-    #[Route('/account/social/get/{id}', name: 'app_user_account_social_get')]
+    #[Route('/account/social/get/{id}', name: 'app_user_account_social_get' ,methods: ['GET'])]
     public function social(Request $request): JsonResponse
     {
         $award = $this->userSocialActivitiesRepository->find($request->get('id'));
