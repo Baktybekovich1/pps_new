@@ -1,4 +1,5 @@
-FROM php:8.2-fpm
+FROM php:8.2-fpm-bullseye
+
 RUN apt-get update
 
 # postgres extension
