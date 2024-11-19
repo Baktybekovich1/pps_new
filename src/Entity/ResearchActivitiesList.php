@@ -26,6 +26,10 @@ class ResearchActivitiesList
         $this->researchActivitiesSubtitles = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->name ?? 'Unnamed Award';
+    }
     public function getId(): ?int
     {
         return $this->id;

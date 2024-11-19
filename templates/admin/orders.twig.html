@@ -1,0 +1,16 @@
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Product</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in field.value %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.subtitle }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
