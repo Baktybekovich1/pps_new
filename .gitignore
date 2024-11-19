@@ -9,6 +9,8 @@
 /vendor/
 docker/.env
 docker/.data
+composer.json
+composer.lock
 ###< symfony/framework-bundle ###
 
 ###> lexik/jwt-authentication-bundle ###
