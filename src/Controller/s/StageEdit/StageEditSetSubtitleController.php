@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\admin\StageEdit;
+namespace App\Controller\s\StageEdit;
 
 use App\Dto\AdminStagesEdit\StagesEditSubtitleAddDto;
 use App\Dto\AdminStagesEdit\StagesEditTitleAddDto;

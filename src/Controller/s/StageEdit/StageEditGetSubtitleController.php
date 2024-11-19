@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\admin\StageEdit;
+namespace App\Controller\s\StageEdit;
 
 use App\Repository\InnovativeEducationListRepository;
 use App\Repository\PersonalAwardsRepository;

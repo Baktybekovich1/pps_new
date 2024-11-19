@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\admin;
+namespace App\Controller\s;
 
 use App\Dto\AdminFreezeSetAwardDto;
 use App\Dto\UserAccount\AccountFreezedDto;

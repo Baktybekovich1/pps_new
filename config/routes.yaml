@@ -9,7 +9,7 @@ api_login_check:
   path: /api/login
 
 admin_controllers:
-  resource: ../src/Controller/admin
+  resource: ../src/Controller/s
   type: attribute
   prefix: /api/admin
 
