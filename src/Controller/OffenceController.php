@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\s;
+namespace App\Controller;
 
 use App\Dto\OffencesDto\UserOffenceAddDto;
 use App\Dto\OffencesDto\UserOffenceGetDto;
@@ -26,7 +26,7 @@ class OffenceController extends AbstractController
     {
     }
 
-    #[Route('/offence', name: 'app_offence')]
+    #[Route('/api/admin/offence', name: 'app_offence')]
     public function index(): JsonResponse
     {
         $offence = $this->offenceListRepository->findAll();
@@ -52,7 +52,7 @@ class OffenceController extends AbstractController
         ]);
     }
 
-    #[Route('/offence/add', name: 'app_offence_add', methods: ['POST'])]
+    #[Route('/api/admin/offence/add', name: 'app_offence_add', methods: ['POST'])]
     public function add(#[MapRequestPayload] UserOffenceAddDto $dto): JsonResponse
     {
         $offences = $dto->offence;

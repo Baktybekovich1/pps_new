@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\admin;
 
-use App\Entity\UserInfo;
+use App\Entity\UserOffence;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class UserInfoCrudController extends AbstractCrudController
+class UserOffenceCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return UserInfo::class;
+        return UserOffence::class;
     }
 
     /*

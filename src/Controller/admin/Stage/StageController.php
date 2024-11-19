@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\s\Stage;
+namespace App\Controller\admin\Stage;
 
 use App\Entity\Directors;
 use App\Entity\InnovativeEducationList;

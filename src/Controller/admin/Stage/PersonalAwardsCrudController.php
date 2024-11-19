@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Controller\s\Stage;
+namespace App\Controller\admin\Stage;
 
-use App\Entity\InnovativeEducationList;
+use App\Entity\PersonalAwards;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class InnovativeEducationListCrudController extends AbstractCrudController
+class PersonalAwardsCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return InnovativeEducationList::class;
+        return PersonalAwards::class;
     }
 
 
