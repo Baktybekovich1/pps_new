@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\admin;
+namespace App\Controller\s;
 
 use App\Dto\OffencesDto\UserOffenceAddDto;
 use App\Dto\OffencesDto\UserOffenceGetDto;
