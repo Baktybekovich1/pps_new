@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Controller\s;
+namespace App\Controller;
 
 use App\Dto\AdminFreezeSetAwardDto;
-use App\Dto\UserAccount\AccountFreezedDto;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountFreezedController extends AbstractController
 {
@@ -26,7 +23,7 @@ class AccountFreezedController extends AbstractController
     {
     }
 
-    #[Route('/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
+    #[Route('/api/admin/award/freeze', name: 'app_admin_award_freeze', methods: ['PUT'])]
     public function award_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -37,7 +34,7 @@ class AccountFreezedController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/research/freeze', name: 'app_admin_research_freeze', methods: ['PUT'])]
+    #[Route('/api/admin/research/freeze', name: 'app_admin_research_freeze', methods: ['PUT'])]
     public function research_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -50,7 +47,7 @@ class AccountFreezedController extends AbstractController
     }
 
 
-    #[Route('/innovative/freeze', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
+    #[Route('/api/admin/innovative/freeze', name: 'app_admin_innovative_freeze', methods: ['PUT'])]
     public function innovative_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -62,7 +59,7 @@ class AccountFreezedController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/social/freeze', name: 'app_admin_social_freeze', methods: ['PUT'])]
+    #[Route('/api/admin/social/freeze', name: 'app_admin_social_freeze', methods: ['PUT'])]
     public function social_freeze(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {

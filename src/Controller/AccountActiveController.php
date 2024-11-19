@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Controller\s;
+namespace App\Controller;
 
 use App\Dto\AdminFreezeSetAwardDto;
-use App\Dto\UserAccount\AccountFreezedDto;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountActiveController extends AbstractController
 {
@@ -26,7 +23,7 @@ class AccountActiveController extends AbstractController
     {
     }
 
-    #[Route('/award/active', name: 'app_admin_award_active', methods: ['PUT'])]
+    #[Route('/api/admin/award/active', name: 'app_admin_award_active', methods: ['PUT'])]
     public function award_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -37,7 +34,7 @@ class AccountActiveController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/research/active', name: 'app_admin_research_active', methods: ['PUT'])]
+    #[Route('/api/admin/research/active', name: 'app_admin_research_active', methods: ['PUT'])]
     public function research_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -49,7 +46,7 @@ class AccountActiveController extends AbstractController
     }
 
 
-    #[Route('/innovative/active', name: 'app_admin_innovative_active', methods: ['PUT'])]
+    #[Route('/api/admin/innovative/active', name: 'app_admin_innovative_active', methods: ['PUT'])]
     public function innovative_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -61,7 +58,7 @@ class AccountActiveController extends AbstractController
         return $this->json(['Success']);
     }
 
-    #[Route('/social/active', name: 'app_admin_social_active', methods: ['PUT'])]
+    #[Route('/api/admin/social/active', name: 'app_admin_social_active', methods: ['PUT'])]
     public function social_active(#[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
