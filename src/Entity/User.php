@@ -30,9 +30,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Directors::class, mappedBy: '–≥—user')]
     private Collection $directors;
 
+    #[ORM\OneToMany(targetEntity: ResultsOfYear::class, mappedBy: 'account')]
+    private Collection $resultsOfYears;
+
     public function __construct()
     {
         $this->directors = new ArrayCollection();
+        $this->resultsOfYears = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +133,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($director->get–≥—user() === $this) {
                 $director->set–≥—user(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ResultsOfYear>
+     */
+    public function getResultsOfYears(): Collection
+    {
+        return $this->resultsOfYears;
+    }
+
+    public function addResultsOfYear(ResultsOfYear $resultsOfYear): static
+    {
+        if (!$this->resultsOfYears->contains($resultsOfYear)) {
+            $this->resultsOfYears->add($resultsOfYear);
+            $resultsOfYear->setAccount($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResultsOfYear(ResultsOfYear $resultsOfYear): static
+    {
+        if ($this->resultsOfYears->removeElement($resultsOfYear)) {
+            // set the owning side to null (unless already changed)
+            if ($resultsOfYear->getAccount() === $this) {
+                $resultsOfYear->setAccount(null);
             }
         }
 
