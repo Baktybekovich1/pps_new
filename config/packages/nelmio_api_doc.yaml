@@ -1,9 +1,9 @@
 nelmio_api_doc:
   documentation:
     servers:
-      - url: http://api.example.com/unsafe
+      - url: http://localhost:8092
         description: API over HTTP
-      - url: https://api.example.com/secured
+      - url: https://api.pps.makalabox.com
         description: API over HTTPS
     info:
       title: My App
