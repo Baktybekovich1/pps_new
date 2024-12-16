@@ -32,7 +32,7 @@ class ComtehnoRatingController extends AbstractController
     {
     }
 
-    #[Route('comtehno/departments', name: 'app_rating_comtehno_departments')]
+    #[Route('comtehno/departments', name: 'app_rating_comtehno_departments',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $institutions = $this->institutionsRepository->findBy(['university' => 'Комтехно']);

@@ -25,7 +25,7 @@ class ResultOfYearsController extends AbstractController
     {
     }
 
-    #[Route('/admin/years', name: 'app_result_of_years', methods: ['GET'])]
+    #[Route('/admin/years', name: 'app_result_of_years' ,methods: ['GET'])]
     public function index(): JsonResponse
     {
         $years = $this->yearsRepository->findAll();

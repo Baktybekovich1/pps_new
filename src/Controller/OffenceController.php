@@ -26,7 +26,7 @@ class OffenceController extends AbstractController
     {
     }
 
-    #[Route('/api/admin/offence', name: 'app_offence')]
+    #[Route('/api/admin/offence', name: 'app_offence',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $offence = $this->offenceListRepository->findAll();

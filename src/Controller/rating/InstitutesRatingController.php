@@ -34,7 +34,7 @@ class InstitutesRatingController extends AbstractController
     {
     }
 
-    #[Route('institutes', name: 'app_rating_institutes')]
+    #[Route('institutes', name: 'app_rating_institutes',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $institutions = $this->institutionsRepository->findBy(['university' => 'МУИТ']);
@@ -96,7 +96,7 @@ class InstitutesRatingController extends AbstractController
 
     }
 
-    #[Route('/institute/{id}', name: 'app_rating_institute')]
+    #[Route('/institute/{id}', name: 'app_rating_institute',methods: ['GET'])]
     public function getInstitutesPPS(Request $request): JsonResponse
     {
         $institute = $this->institutionsRepository->find($request->get('id'));

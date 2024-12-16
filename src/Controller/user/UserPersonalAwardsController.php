@@ -27,7 +27,7 @@ class UserPersonalAwardsController extends AbstractController
     {
     }
 
-    #[Route('/progress', name: 'app_user_progress')]
+    #[Route('/progress', name: 'app_user_progress',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $personalAwards = $this->personalAwardsRepository->findAll();
@@ -36,7 +36,7 @@ class UserPersonalAwardsController extends AbstractController
         ]);
     }
 
-    #[Route('/progress/add', name: 'app_user_progress_add')]
+    #[Route('/progress/add', name: 'app_user_progress_add', methods: ['POST'])]
     public function prog_add(#[MapRequestPayload] UserProgressDto $dto, UserInterface $user): JsonResponse
     {
         $user = $this->userRepository->find($user->getUserIdentifier());

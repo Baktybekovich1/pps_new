@@ -30,7 +30,7 @@ class ComtehnoPpsRatingController extends AbstractController
     {
     }
 
-    #[Route('comtehno/pps', name: 'comtehno_pps_rating')]
+    #[Route('comtehno/pps', name: 'comtehno_pps_rating',methods: ['GET'])]
     public function index(): JsonResponse
     {
 

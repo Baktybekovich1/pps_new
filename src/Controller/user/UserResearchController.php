@@ -26,7 +26,7 @@ class UserResearchController extends AbstractController
     {
     }
 
-    #[Route('/research', name: 'app_user_research')]
+    #[Route('/research', name: 'app_user_research',methods:['GET'])]
     public function index(): JsonResponse
     {
         $ural = $this->activitiesListRepository->findAll();

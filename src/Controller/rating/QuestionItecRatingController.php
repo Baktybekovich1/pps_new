@@ -46,7 +46,7 @@ class QuestionItecRatingController extends AbstractController
     {
     }
 
-    #[Route('/question/comtehno/awards/{titleId}/{subId}', name: 'app_question_itec_awards')]
+    #[Route('/question/comtehno/awards/{titleId}/{subId}', name: 'app_question_itec_awards',methods: ['GET'])]
     public function getPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -89,7 +89,7 @@ class QuestionItecRatingController extends AbstractController
 
     }
 
-    #[Route('/question/comtehno/research/{titleId}/{subId}', name: 'app_question_itec_research')]
+    #[Route('/question/comtehno/research/{titleId}/{subId}', name: 'app_question_itec_research',methods: ['GET'])]
     public function getResearchPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -133,7 +133,7 @@ class QuestionItecRatingController extends AbstractController
     }
 
 
-    #[Route('/question/comtehno/innovative/{titleId}/{subId}', name: 'app_question_itec_innovative')]
+    #[Route('/question/comtehno/innovative/{titleId}/{subId}', name: 'app_question_itec_innovative',methods: ['GET'])]
     public function getInnovativePps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -177,7 +177,7 @@ class QuestionItecRatingController extends AbstractController
     }
 
 
-    #[Route('/question/comtehno/social/{titleId}/{subId}', name: 'app_question_itec_social')]
+    #[Route('/question/comtehno/social/{titleId}/{subId}', name: 'app_question_itec_social',methods: ['GET'])]
     public function getSocialPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {

@@ -31,7 +31,7 @@ class PpsRatingController extends AbstractController
     {
     }
 
-    #[Route('/pps', name: 'app_pps_rating')]
+    #[Route('/pps', name: 'app_pps_rating',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $pps = $this->userPointsCountService->UserPointsCount();
@@ -46,7 +46,7 @@ class PpsRatingController extends AbstractController
 
 
 
-    #[Route('/users', name: 'app_pps_users')]
+    #[Route('/users', name: 'app_pps_users',methods: ['GET'])]
     public function users_list(): JsonResponse
     {
         $userInfo = $this->userInfoRepository->findAll();

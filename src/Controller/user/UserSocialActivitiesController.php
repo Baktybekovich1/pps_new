@@ -25,7 +25,7 @@ class UserSocialActivitiesController extends AbstractController
     {
     }
 
-    #[Route('/social', name: 'app_user_social_activities')]
+    #[Route('/social', name: 'app_user_social_activities',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $socials = $this->socialActivitiesListRepository->findAll();

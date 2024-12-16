@@ -30,7 +30,7 @@ class ItecPpsRatingController extends AbstractController
     {
     }
 
-    #[Route('itec/pps', name: 'itec_pps_rating')]
+    #[Route('itec/pps', name: 'itec_pps_rating',methods: ['GET'])]
     public function index(): JsonResponse
     {
 

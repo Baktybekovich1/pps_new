@@ -24,7 +24,7 @@ class UserInnovativeEducationController extends AbstractController
     {
     }
 
-    #[Route('/education', name: 'app_user_innovative_education')]
+    #[Route('/education', name: 'app_user_innovative_education',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $educations = $this->innovativeEducationListRepository->findAll();

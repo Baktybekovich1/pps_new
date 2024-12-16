@@ -46,7 +46,7 @@ class QuestionPpsRatingController extends AbstractController
     {
     }
 
-    #[Route('/question/1/{titleId}/{subId}',name: 'app_question_awards')]
+    #[Route('/question/1/{titleId}/{subId}',name: 'app_question_awards',methods: ['GET'])]
     public function getPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -89,7 +89,7 @@ class QuestionPpsRatingController extends AbstractController
 
     }
 
-    #[Route('/question/2/{titleId}/{subId}',name: 'app_question_research')]
+    #[Route('/question/2/{titleId}/{subId}',name: 'app_question_research',methods: ['GET'])]
     public function getResearchPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -134,7 +134,7 @@ class QuestionPpsRatingController extends AbstractController
 
 
 
-    #[Route('/question/3/{titleId}/{subId}',name: 'app_question_innovative')]
+    #[Route('/question/3/{titleId}/{subId}',name: 'app_question_innovative',methods: ['GET'])]
     public function getInnovativePps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {
@@ -179,7 +179,7 @@ class QuestionPpsRatingController extends AbstractController
 
 
 
-    #[Route('/question/4/{titleId}/{subId}',name: 'app_question_social')]
+    #[Route('/question/4/{titleId}/{subId}',name: 'app_question_social',methods: ['GET'])]
     public function getSocialPps(Request $request): JsonResponse
     {
         if ($request->get('titleId') != null) {

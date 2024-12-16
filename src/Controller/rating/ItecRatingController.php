@@ -32,7 +32,7 @@ class ItecRatingController extends AbstractController
     {
     }
 
-    #[Route('itec/departments', name: 'app_rating_itec_departments')]
+    #[Route('itec/departments', name: 'app_rating_itec_departments',methods: ['GET'])]
     public function index(): JsonResponse
     {
         $institutions = $this->institutionsRepository->findBy(['university' => 'КИТЭ']);
