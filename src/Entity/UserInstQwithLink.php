@@ -18,8 +18,8 @@ class UserInstQwithLink
     #[ORM\JoinColumn(nullable: false)]
     private ?Institutions $institute = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: InstQwithLink::class)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?InstQwithLink $award = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -42,7 +42,6 @@ class UserInstQwithLink
     {
         $this->institute = $institute;
     }
-
 
 
     public function getAward(): ?InstQwithLink
