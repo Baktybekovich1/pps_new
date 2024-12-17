@@ -22,7 +22,7 @@ class InstQwithLinkSubtitle
     private ?int $points = null;
 
     #[ORM\ManyToOne(inversedBy: 'instQwithLinkSubtitles')]
-    private ?instQoutLinkTitle $award = null;
+    private ?instQwithLinkTitle $award = null;
 
 
     public function getId(): ?int
@@ -54,9 +54,7 @@ class InstQwithLinkSubtitle
         return $this;
     }
 
-    /**
-     * @return Collection<int, instQoutLinkTitle>
-     */
+
 
     public function getAward(): ?instQoutLinkTitle
     {
