@@ -23,13 +23,8 @@ class Directors
     #[ORM\JoinColumn(nullable: false)]
     private ?Institutions $Institut = null;
 
-    #[ORM\OneToMany(targetEntity: UserInstQwithLink::class, mappedBy: 'director')]
-    private Collection $userInstQwithLinks;
 
-    public function __construct()
-    {
-        $this->userInstQwithLinks = new ArrayCollection();
-    }
+
 
     public function getId(): ?int
     {
@@ -60,33 +55,4 @@ class Directors
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserInstQwithLink>
-     */
-    public function getUserInstQwithLinks(): Collection
-    {
-        return $this->userInstQwithLinks;
-    }
-
-    public function addUserInstQwithLink(UserInstQwithLink $userInstQwithLink): static
-    {
-        if (!$this->userInstQwithLinks->contains($userInstQwithLink)) {
-            $this->userInstQwithLinks->add($userInstQwithLink);
-            $userInstQwithLink->setDirector($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserInstQwithLink(UserInstQwithLink $userInstQwithLink): static
-    {
-        if ($this->userInstQwithLinks->removeElement($userInstQwithLink)) {
-            // set the owning side to null (unless already changed)
-            if ($userInstQwithLink->getDirector() === $this) {
-                $userInstQwithLink->setDirector(null);
-            }
-        }
-
-        return $this;
-    }
 }
