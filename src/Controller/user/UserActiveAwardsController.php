@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use OpenApi\Attributes as OA;
+
 
 class UserActiveAwardsController extends AbstractController
 {
@@ -30,6 +32,7 @@ class UserActiveAwardsController extends AbstractController
     }
 
     #[Route('/award/active', name: 'app_award_active', methods: ['PUT'])]
+    #[OA\Tag(name: 'Users Award')]
     public function award_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -47,6 +50,7 @@ class UserActiveAwardsController extends AbstractController
     }
 
     #[Route('/research/active', name: 'app_research_active', methods: ['PUT'])]
+    #[OA\Tag(name: 'Users Research')]
     public function research_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -65,6 +69,7 @@ class UserActiveAwardsController extends AbstractController
 
 
     #[Route('/innovative/active', name: 'app_innovative_active', methods: ['PUT'])]
+    #[OA\Tag(name: 'Users Innovative')]
     public function innovative_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {
@@ -82,6 +87,7 @@ class UserActiveAwardsController extends AbstractController
     }
 
     #[Route('/social/active', name: 'app_social_active', methods: ['PUT'])]
+    #[OA\Tag(name: 'Users Social')]
     public function social_active(UserInterface $userInterface, #[MapRequestPayload] AdminFreezeSetAwardDto $dto): JsonResponse
     {
         foreach ($dto->idBag as $id) {

@@ -14,7 +14,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+
 use Symfony\Component\Security\Core\User\UserInterface;
+use OpenApi\Attributes as OA;
+
 
 class UserAccountAwardsEditController extends AbstractController
 {
@@ -30,6 +33,7 @@ class UserAccountAwardsEditController extends AbstractController
 
 
     #[Route('/account/award/edit', name: 'app_user_account_edit', methods: ['PUT'])]
+    #[OA\Tag(name: 'Users All Awards Edit')]
     public function award(#[MapRequestPayload] UserAccountAwardsEditSetDto $dto, UserInterface $userInterface): JsonResponse
     {
         $user = $this->userRepository->find($userInterface->getUserIdentifier());

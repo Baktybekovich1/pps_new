@@ -47,33 +47,4 @@ class PersonalAwards
         return $this;
     }
 
-    /**
-     * @return Collection<int, PersonalAwardsSubtitle>
-     */
-    public function getPersonalAwardsSubtitles(): Collection
-    {
-        return $this->personalAwardsSubtitles;
-    }
-
-    public function addPersonalAwardsSubtitle(PersonalAwardsSubtitle $personalAwardsSubtitle): static
-    {
-        if (!$this->personalAwardsSubtitles->contains($personalAwardsSubtitle)) {
-            $this->personalAwardsSubtitles->add($personalAwardsSubtitle);
-            $personalAwardsSubtitle->setTitle($this);
-        }
-
-        return $this;
-    }
-
-    public function removePersonalAwardsSubtitle(PersonalAwardsSubtitle $personalAwardsSubtitle): static
-    {
-        if ($this->personalAwardsSubtitles->removeElement($personalAwardsSubtitle)) {
-            // set the owning side to null (unless already changed)
-            if ($personalAwardsSubtitle->getTitle() === $this) {
-                $personalAwardsSubtitle->setTitle(null);
-            }
-        }
-
-        return $this;
-    }
 }

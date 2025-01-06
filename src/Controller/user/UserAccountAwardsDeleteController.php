@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use OpenApi\Attributes as OA;
+
 
 class UserAccountAwardsDeleteController extends AbstractController
 {
@@ -29,6 +31,7 @@ class UserAccountAwardsDeleteController extends AbstractController
 
 
     #[Route('/account/award/delete', name: 'app_user_account_award_delete', methods: ['DELETE'])]
+    #[OA\Tag(name: 'Users Award')]
     public function award(#[MapRequestPayload] AdminFreezeSetAwardDto $dto, UserInterface $userInterface): JsonResponse
     {
         $user = $this->userRepository->find($userInterface->getUserIdentifier());
@@ -44,6 +47,7 @@ class UserAccountAwardsDeleteController extends AbstractController
 
 
     #[Route('/account/research/delete', name: 'app_user_account_research_delete', methods: ['DELETE'])]
+    #[OA\Tag(name: 'Users Research')]
     public function research(#[MapRequestPayload] AdminFreezeSetAwardDto $dto, UserInterface $userInterface): JsonResponse
     {
         $user = $this->userRepository->find($userInterface->getUserIdentifier());
@@ -58,6 +62,7 @@ class UserAccountAwardsDeleteController extends AbstractController
     }
 
     #[Route('/account/innovative/delete', name: 'app_user_account_innovative_delete', methods: ['DELETE'])]
+    #[OA\Tag(name: 'Users Innovative')]
     public function innovative(#[MapRequestPayload] AdminFreezeSetAwardDto $dto, UserInterface $userInterface): JsonResponse
     {
         $user = $this->userRepository->find($userInterface->getUserIdentifier());
@@ -72,6 +77,7 @@ class UserAccountAwardsDeleteController extends AbstractController
     }
 
     #[Route('/account/social/delete', name: 'app_user_account_social_delete', methods: ['DELETE'])]
+    #[OA\Tag(name: 'Users Social')]
     public function social(#[MapRequestPayload] AdminFreezeSetAwardDto $dto, UserInterface $userInterface): JsonResponse
     {
         $user = $this->userRepository->find($userInterface->getUserIdentifier());

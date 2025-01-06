@@ -1,12 +1,30 @@
 nelmio_api_doc:
+  areas:
+    users:
+      path_patterns:
+        - ^/api/user
+    default:
+      path_patterns:
+        - ^/(?!admin).* # Все, кроме admin/stage
+
   documentation:
+    areas:
+      users:
+        description: "API для работы с пользователями"
+    tags:
+      - { name: 'Users', description: 'Пользователи' }
+      - { name: 'Users Award', description: 'Первый этап пользователей "Персональные награды"' }
+      - { name: 'Users Innovative', description: 'Второй этап пользователей "Инновационно образовательская деятельность"' }
+      - { name: 'Users Research', description: 'Третий этап пользователей "Научно иследовательская деятельность"' }
+      - { name: 'Users Social', description: 'Четвёртый этап пользователей "Социально воспитательская деятельность"' }
+      - { name: 'Admin', description: 'Administrative endpoints' }
     servers:
       - url: http://localhost:8092
-        description: API over HTTP
+        description: API Локальный
       - url: https://api.pps.makalabox.com
-        description: API over HTTPS
+        description: API Prod
     info:
-      title: My App
+      title: Swagger api rating pps
       description: This is an awesome app!
       version: 1.0.0
       x-build: #CommitHash
@@ -17,4 +35,4 @@ nelmio_api_doc:
           scheme: bearer
           bearerFormat: JWT
     security:
-      - Bearer: []
+      - Bearer: [ ]
