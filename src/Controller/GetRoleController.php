@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use OpenApi\Attributes as OA;
 class GetRoleController extends AbstractController
 {
     public function __construct(

@@ -2,26 +2,26 @@
 
 namespace App\Controller\admin;
 
-use App\Entity\Directors;
+use App\Entity\InstitutionQuestion;
+
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class DirectorsCrudController extends AbstractCrudController
+class InstitutionQuestionCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Directors::class;
+        return InstitutionQuestion::class;
     }
 
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
+            IdField::new('id')->onlyOnIndex(),
+            TextField::new('title')
         ];
     }
 }

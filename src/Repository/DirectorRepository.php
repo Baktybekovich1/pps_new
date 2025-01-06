@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Directors;
+use App\Entity\Director;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Directors>
+ * @extends ServiceEntityRepository<Director>
  *
- * @method Directors|null find($id, $lockMode = null, $lockVersion = null)
- * @method Directors|null findOneBy(array $criteria, array $orderBy = null)
- * @method Directors[]    findAll()
- * @method Directors[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Director|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Director|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Director[]    findAll()
+ * @method Director[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DirectorsRepository extends ServiceEntityRepository
+class DirectorRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Directors::class);
+        parent::__construct($registry, Director::class);
     }
 
 //    /**
-//     * @return Directors[] Returns an array of Directors objects
+//     * @return Director[] Returns an array of Director objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class DirectorsRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Directors
+//    public function findOneBySomeField($value): ?Director
 //    {
 //        return $this->createQueryBuilder('d')
 //            ->andWhere('d.exampleField = :val')

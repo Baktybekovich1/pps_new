@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[ApiResource]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -22,29 +25,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[ORM\Column]
+    #[ApiProperty(readable: false, writable: false)]
     private array $roles = [];
 
     #[ORM\Column]
+    #[ApiProperty(readable: false, writable: false)]
     private ?string $password = null;
 
-    #[ORM\OneToMany(targetEntity: Directors::class, mappedBy: '–≥—user')]
-    private Collection $directors;
-
-    #[ORM\OneToMany(targetEntity: ResultsOfYear::class, mappedBy: 'account')]
-    private Collection $resultsOfYears;
+    #[ORM\OneToMany(targetEntity: Director::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private Collection $director;
 
     public function __construct()
     {
-        $this->directors = new ArrayCollection();
-        $this->resultsOfYears = new ArrayCollection();
+        $this->director = new ArrayCollection();
     }
+
+    public function __toString(): string
+    {
+        return $this->username ?? 'Unnamed User';
+    }
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function  getUsername(): ?string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -63,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -109,63 +116,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection<int, Directors>
-     */
-    public function getDirectors(): Collection
-    {
-        return $this->directors;
-    }
 
-    public function addDirector(Directors $director): static
-    {
-        if (!$this->directors->contains($director)) {
-            $this->directors->add($director);
-            $director->set–≥—user($this);
-        }
 
-        return $this;
-    }
-
-    public function removeDirector(Directors $director): static
-    {
-        if ($this->directors->removeElement($director)) {
-            // set the owning side to null (unless already changed)
-            if ($director->get–≥—user() === $this) {
-                $director->set–≥—user(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ResultsOfYear>
-     */
-    public function getResultsOfYears(): Collection
-    {
-        return $this->resultsOfYears;
-    }
-
-    public function addResultsOfYear(ResultsOfYear $resultsOfYear): static
-    {
-        if (!$this->resultsOfYears->contains($resultsOfYear)) {
-            $this->resultsOfYears->add($resultsOfYear);
-            $resultsOfYear->setAccount($this);
-        }
-
-        return $this;
-    }
-
-    public function removeResultsOfYear(ResultsOfYear $resultsOfYear): static
-    {
-        if ($this->resultsOfYears->removeElement($resultsOfYear)) {
-            // set the owning side to null (unless already changed)
-            if ($resultsOfYear->getAccount() === $this) {
-                $resultsOfYear->setAccount(null);
-            }
-        }
-
-        return $this;
-    }
 }

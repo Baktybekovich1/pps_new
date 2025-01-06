@@ -12,6 +12,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
+
+use OpenApi\Attributes as OA;
+
+
 class UserAccountAwardsGetController extends AbstractController
 {
     public function __construct(
@@ -25,6 +29,7 @@ class UserAccountAwardsGetController extends AbstractController
 
 
     #[Route('/account/research/get/{id}', name: 'app_user_account_research_get',methods: ['GET'])]
+    #[OA\Tag(name: 'Users Research')]
     public function research(Request $request): JsonResponse
     {
         $award = $this->userResearchActivitiesListRepository->find($request->get('id'));
@@ -38,6 +43,7 @@ class UserAccountAwardsGetController extends AbstractController
     }
 
     #[Route('/account/innovative/get/{id}', name: 'app_user_account_innovative_get',methods: ['GET'])]
+    #[OA\Tag(name: 'Users Innovative')]
     public function innovative(Request $request): JsonResponse
     {
         $award = $this->userInnovativeEducationRepository->find($request->get('id'));
@@ -51,6 +57,7 @@ class UserAccountAwardsGetController extends AbstractController
     }
 
     #[Route('/account/social/get/{id}', name: 'app_user_account_social_get' ,methods: ['GET'])]
+    #[OA\Tag(name: 'Users Social')]
     public function social(Request $request): JsonResponse
     {
         $award = $this->userSocialActivitiesRepository->find($request->get('id'));

@@ -22,7 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Users')]
 class UserInfoController extends AbstractController
 {
     public function __construct(
