@@ -16,16 +16,26 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource(
     operations: [
         new GetCollection(
-            security: "is_granted('PUBLIC_ACCESS')",
-            securityMessage: "Пошёл ты",
+            security: "is_granted('PUBLIC_ACCESS')", // GET /api/resource (для всех)
+            securityMessage: "Доступ запрещён."
         ),
         new Get(
-            security: "is_granted('PUBLIC_ACCESS')",
-            securityMessage: 'adasd'
+            security: "is_granted('PUBLIC_ACCESS')", // GET /api/resource/{id} (для всех)
+            securityMessage: "Доступ запрещён."
+        ),
+        new Post(
+            security: "is_granted('ROLE_USER')", // POST /api/resource
+            securityMessage: "Только авторизованные пользователи могут создавать ресурсы."
+        ),
+        new Patch(
+            security: "is_granted('ROLE_USER')", // PATCH /api/resource/{id}
+            securityMessage: "Только авторизованные пользователи могут частично обновлять ресурсы."
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')", // DELETE /api/resource/{id} (например, только админы)
+            securityMessage: "Только администраторы могут удалять ресурсы."
         )
-    ],
-    security: "is_granted('ROLE_USER')",
-    securityMessage: "Только авторизованные пользователи могут выполнять операции с этим ресурсом."
+    ]
 )]
 class InstitutionAnswer
 {
