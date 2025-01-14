@@ -3,6 +3,7 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\InstitutRatingDto;
+use App\Repository\InstitutionAnswerRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
 use App\Repository\UserInfoRepository;
@@ -15,9 +16,12 @@ use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-
+use OpenApi\Attributes as OA;
+#[OA\Tag(name: 'Rating')]
 class ComtehnoRatingController extends AbstractController
 {
+
+
     public function __construct(
         private readonly UserRepository                       $userRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
@@ -27,7 +31,8 @@ class ComtehnoRatingController extends AbstractController
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly InstitutionAnswerRepository $institutionAnswerRepository
     )
     {
     }
@@ -40,14 +45,7 @@ class ComtehnoRatingController extends AbstractController
 
         $institutionsJson = [];
         $instSum = 0;
-        $aff = 0;
         foreach ($institutions as $institution) {
-            if ($institution->getReduction() == 'ИВТД') {
-                $aff = 25;
-            }
-            else{
-                $aff = 17;
-            }
             $userInfos = $this->userInfoRepository->findBy(['institutions' => $institution]);
             $coll = 0;
             foreach ($userInfos as $userInfo) {
@@ -56,7 +54,13 @@ class ComtehnoRatingController extends AbstractController
                 $instSum += $sum;
                 $coll++;
             }
-            if ($coll == 0) {
+            $institutionAnswers = $this->institutionAnswerRepository->findBy(['institution' => $institution, 'status' => true]);
+            $points = 0;
+            foreach ($institutionAnswers as $institutionAnswer) {
+                $points += $institutionAnswer->getQuestion()->getPoints();
+            }
+            $instSum += $points;
+            if ($coll == 0 and $points == 0) {
                 continue;
             }
 
@@ -64,7 +68,7 @@ class ComtehnoRatingController extends AbstractController
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / $aff,
+                    $instSum / $institution->getTotalTeachers(),
                     $instSum
                 );
             $instSum = 0;

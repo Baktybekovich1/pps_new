@@ -26,6 +26,9 @@ class Institutions
     #[ORM\Column(length: 255)]
     private ?string $reduction = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $totalTeachers = null;
+
     #[ORM\OneToMany(targetEntity: Director::class, mappedBy: 'institutions', cascade: ['persist', 'remove'])]
     private Collection $director;
 
@@ -48,6 +51,17 @@ class Institutions
     {
         return $this->id;
     }
+
+    public function getTotalTeachers(): ?int
+    {
+        return $this->totalTeachers;
+    }
+
+    public function setTotalTeachers(?int $totalTeachers): void
+    {
+        $this->totalTeachers = $totalTeachers;
+    }
+
 
     public function getName(): ?string
     {

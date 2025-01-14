@@ -15,7 +15,9 @@ use App\Repository\SocialActivitiesSubtitleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Rating')]
 class QuestionRatingGetController extends AbstractController
 {
     public function __construct(private readonly PersonalAwardsRepository $personalAwardsRepository, private readonly PersonalAwardsSubtitleRepository $personalAwardsSubtitleRepository, private readonly ResearchActivitiesListRepository $researchActivitiesListRepository, private readonly ResearchActivitiesSubtitleRepository $researchActivitiesSubtitleRepository, private readonly InnovativeEducationListRepository $innovativeEducationListRepository, private readonly InnovativeEducationSubtitleRepository $innovativeEducationSubtitleRepository, private readonly SocialActivitiesListRepository $socialActivitiesListRepository, private readonly SocialActivitiesSubtitleRepository $socialActivitiesSubtitleRepository)

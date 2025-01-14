@@ -3,6 +3,7 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\InstitutRatingDto;
+use App\Repository\InstitutionAnswerRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
 use App\Repository\UserInfoRepository;
@@ -15,7 +16,9 @@ use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Rating')]
 class ItecRatingController extends AbstractController
 {
     public function __construct(
@@ -27,12 +30,13 @@ class ItecRatingController extends AbstractController
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly InstitutionAnswerRepository          $institutionAnswerRepository
     )
     {
     }
 
-    #[Route('itec/departments', name: 'app_rating_itec_departments',methods: ['GET'])]
+    #[Route('itec/departments', name: 'app_rating_itec_departments', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $institutions = $this->institutionsRepository->findBy(['university' => 'КИТЭ']);
@@ -41,12 +45,6 @@ class ItecRatingController extends AbstractController
         $institutionsJson = [];
         $instSum = 0;
         foreach ($institutions as $institution) {
-            if ($institution->getReduction() == 'ГЭД') {
-                $aff = 7;
-            }
-            else{
-                $aff = 16;
-            }
             $userInfos = $this->userInfoRepository->findBy(['institutions' => $institution]);
             $coll = 0;
             foreach ($userInfos as $userInfo) {
@@ -55,14 +53,20 @@ class ItecRatingController extends AbstractController
                 $instSum += $sum;
                 $coll++;
             }
-            if ($coll == 0) {
+            $institutionAnswers = $this->institutionAnswerRepository->findBy(['institution' => $institution, 'status' => true]);
+            $points = 0;
+            foreach ($institutionAnswers as $institutionAnswer) {
+                $points += $institutionAnswer->getQuestion()->getPoints();
+            }
+            $instSum += $points;
+            if ($coll == 0 and $points == 0) {
                 continue;
             }
             $institutionsJson[] =
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / $aff,
+                    $instSum / $institution->getTotalTeachers(),
                     $instSum
                 );
             $instSum = 0;

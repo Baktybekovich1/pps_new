@@ -5,7 +5,9 @@ nelmio_api_doc:
         - ^/api/user
     default:
       path_patterns:
-        - ^/(?!admin).* # Все, кроме admin/stage
+        - ^/(?!admin).*
+#        - ^/(?!_error).*
+#        - ^/(?!admin).*
 
   documentation:
     areas:

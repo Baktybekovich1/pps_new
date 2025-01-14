@@ -4,6 +4,7 @@ namespace App\Controller\rating;
 
 use App\Dto\RatingDto\InstitutRatingDto;
 use App\Dto\RatingDto\PpsRatingDto;
+use App\Repository\InstitutionAnswerRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
 use App\Repository\UserInfoRepository;
@@ -17,7 +18,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Rating')]
 class InstitutesRatingController extends AbstractController
 {
     public function __construct(
@@ -29,12 +32,13 @@ class InstitutesRatingController extends AbstractController
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly InstitutionAnswerRepository          $institutionAnswerRepository
     )
     {
     }
 
-    #[Route('institutes', name: 'app_rating_institutes',methods: ['GET'])]
+    #[Route('/institutes', name: 'app_rating_institutes', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $institutions = $this->institutionsRepository->findBy(['university' => 'МУИТ']);
@@ -48,17 +52,25 @@ class InstitutesRatingController extends AbstractController
             foreach ($userInfos as $userInfo) {
                 $user = $userInfo->getUser();
                 $sum = $this->getBigPoints($user);
+
                 $instSum += $sum['sum'];
                 $coll++;
             }
-            if ($coll == 0) {
+            $institutionAnswers = $this->institutionAnswerRepository->findBy(['institution' => $institution, 'status' => true]);
+            $points = 0;
+            foreach ($institutionAnswers as $institutionAnswer) {
+                $points += $institutionAnswer->getQuestion()->getPoints();
+            }
+            $instSum += $points;
+            if ($coll == 0 and $points == 0) {
                 continue;
             }
+
             $institutionsJson[] =
                 new InstitutRatingDto(
                     $institution->getId(),
                     $institution->getName(),
-                    $instSum / $coll,
+                    $instSum / $institution->getTotalTeachers(),
                     $instSum
                 );
             $instSum = 0;
@@ -78,6 +90,8 @@ class InstitutesRatingController extends AbstractController
         $socialCall = $this->getPoints($socials);
         $offence = $this->userOffenceRepository->findBy(['user' => $user]);
         $sum = $activyCall + $upac + $eduCall + $socialCall;
+
+
         foreach ($offence as $value) {
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
         }
@@ -96,7 +110,7 @@ class InstitutesRatingController extends AbstractController
 
     }
 
-    #[Route('/institute/{id}', name: 'app_rating_institute',methods: ['GET'])]
+    #[Route('/institute/{id}', name: 'app_rating_institute', methods: ['GET'])]
     public function getInstitutesPPS(Request $request): JsonResponse
     {
         $institute = $this->institutionsRepository->find($request->get('id'));
