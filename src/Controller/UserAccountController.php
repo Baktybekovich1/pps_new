@@ -22,17 +22,9 @@ class UserAccountController extends AbstractController
         private readonly UserRepository                       $userRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-//        private PersonalAwardsSubtitleRepository      $personalAwardsSubtitleRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-//        private ResearchActivitiesSubtitleRepository  $researchActivitiesSubtitleRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-//        private InnovativeEducationSubtitleRepository $innovativeEducationSubtitleRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-//        private SocialActivitiesSubtitleRepository    $socialActivitiesSubtitleRepository,
-//        private PersonalAwardsRepository              $personalAwardsRepository,
-//        private ResearchActivitiesListRepository      $researchActivitiesListRepository,
-//        private InnovativeEducationListRepository     $innovativeEducationListRepository,
-//        private SocialActivitiesListRepository        $socialActivitiesListRepository
     )
     {
     }
