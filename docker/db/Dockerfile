@@ -1,4 +1,4 @@
-FROM postgres:12-bullseye
+FROM postgres:12.4
 
 
 
