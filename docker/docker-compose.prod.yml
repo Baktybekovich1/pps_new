@@ -40,7 +40,7 @@ services:
     ports:
       - "${DB_EXTERNAL_PORT}:5432"
     volumes:
-      - ".data:/var/lib/postgresql/data"
+      - ".data4:/var/lib/postgresql/data"
     environment:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_USER: ${DB_USER}
