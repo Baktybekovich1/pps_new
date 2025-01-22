@@ -6,7 +6,7 @@
 /public/bundles/
 /var/
 /vendor/
-docker/.env
+#docker/.env
 docker/.data
 composer.json
 composer.lock
