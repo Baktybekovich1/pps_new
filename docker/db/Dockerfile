@@ -2,7 +2,13 @@ FROM postgres:12.4
 
 
 
-RUN apt-get update \
-&& apt-get -y -qq --no-install-recommends install make \
-    libpq-dev \
-    postgresql-server-dev-12
+RUN apt-get update && apt-get -y -qq --no-install-recommends install make libpq-dev && \
+    curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+    echo "deb http://apt.postgresql.org/pub/repos/apt buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    apt-get update && apt-get -y -qq --no-install-recommends install postgresql-server-dev-12
+
+
+#RUN apt-get update \
+#&& apt-get -y -qq --no-install-recommends install make \
+#    libpq-dev \
+#    postgresql-server-dev-12
