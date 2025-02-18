@@ -19,3 +19,8 @@ rating_controllers:
   resource: ../src/Controller/rating
   type: attribute
   prefix: /api/rating
+
+years_controllers:
+  resource: ../src/Controller/Years
+  type: attribute
+  prefix: /years

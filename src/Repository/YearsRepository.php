@@ -21,33 +21,17 @@ class YearsRepository extends ServiceEntityRepository
         parent::__construct($registry, Years::class);
     }
 
-//    /**
-//     * @return Years[] Returns an array of Years objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('y')
-//            ->andWhere('y.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('y.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Years
-//    {
-//        return $this->createQueryBuilder('y')
-//            ->andWhere('y.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
     public function save(Years $years)
     {
         $this->getEntityManager()->persist($years);
         $this->getEntityManager()->flush();
     }
+
+    public function remove(Years $years)
+    {
+        $this->getEntityManager()->remove($years);
+        $this->getEntityManager()->flush();
+    }
+
 }
