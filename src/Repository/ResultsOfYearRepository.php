@@ -49,6 +49,10 @@ class ResultsOfYearRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($resultsOfYear);
         $this->getEntityManager()->flush();
-
+    }
+    public function remove(ResultsOfYear $resultsOfYear): void
+    {
+        $this->getEntityManager()->remove($resultsOfYear);
+        $this->getEntityManager()->flush();
     }
 }
