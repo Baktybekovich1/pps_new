@@ -34,6 +34,7 @@ class ItecRatingController extends AbstractController
         private readonly InstitutionAnswerRepository          $institutionAnswerRepository
     )
     {
+
     }
 
     #[Route('itec/departments', name: 'app_rating_itec_departments', methods: ['GET'])]
