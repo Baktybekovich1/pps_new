@@ -35,9 +35,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Director::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private Collection $director;
 
+    #[ORM\OneToOne(mappedBy: 'account', cascade: ['persist', 'remove'])]
+    private ?Expert $expert = null;
+
+    #[ORM\OneToMany(targetEntity: UserExpertPoint::class, mappedBy: 'teacher')]
+    private Collection $userExpertPoints;
+
     public function __construct()
     {
         $this->director = new ArrayCollection();
+        $this->userExpertPoints = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -114,6 +121,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getExpert(): ?Expert
+    {
+        return $this->expert;
+    }
+
+    public function setExpert(?Expert $expert): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($expert === null && $this->expert !== null) {
+            $this->expert->setAccount(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($expert !== null && $expert->getAccount() !== $this) {
+            $expert->setAccount($this);
+        }
+
+        $this->expert = $expert;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserExpertPoint>
+     */
+    public function getUserExpertPoints(): Collection
+    {
+        return $this->userExpertPoints;
+    }
+
+    public function addUserExpertPoint(UserExpertPoint $userExpertPoint): static
+    {
+        if (!$this->userExpertPoints->contains($userExpertPoint)) {
+            $this->userExpertPoints->add($userExpertPoint);
+            $userExpertPoint->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserExpertPoint(UserExpertPoint $userExpertPoint): static
+    {
+        if ($this->userExpertPoints->removeElement($userExpertPoint)) {
+            // set the owning side to null (unless already changed)
+            if ($userExpertPoint->getTeacher() === $this) {
+                $userExpertPoint->setTeacher(null);
+            }
+        }
+
+        return $this;
     }
 
 
