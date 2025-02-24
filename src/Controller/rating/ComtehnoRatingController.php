@@ -6,6 +6,7 @@ use App\Dto\RatingDto\InstitutRatingDto;
 use App\Repository\InstitutionAnswerRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
+use App\Repository\UserExpertPointRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -17,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
+
 #[OA\Tag(name: 'Rating')]
 class ComtehnoRatingController extends AbstractController
 {
@@ -26,18 +28,18 @@ class ComtehnoRatingController extends AbstractController
         private readonly UserRepository                       $userRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly InstitutionsRepository               $institutionsRepository,
-        private readonly PositionRepository                   $positionsRepository,
+        private readonly UserExpertPointRepository            $userExpertPointRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly InstitutionAnswerRepository $institutionAnswerRepository
+        private readonly InstitutionAnswerRepository          $institutionAnswerRepository
     )
     {
     }
 
-    #[Route('comtehno/departments', name: 'app_rating_comtehno_departments',methods: ['GET'])]
+    #[Route('comtehno/departments', name: 'app_rating_comtehno_departments', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $institutions = $this->institutionsRepository->findBy(['university' => 'Комтехно']);
@@ -90,6 +92,12 @@ class ComtehnoRatingController extends AbstractController
         $sum = $activyCall + $upac + $eduCall + $socialCall;
         foreach ($offence as $value) {
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
+        }
+        $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
+
+        foreach ($expertPoints as $expertPoint) {
+            $point = $expertPoint->getPoint();
+            $sum += $point;
         }
 
         return $sum;

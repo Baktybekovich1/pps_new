@@ -42,7 +42,7 @@ class UserInfoController extends AbstractController
     }
 
 
-    #[Route('/us/{id}', name: 'app_user_us',methods: ['GET'])]
+    #[Route('/us/{id}', name: 'app_user_us', methods: ['GET'])]
     public function us(Request $request): JsonResponse
     {
         return $this->json([
@@ -83,7 +83,7 @@ class UserInfoController extends AbstractController
     }
 
 
-    #[Route('/name', name: 'app_user_name',methods: ['GET'])]
+    #[Route('/name', name: 'app_user_name', methods: ['GET'])]
     public function user_name(UserInterface $user): JsonResponse
     {
         $user = $this->userRepository->find($user->getUserIdentifier());

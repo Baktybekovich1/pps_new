@@ -7,6 +7,7 @@ use App\Dto\RatingDto\PpsRatingDto;
 use App\Repository\InstitutionAnswerRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
+use App\Repository\UserExpertPointRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -23,11 +24,12 @@ use OpenApi\Attributes as OA;
 #[OA\Tag(name: 'Rating')]
 class InstitutesRatingController extends AbstractController
 {
+
     public function __construct(
         private readonly UserRepository                       $userRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly InstitutionsRepository               $institutionsRepository,
-        private readonly PositionRepository                   $positionsRepository,
+        private readonly UserExpertPointRepository            $userExpertPointRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
@@ -94,6 +96,12 @@ class InstitutesRatingController extends AbstractController
 
         foreach ($offence as $value) {
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
+        }
+        $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
+
+        foreach ($expertPoints as $expertPoint) {
+            $point = $expertPoint->getPoint();
+            $sum += $point;
         }
 
         return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];

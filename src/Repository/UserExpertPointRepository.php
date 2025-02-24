@@ -21,28 +21,15 @@ class UserExpertPointRepository extends ServiceEntityRepository
         parent::__construct($registry, UserExpertPoint::class);
     }
 
-//    /**
-//     * @return UserExpertPoint[] Returns an array of UserExpertPoint objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function save(UserExpertPoint $userExpertPoint): void
+    {
+        $this->getEntityManager()->persist($userExpertPoint);
+        $this->getEntityManager()->flush();
+    }
 
-//    public function findOneBySomeField($value): ?UserExpertPoint
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function remove(UserExpertPoint $userExpertPoint): void
+    {
+        $this->getEntityManager()->remove($userExpertPoint);
+        $this->getEntityManager()->flush();
+    }
 }

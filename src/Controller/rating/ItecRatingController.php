@@ -6,6 +6,7 @@ use App\Dto\RatingDto\InstitutRatingDto;
 use App\Repository\InstitutionAnswerRepository;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
+use App\Repository\UserExpertPointRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -31,7 +32,7 @@ class ItecRatingController extends AbstractController
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly InstitutionAnswerRepository          $institutionAnswerRepository
+        private readonly InstitutionAnswerRepository          $institutionAnswerRepository, private readonly UserExpertPointRepository $userExpertPointRepository
     )
     {
 
@@ -89,6 +90,12 @@ class ItecRatingController extends AbstractController
         $sum = $activyCall + $upac + $eduCall + $socialCall;
         foreach ($offence as $value) {
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
+        }
+        $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
+
+        foreach ($expertPoints as $expertPoint) {
+            $point = $expertPoint->getPoint();
+            $sum += $point;
         }
 
         return $sum;

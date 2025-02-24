@@ -3,6 +3,7 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
+use App\Repository\UserExpertPointRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -14,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
+
 #[OA\Tag(name: 'Rating')]
 class ComtehnoPpsRatingController extends AbstractController
 {
@@ -26,15 +28,14 @@ class ComtehnoPpsRatingController extends AbstractController
         private readonly UserRepository                       $userRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly UserOffenceRepository                $userOffenceRepository
+        private readonly UserOffenceRepository                $userOffenceRepository, private readonly UserExpertPointRepository $userExpertPointRepository
     )
     {
     }
 
-    #[Route('comtehno/pps', name: 'comtehno_pps_rating',methods: ['GET'])]
+    #[Route('comtehno/pps', name: 'comtehno_pps_rating', methods: ['GET'])]
     public function index(): JsonResponse
     {
-
         $pps = [];
         $users = $this->userRepository->findAll();
 
@@ -97,6 +98,12 @@ class ComtehnoPpsRatingController extends AbstractController
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
         }
 
+        $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
+
+        foreach ($expertPoints as $expertPoint) {
+            $point = $expertPoint->getPoint();
+            $sum += $point;
+        }
         return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
 
     }

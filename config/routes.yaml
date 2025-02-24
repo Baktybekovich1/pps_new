@@ -24,3 +24,8 @@ years_controllers:
   resource: ../src/Controller/Years
   type: attribute
   prefix: /years
+
+expert_controllers:
+  resource: ../src/Controller/Expert
+  type: attribute
+  prefix: /api/expert
