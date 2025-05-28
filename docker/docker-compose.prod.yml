@@ -20,8 +20,8 @@ services:
 #      - /etc/letsencrypt:/etc/letsencrypt:ro
       - ../:/app:cached
       - "./nginx/conf.d.prod:/etc/nginx/conf.d"
-      - ./certbot/www:/etc/letsencrypt
-#      - ./certbot/www:/etc/letsencrypt/live/api.pps.makalabox.com
+#      - ./certbot/www:/etc/letsencrypt
+      - ./certbot/www:/etc/letsencrypt/live/api.pps.makalabox.com
     ports:
       - "${NGINX_EXTERNAL_PORT}:80"
       - "443:443"
