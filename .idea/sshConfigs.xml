@@ -5,6 +5,7 @@
       <sshConfig authType="PASSWORD" host="178.253.42.165" id="180342f2-f7e0-4ee4-92b2-b171e9617b32" port="22" customName="pps back" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
         <option name="customName" value="pps back" />
       </sshConfig>
+      <sshConfig authType="PASSWORD" host="178.253.42.165" id="7acfa5ea-eaa6-4355-81e4-12687db8c1a9" port="22" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>
