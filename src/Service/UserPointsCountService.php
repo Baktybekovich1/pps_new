@@ -78,19 +78,12 @@ class UserPointsCountService
 
     public function getBigPoints($user)
     {
-        $activity = $this->userActivitiesListsRepository->findBy(['user' => $user, 'status' => 'active']);
-        $activyCall = $this->getPoints($activity);
-        $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user, 'status' => 'active']);
-        $upac = $this->getPoints($personalAwards);
-        $educations = $this->userInnovativeEducationRepository->findBy(['user' => $user, 'status' => 'active']);
-        $eduCall = $this->getPoints($educations);
-        $socials = $this->userSocialActivitiesRepository->findBy(['user' => $user, 'status' => 'active']);
-        $socialCall = $this->getPoints($socials);
-        $offence = $this->userOffenceRepository->findBy(['user' => $user]);
-        $sum = $activyCall + $upac + $eduCall + $socialCall;
-        foreach ($offence as $value) {
-            $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
-        }
+        $activyCall = $this->userActivitiesListsRepository->getUserPoints($user->getId());
+        $upac = $this->userPersonalAwardsRepository->getUserPoints($user->getId());
+        $eduCall = $this->userInnovativeEducationRepository->getUserPoints($user->getId());
+        $socialCall = $this->userSocialActivitiesRepository->getUserPoints($user->getId());
+        $offence = $this->userOffenceRepository->getUserPoints($user->getId());
+        $sum = $activyCall + $upac + $eduCall + $socialCall - $offence;
         $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
 
         foreach ($expertPoints as $expertPoint) {
@@ -99,16 +92,6 @@ class UserPointsCountService
         }
 
         return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
-
-    }
-
-    public function getPoints($objects)
-    {
-        $coll = 0;
-        foreach ($objects as $object) {
-            $coll += $object->getPoints();
-        }
-        return $coll;
 
     }
 

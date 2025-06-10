@@ -56,4 +56,18 @@ class UserResearchActivitiesListRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($research);
         $this->getEntityManager()->flush();
     }
+
+    public function getUserPoints($userId): int|null
+    {
+        $qb = $this->createQueryBuilder('ura');
+        $qb->select('sum(subtitle.points) as points')
+            ->leftJoin('ura.subtitle', 'subtitle')
+            ->where('ura.user = :userId')
+            ->andWhere('ura.status = :status')
+            ->groupBy('ura.user')
+            ->setParameter('userId', $userId)
+            ->setParameter('status' , 'active');
+        $result = $qb->getQuery()->getOneOrNullResult();
+        return $result['points'] ?? null;
+    }
 }

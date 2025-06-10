@@ -20,7 +20,7 @@ class GetUserAllPointsSumService
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly UserRepository                       $userRepository,
-        private readonly UserInfoRepository                   $userInfoRepository)
+        private readonly UserInfoRepository                   $userInfoRepository, private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository)
     {
     }
 
@@ -28,41 +28,15 @@ class GetUserAllPointsSumService
     {
         $user = $this->userRepository->find($userId);
 
-        $info = $this->userInfoRepository->findOneBy(['user' => $user]);
+        $sum = $this->userPersonalAwardsRepository->getUserPoints($userId)
+            + $this->userInnovativeEducationRepository->getUserPoints($userId)
+            + $this->userSocialActivitiesRepository->getUserPoints($userId)
+            + $this->userResearchActivitiesListRepository->getUserPoints($userId);
 
-        $fun = $this->getBigPoints($user);
+        $offence = $this->userOffenceRepository->getUserPoints($userId);
 
-        return $fun;
-    }
 
-    public function getBigPoints($user)
-    {
-        $activity = $this->userActivitiesListsRepository->findBy(['user' => $user, 'status' => 'active']);
-        $activyCall = $this->getPoints($activity);
-        $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user, 'status' => 'active']);
-        $upac = $this->getPoints($personalAwards);
-        $educations = $this->userInnovativeEducationRepository->findBy(['user' => $user, 'status' => 'active']);
-        $eduCall = $this->getPoints($educations);
-        $socials = $this->userSocialActivitiesRepository->findBy(['user' => $user, 'status' => 'active']);
-        $socialCall = $this->getPoints($socials);
-        $offence = $this->userOffenceRepository->findBy(['user' => $user]);
-        $sum = $activyCall + $upac + $eduCall + $socialCall;
-        foreach ($offence as $value) {
-            $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
-        }
-
-        return $sum;
-
-    }
-
-    public function getPoints($objects)
-    {
-        $coll = 0;
-        foreach ($objects as $object) {
-            $coll += $object->getPoints();
-        }
-        return $coll;
-
+        return $sum - $offence;
     }
 
 }

@@ -51,9 +51,26 @@ class UserInnovativeEducationRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
 
     }
+
     public function remove(UserInnovativeEducation $innovative)
     {
         $this->getEntityManager()->remove($innovative);
         $this->getEntityManager()->flush();
+    }
+
+    public function getUserPoints($userId): int|null
+    {
+        $qb = $this->createQueryBuilder('uie');
+
+        $qb->select('SUM(subtitle.points) as points')
+            ->leftJoin('uie.innovativeEducationSubtitle', 'subtitle')
+            ->where('uie.user = :userId')
+            ->andWhere('uie.status = :status')
+            ->groupBy('uie.user')
+            ->setParameter('userId', $userId)
+            ->setParameter('status', 'active');
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result['points'] ?? null;
     }
 }

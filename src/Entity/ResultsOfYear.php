@@ -21,7 +21,19 @@ class ResultsOfYear
     private ?User $account = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $points = null;
+    private ?int $awardPoints = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $researchPoints = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $innovativePoints = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $socialPoints = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $sumPoints = null;
 
     public function getId(): ?int
     {
@@ -52,14 +64,62 @@ class ResultsOfYear
         return $this;
     }
 
-    public function getPoints(): ?int
+    public function getAwardPoints(): ?int
     {
-        return $this->points;
+        return $this->awardPoints;
     }
 
-    public function setPoints(?int $points): static
+    public function setAwardPoints(?int $awardPoints): static
     {
-        $this->points = $points;
+        $this->awardPoints = $awardPoints;
+
+        return $this;
+    }
+
+    public function getResearchPoints(): ?int
+    {
+        return $this->researchPoints;
+    }
+
+    public function setResearchPoints(?int $researchPoints): static
+    {
+        $this->researchPoints = $researchPoints;
+
+        return $this;
+    }
+
+    public function getInnovativePoints(): ?int
+    {
+        return $this->innovativePoints;
+    }
+
+    public function setInnovativePoints(?int $innovativePoints): static
+    {
+        $this->innovativePoints = $innovativePoints;
+
+        return $this;
+    }
+
+    public function getSocialPoints(): ?int
+    {
+        return $this->socialPoints;
+    }
+
+    public function setSocialPoints(?int $socialPoints): static
+    {
+        $this->socialPoints = $socialPoints;
+
+        return $this;
+    }
+
+    public function getSumPoints(): ?int
+    {
+        return $this->sumPoints;
+    }
+
+    public function setSumPoints(?int $sumPoints): static
+    {
+        $this->sumPoints = $sumPoints;
 
         return $this;
     }

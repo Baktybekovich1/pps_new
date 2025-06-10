@@ -50,10 +50,23 @@ class UserOffenceRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($userOffence);
         $this->getEntityManager()->flush();
     }
+
     public function remove(UserOffence $userOffence)
     {
         $this->getEntityManager()->remove($userOffence);
         $this->getEntityManager()->flush();
+    }
+
+    public function getUserPoints($userId): int|null
+    {
+        $qb = $this->createQueryBuilder('uo');
+        $qb->select('sum(uo.quantity) * sum(list.points) as points')
+            ->leftJoin('uo.offenceList', 'list')
+            ->where('uo.user = :userId')
+            ->groupBy('uo.user')
+            ->setParameter(':userId', $userId);
+        $result = $qb->getQuery()->getOneOrNullResult();
+        return $result['points'] ?? null;
     }
 
 }

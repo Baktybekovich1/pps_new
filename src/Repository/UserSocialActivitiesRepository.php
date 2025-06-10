@@ -45,16 +45,30 @@ class UserSocialActivitiesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-    public function save(UserSocialActivities $userSocialActivities)
+    public function save(UserSocialActivities $userSocialActivities): void
     {
         $this->getEntityManager()->persist($userSocialActivities);
         $this->getEntityManager()->flush();
     }
 
-    public function remove(UserSocialActivities $social)
+    public function remove(UserSocialActivities $social): void
     {
         $this->getEntityManager()->remove($social);
         $this->getEntityManager()->flush();
+    }
+
+    public function getUserPoints($userId): int|null
+    {
+        $qb = $this->createQueryBuilder('usa');
+        $qb->select('sum(subtitle.points) as points')
+            ->leftJoin('usa.socialActivitiesSubtitle', 'subtitle')
+            ->where('usa.user = :userId')
+            ->andWhere('usa.status = :status')
+            ->groupBy('usa.user')
+            ->setParameter('userId', $userId)
+            ->setParameter('status' , 'active');
+        $result = $qb->getQuery()->getOneOrNullResult();
+        return $result['points'] ?? null;
     }
 
 }

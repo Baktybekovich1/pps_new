@@ -1,0 +1,6 @@
+POST http://localhost:8092/years/add
+Content-Type: application/json
+
+{
+  "name": "2024"
+}

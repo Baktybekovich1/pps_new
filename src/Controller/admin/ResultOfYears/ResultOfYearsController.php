@@ -46,7 +46,7 @@ class ResultOfYearsController extends AbstractController
         foreach ($users as $item) {
             $ResultOfYear = new ResultsOfYear();
             $ResultOfYear->setYear($year);
-            $ResultOfYear->setPoints($item->points);
+            $ResultOfYear->setAwardPoints($item->points);
             $ResultOfYear->setAccount($item->user);
             $this->resultsOfYearRepository->save($ResultOfYear);
         }

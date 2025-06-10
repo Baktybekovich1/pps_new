@@ -6,7 +6,11 @@ use App\Entity\ResultsOfYear;
 use App\Entity\Years;
 
 use App\Repository\ResultsOfYearRepository;
+use App\Repository\UserInnovativeEducationRepository;
+use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
+use App\Repository\UserResearchActivitiesListRepository;
+use App\Repository\UserSocialActivitiesRepository;
 use App\Repository\YearsRepository;
 use App\Service\GetUserAllPointsSumService;
 
@@ -16,7 +20,7 @@ readonly class AddNewYearsService
         private YearsRepository            $yearsRepository,
         private ResultsOfYearRepository    $resultsOfYearRepository,
         private UserRepository             $userRepository,
-        private GetUserAllPointsSumService $getUserAllPointsSumService
+        private GetUserAllPointsSumService $getUserAllPointsSumService, private UserPersonalAwardsRepository $userPersonalAwardsRepository, private UserResearchActivitiesListRepository $userResearchActivitiesListRepository, private UserInnovativeEducationRepository $userInnovativeEducationRepository, private UserSocialActivitiesRepository $userSocialActivitiesRepository
     )
     {
     }
@@ -32,7 +36,11 @@ readonly class AddNewYearsService
             $results = new ResultsOfYear();
             $results->setYear($year);
             $results->setAccount($user);
-            $results->setPoints($this->getUserAllPointsSumService->getUserAllPointsSum($user->getId()));
+            $results->setAwardPoints($this->userPersonalAwardsRepository->getUserPoints($user->getId()));
+            $results->setResearchPoints($this->userResearchActivitiesListRepository->getUserPoints($user->getId()));
+            $results->setInnovativePoints($this->userInnovativeEducationRepository->getUserPoints($user->getId()));
+            $results->setSocialPoints($this->userSocialActivitiesRepository->getUserPoints($user->getId()));
+            $results->setSumPoints($this->getUserAllPointsSumService->getUserAllPointsSum($user->getId()));
             $this->resultsOfYearRepository->save($results);
         }
         return true;

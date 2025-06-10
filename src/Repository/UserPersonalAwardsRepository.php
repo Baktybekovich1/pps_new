@@ -58,5 +58,22 @@ class UserPersonalAwardsRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function getUserPoints($userId): int|null
+    {
+        $qb = $this->createQueryBuilder('upa');
+
+        $qb->select('SUM(subtitle.points) as points')
+            ->leftJoin('upa.subtitle', 'subtitle')
+            ->where('upa.status = :status')
+            ->andWhere('upa.user = :userId') // если это связь с User сущностью
+            ->setParameter('status', 'active')
+            ->setParameter('userId', $userId)
+            ->groupBy('upa.user');
+
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        return $result['points'] ?? null;
+    }
+
 
 }

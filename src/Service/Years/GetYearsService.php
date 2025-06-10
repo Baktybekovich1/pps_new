@@ -31,7 +31,7 @@ class GetYearsService
                     $teachers[] = new GetYearUserPointsDto(
                         $user->getId(),
                         $user->getUsername(),
-                        $this->resultsOfYearRepository->findOneBy(['year' => $db_year, 'account' => $user])->getPoints()
+                        $this->resultsOfYearRepository->findOneBy(['year' => $db_year, 'account' => $user])->getAwardPoints()
                     );
                 }
             }
