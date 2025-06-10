@@ -57,7 +57,7 @@ class UserSocialActivitiesRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function getUserPoints($userId): int|null
+    public function getUserPoints($userId): int
     {
         $qb = $this->createQueryBuilder('usa');
         $qb->select('sum(subtitle.points) as points')
@@ -68,7 +68,7 @@ class UserSocialActivitiesRepository extends ServiceEntityRepository
             ->setParameter('userId', $userId)
             ->setParameter('status' , 'active');
         $result = $qb->getQuery()->getOneOrNullResult();
-        return $result['points'] ?? null;
+        return $result['points'] ?? 0;
     }
 
 }

@@ -57,7 +57,7 @@ class UserOffenceRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function getUserPoints($userId): int|null
+    public function getUserPoints($userId): int
     {
         $qb = $this->createQueryBuilder('uo');
         $qb->select('sum(uo.quantity) * sum(list.points) as points')
@@ -66,7 +66,7 @@ class UserOffenceRepository extends ServiceEntityRepository
             ->groupBy('uo.user')
             ->setParameter(':userId', $userId);
         $result = $qb->getQuery()->getOneOrNullResult();
-        return $result['points'] ?? null;
+        return $result['points'] ?? 0;
     }
 
 }
