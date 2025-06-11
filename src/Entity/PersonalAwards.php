@@ -47,4 +47,15 @@ class PersonalAwards
         return $this;
     }
 
+    public function getPersonalAwardsSubtitles(): Collection
+    {
+        return $this->personalAwardsSubtitles;
+    }
+
+    public function setPersonalAwardsSubtitles(Collection $personalAwardsSubtitles): void
+    {
+        $this->personalAwardsSubtitles = $personalAwardsSubtitles;
+    }
+
+
 }
