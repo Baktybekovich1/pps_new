@@ -43,6 +43,12 @@ class UserCrudController extends AbstractCrudController
         yield $password;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setSearchFields(['username', 'userInfo.name']);
+    }
+
     public function persistEntity(\Doctrine\ORM\EntityManagerInterface $entityManager, $entityInstance): void
     {
         if ($entityInstance instanceof User && $entityInstance->getPassword()) {
