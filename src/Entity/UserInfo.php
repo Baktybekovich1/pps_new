@@ -16,7 +16,7 @@ class UserInfo
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\OneToOne(targetEntity: User::class)]
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Institutions::class)]

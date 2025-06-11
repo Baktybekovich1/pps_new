@@ -33,11 +33,7 @@ class SignUpController extends AbstractController
         $user = new User();
         $user->setUsername($dto->username);
         $user->setPassword($userPasswordHasher->hashPassword($user, $dto->password));
-        if ($dto->username == 'admin') {
-            $user->setRoles(['ROLE_ADMIN']);
-        } else {
-            $user->setRoles(["ROLE_USER"]);
-        }
+        $user->setRoles(["ROLE_USER"]);
         $this->userRepository->save($user);
 
         return $this->json(['token' => 'Ilya Salam']);

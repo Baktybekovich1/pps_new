@@ -32,6 +32,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ApiProperty(readable: false, writable: false)]
     private ?string $password = null;
 
+    #[ORM\OneToOne(targetEntity: UserInfo::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private $userInfo;
     #[ORM\OneToMany(targetEntity: Director::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
     private Collection $director;
 
@@ -52,6 +54,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->username ?? 'Unnamed User';
     }
 
+    public function getUserInfo(): UserInfo
+    {
+        return $this->userInfo;
+    }
 
     public function getId(): ?int
     {
