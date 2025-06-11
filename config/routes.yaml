@@ -12,7 +12,7 @@ api_login_check:
 user_controllers:
   resource: ../src/Controller/user
   type: attribute
-  prefix: /api/user
+  prefix: /user
 
 
 rating_controllers:
