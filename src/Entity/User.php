@@ -56,7 +56,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserInfo(): string
     {
-        return $this->userInfo->getName() ?? 'Unnamed User';
+        try {
+            return $this->userInfo->getName();
+        }catch (\Throwable $exception){
+            return 'Unnamed User';
+        }
     }
 
     public function getId(): ?int
@@ -180,7 +184,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
 
 }
