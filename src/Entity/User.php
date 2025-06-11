@@ -54,9 +54,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->username ?? 'Unnamed User';
     }
 
-    public function getUserInfo(): UserInfo
+    public function getUserInfo(): string
     {
-        return $this->userInfo;
+        return $this->userInfo->getName() ?? 'Unnamed User';
     }
 
     public function getId(): ?int
