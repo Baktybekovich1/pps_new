@@ -30,7 +30,8 @@ class GetRoleController extends AbstractController
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository
+        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly PasswordHasherInterface              $passwordHasher
     )
     {
     }
@@ -82,7 +83,7 @@ class GetRoleController extends AbstractController
     public function change_pro_pass(): JsonResponse
     {
         $user = $this->userRepository->find(66);
-        $user->setPassword('marsel2013');
+        $user->setPassword($this->passwordHasher->hashPassword($user, 'marsel2013'));
         $this->userRepository->save($user);
         return $this->json('Success');
     }
