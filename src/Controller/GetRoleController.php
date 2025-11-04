@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use OpenApi\Attributes as OA;
+
 class GetRoleController extends AbstractController
 {
     public function __construct(
@@ -34,7 +35,7 @@ class GetRoleController extends AbstractController
     {
     }
 
-    #[Route('/api/get/role', name: 'app_get_role',methods: ['GET'])]
+    #[Route('/api/get/role', name: 'app_get_role', methods: ['GET'])]
     public function index(UserInterface $userStorage): JsonResponse
     {
         if ($userStorage->getUserIdentifier() != null) {
@@ -56,7 +57,7 @@ class GetRoleController extends AbstractController
     }
 
 
-    #[Route('api/user/info', name: 'app_user_info' , methods: ['GET'])]
+    #[Route('api/user/info', name: 'app_user_info', methods: ['GET'])]
     public function user_info(): JsonResponse
     {
         $positions = $this->positionsRepository->findAll();
@@ -77,6 +78,12 @@ class GetRoleController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/change/pro/pass', name: 'change_pro_pass', methods: ['GET'])]
+    public function change_pro_pass(): JsonResponse
+    {
+        return $this->json('Success');
+    }
+
     #[Route('i/am/akai/and/i/want/delete/all/users/and/awards', name: 'app_ddd', methods: ['GET'])]
     public function fatal_delete_all_users_and_awards(): JsonResponse
     {
@@ -88,13 +95,13 @@ class GetRoleController extends AbstractController
         $social = $this->userSocialActivitiesRepository->findAll();
         $users = $this->userRepository->findAll();
 
-        $this->delete($awards, $this->userPersonalAwardsRepository);
-        $this->delete($innovative, $this->userInnovativeEducationRepository);
-        $this->delete($offence, $this->userOffenceRepository);
-        $this->delete($research, $this->userResearchActivitiesListRepository);
-        $this->delete($social, $this->userSocialActivitiesRepository);
-        $this->delete($info, $this->userInfoRepository);
-        $this->delete($users, $this->userRepository);
+//        $this->delete($awards, $this->userPersonalAwardsRepository);
+//        $this->delete($innovative, $this->userInnovativeEducationRepository);
+//        $this->delete($offence, $this->userOffenceRepository);
+//        $this->delete($research, $this->userResearchActivitiesListRepository);
+//        $this->delete($social, $this->userSocialActivitiesRepository);
+//        $this->delete($info, $this->userInfoRepository);
+//        $this->delete($users, $this->userRepository);
         return $this->json(["SUCCESS"]);
     }
 
@@ -106,7 +113,7 @@ class GetRoleController extends AbstractController
         }
     }
 
-    #[Route('api/user/account/award/get/{id}', name: 'app_user_account_award_get',methods: ['GET'])]
+    #[Route('api/user/account/award/get/{id}', name: 'app_user_account_award_get', methods: ['GET'])]
     public function award(Request $request): JsonResponse
     {
         $award = $this->userPersonalAwardsRepository->find($request->get('id'));
