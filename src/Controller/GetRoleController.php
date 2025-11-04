@@ -15,6 +15,7 @@ use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use OpenApi\Attributes as OA;
@@ -31,7 +32,7 @@ class GetRoleController extends AbstractController
         private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly PasswordHasherInterface              $passwordHasher
+        private readonly UserPasswordHasherInterface          $passwordHasher
     )
     {
     }
