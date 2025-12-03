@@ -17,13 +17,18 @@ services:
     depends_on:
       - php
     volumes:
-      - /etc/letsencrypt/live/api.pps.makalabox.com/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
-      - /etc/letsencrypt/live/api.pps.makalabox.com/privkey.pem:/etc/ssl/private/privkey.pem:ro
-#      - /etc/letsencrypt:/etc/letsencrypt:ro
+      #      - /etc/letsencrypt/live/api.pps.makalabox.com/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
+      #      - /etc/letsencrypt/live/api.pps.makalabox.com/privkey.pem:/etc/ssl/private/privkey.pem:ro
+      #      - /etc/letsencrypt:/etc/letsencrypt:ro
+      #      - ../:/app:cached
+      #      - "./nginx/conf.d.prod:/etc/nginx/conf.d"
+      ##      - ./certbot/www:/etc/letsencrypt
+      #      - ./certbot/www:/etc/letsencrypt/live/api.pps.makalabox.com
+
       - ../:/app:cached
+#      - "./nginx/conf.d:/etc/nginx/conf.d"  # Используйте обычный конфиг, не .prod
       - "./nginx/conf.d.prod:/etc/nginx/conf.d"
-#      - ./certbot/www:/etc/letsencrypt
-      - ./certbot/www:/etc/letsencrypt/live/api.pps.makalabox.com
+      - "/etc/letsencrypt:/etc/letsencrypt:ro"  # Правильный путь к certbot
     ports:
       - "${NGINX_EXTERNAL_PORT}:80"
       - "443:443"
