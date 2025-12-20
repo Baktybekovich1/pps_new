@@ -17,27 +17,26 @@ class SignupCodeMailer
     {
         $repo = $this->em->getRepository(Teacher::class);
         $teacher = $repo->findOneBy(['email' => $email]);
-        $teacher->setCodeExpiredAt(
-            new \DateTimeImmutable('now', new \DateTimeZone('UTC'))
-        );
-        if (!$teacher) {
+
+        if (!$teacher) {                                    // ⬅️ СНАЧАЛА создаём
             $teacher = (new Teacher())->setEmail($email);
         }
 
         $code = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        $teacher->setSignupCode($code)
-            ->setCodeExpiredAt(new \DateTimeImmutable('+15 minutes'));
+        $teacher
+            ->setSignupCode($code)
+            ->setCodeExpiredAt(new \DateTimeImmutable('+15 minutes', new \DateTimeZone('UTC')));
 
         $this->em->persist($teacher);
         $this->em->flush();
 
-        $email = (new Email())
-            ->from($_ENV['MAILER_FROM'] ?? 'noreply@example.com') // ← добавьте
+        $mail = (new Email())
+            ->from($_ENV['MAILER_FROM'] ?? 'noreply@example.com')
             ->to($email)
             ->subject('Код регистрации')
             ->text("Ваш код: $code (действителен 15 минут)");
 
-        $this->mailer->send($email);
+        $this->mailer->send($mail);
 
         return $teacher;
     }
