@@ -48,7 +48,7 @@ class SignupCodeMailer
      */
     private function sendMailAsync(string $to, string $subject, string $text): void
     {
-        $this->httpClient->request('POST', 'http://localhost/api/internal/send-mail', [
+        $this->httpClient->request('POST', 'https://api.pps.makalabox.com/api/internal/send-mail', [
             'json' => [
                 'to'      => $to,
                 'subject' => $subject,
