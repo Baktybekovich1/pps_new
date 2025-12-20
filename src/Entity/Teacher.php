@@ -55,7 +55,7 @@ class Teacher implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $hasTrousers = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Groups('teacher:read')]
     private Position $position;
 
