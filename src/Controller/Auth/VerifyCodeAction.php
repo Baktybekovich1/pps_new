@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller\Auth;
+
 use App\Model\VerifyRequest;
 use App\Repository\TeacherRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,10 +16,12 @@ use OpenApi\Attributes as OA;
 class VerifyCodeAction extends AbstractController
 {
     public function __construct(
-        private TeacherRepository $repo,
-        private EntityManagerInterface $em,
+        private TeacherRepository           $repo,
+        private EntityManagerInterface      $em,
         private UserPasswordHasherInterface $hasher
-    ) {}
+    )
+    {
+    }
 
     #[Route('/api/auth/verify', name: 'auth_verify', methods: ['POST'])]
     public function __invoke(
@@ -26,19 +29,24 @@ class VerifyCodeAction extends AbstractController
     ): Response
     {
         $teacher = $this->repo->findOneBy(['email' => $dto->email]);
-        if (!$teacher ||
-            $teacher->getSignupCode() !== $dto->code ||
-            $teacher->isCodeExpired()) {
-            return $this->json(['error' => 'Invalid or expired code'], 422);
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        if ($teacher->getCodeExpiredAt() < $now)
+        {
+            if (!$teacher ||
+                $teacher->getSignupCode() !== $dto->code ||
+                $teacher->isCodeExpired()) {
+                return $this->json(['error' => 'Invalid or expired code'], 422);
+            }
+
+            $teacher->setPassword($this->hasher->hashPassword($teacher, $dto->password))
+                ->setEnabled(true)
+                ->setSignupCode(null)
+                ->setCodeExpiredAt(null);
+
+            $this->em->flush();
+
+            return $this->json(['message' => 'Password created, you may login']);
         }
-
-        $teacher->setPassword($this->hasher->hashPassword($teacher, $dto->password))
-            ->setEnabled(true)
-            ->setSignupCode(null)
-            ->setCodeExpiredAt(null);
-
-        $this->em->flush();
-
-        return $this->json(['message' => 'Password created, you may login']);
+        return $this->json(['error' => 'Invalid code'], 422);
     }
 }

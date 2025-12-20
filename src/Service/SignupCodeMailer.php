@@ -17,6 +17,9 @@ class SignupCodeMailer
     {
         $repo = $this->em->getRepository(Teacher::class);
         $teacher = $repo->findOneBy(['email' => $email]);
+        $teacher->setCodeExpiredAt(
+            new \DateTimeImmutable('now', new \DateTimeZone('UTC'))
+        );
         if (!$teacher) {
             $teacher = (new Teacher())->setEmail($email);
         }
