@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeacherRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_EMAIL', fields: ['email'])]
-class Teacher implements UserInterface, PasswordAuthenticatedUserInterface
+class Teacher implements UserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
     private ?int $id = null;
@@ -26,17 +26,9 @@ class Teacher implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'json')]
     private array $roles = ['ROLE_TEACHER'];
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $password = null;
+//    #[ORM\Column(type: 'string', nullable: true)]
+//    private ?string $password = null;
 
-    #[ORM\Column(type: 'string', length: 6, nullable: true)]
-    private ?string $signupCode = null;
-
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $codeExpiredAt = null;
-
-    #[ORM\Column(type: 'boolean')]
-    private bool $enabled = false;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups('teacher:read')]
@@ -120,54 +112,17 @@ class Teacher implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
+//    public function getPassword(): ?string
+//    {
+//        return $this->password;
+//    }
+//
+//    public function setPassword(string $password): self
+//    {
+//        $this->password = $password;
+//        return $this;
+//    }
 
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-        return $this;
-    }
-
-    public function getSignupCode(): ?string
-    {
-        return $this->signupCode;
-    }
-
-    public function setSignupCode(?string $code): self
-    {
-        $this->signupCode = $code;
-        return $this;
-    }
-
-    public function getCodeExpiredAt(): ?\DateTimeImmutable
-    {
-        return $this->codeExpiredAt;
-    }
-
-    public function setCodeExpiredAt(?\DateTimeImmutable $dt): self
-    {
-        $this->codeExpiredAt = $dt;
-        return $this;
-    }
-
-    public function isCodeExpired(): bool
-    {
-        return $this->codeExpiredAt === null || $this->codeExpiredAt < new \DateTimeImmutable();
-    }
-
-    public function isEnabled(): bool
-    {
-        return $this->enabled;
-    }
-
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-        return $this;
-    }
 
     public function getFirstName(): ?string
     {

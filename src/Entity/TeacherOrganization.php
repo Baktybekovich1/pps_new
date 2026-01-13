@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TeacherOrganizationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TeacherOrganizationRepository::class)]
 #[UniqueEntity(fields: ['teacher', 'organization'], message: 'Организация уже добавлена')]
@@ -12,6 +13,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class TeacherOrganization
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    #[Groups('teacher:read')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'teacherOrganizations')]
@@ -20,10 +22,12 @@ class TeacherOrganization
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('teacher:read')]
     private Organization $organization;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('teacher:read')]
     private Institute $institute;
 
     public function getId(): ?int

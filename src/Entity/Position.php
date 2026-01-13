@@ -12,15 +12,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class Position
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
-    #[Groups('position:read')]
+    #[Groups(['position:read','teacher:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('position:read')]
+    #[Groups(['position:read','teacher:read'])]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('position:read')]
+    #[Groups(['position:read','teacher:read'])]
     private ?string $reduction = null;
 
     public function getId(): ?int

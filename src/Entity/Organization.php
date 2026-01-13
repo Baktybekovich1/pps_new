@@ -14,11 +14,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class Organization
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
-    #[Groups('organization:read')]
+    #[Groups(['organization:read','teacher:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups('organization:read')]
+    #[Groups(['organization:read','teacher:read'])]
     private string $name;
 
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Institute::class, orphanRemoval: true)]
@@ -29,6 +29,10 @@ class Organization
         $this->institutes = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->name;
+    }
     public function getId(): ?int
     {
         return $this->id;

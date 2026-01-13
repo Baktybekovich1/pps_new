@@ -9,9 +9,6 @@ services:
       - ../:/app:cached
     environment:
       PHP_IDE_CONFIG: "serverName=docker-server"
-      MESSENGER_TRANSPORT_DSN: amqp://guest:guest@rabbit:5672/%2f/messages   # ← одна строка
-    depends_on: #
-      - rabbit #
 
   nginx:
     build:
@@ -55,41 +52,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: ${DB_NAME}
-  #////////////
-  rabbit:
-    image: rabbitmq:3.12-management-alpine
-    container_name: ${COMPOSE_PROJECT_NAME}-rabbit
-    ports:
-      - "5672:5672"      # AMQP
-      - "15672:15672"    # UI  guest/guest
-    volumes:
-      - rabbit_data:/var/lib/rabbitmq
-    healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
-  worker:
-    build:
-      context: ../
-      dockerfile: docker/php/Dockerfile.prod   # тот же образ, что и php-fpm
-    container_name: ${COMPOSE_PROJECT_NAME}-worker
-    command: >
-      bash -c "sleep 10 &&
-               cd /app &&
-               php bin/console messenger:consume async --limit=500 -vv"
-    volumes:
-      - ../:/app:cached
-    environment:
-      MESSENGER_TRANSPORT_DSN: amqp://guest:guest@rabbit:5672/%2f/messages
-    depends_on:
-      rabbit:
-        condition: service_healthy
-    restart: unless-stopped
-
-volumes:
-  rabbit_data:
 #33333
 #volumes:
 #  db_data:
