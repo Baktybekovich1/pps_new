@@ -21,6 +21,7 @@ class InstituteCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            IdField::new('id')->onlyOnIndex(),
             TextField::new('name'),
             AssociationField::new('organization','Организация')->renderAsNativeWidget(),
             TextField::new('reduction'),

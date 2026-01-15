@@ -9,6 +9,8 @@ use App\Entity\InstitutionQuestion;
 use App\Entity\InstitutionQuestionOption;
 use App\Entity\Organization;
 use App\Entity\Position;
+use App\Entity\Teacher;
+use App\Entity\TeacherOrganization;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -50,7 +52,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('App');
+            ->setTitle(' Администрирование');
     }
 
     public function configureMenuItems(): iterable
@@ -58,9 +60,11 @@ class DashboardController extends AbstractDashboardController
 //        yield MenuItem::linkToCrud('Director label', 'fas fa-list', Director::class);
 //        yield MenuItem::linkToCrud('Institution Questions label', 'fas fa-list', InstitutionQuestion::class);
 //        yield MenuItem::linkToCrud('Institution Question Options label', 'fas fa-list', InstitutionQuestionOption::class);
-        yield MenuItem::linkToCrud('Administration Users', 'fas fa-list', User::class);
-        yield MenuItem::linkToCrud('Administration Organizations', 'fas fa-list', Organization::class);
-        yield MenuItem::linkToCrud('Administration Institutes', 'fas fa-list', Institute::class);
-        yield MenuItem::linkToCrud('Administration Position', 'fas fa-list', Position::class);
+        yield MenuItem::linkToCrud('Пользователи', 'fas fa-list', User::class);
+        yield MenuItem::linkToCrud('Организации', 'fas fa-list', Organization::class);
+        yield MenuItem::linkToCrud('Институты', 'fas fa-list', Institute::class);
+        yield MenuItem::linkToCrud('Позиции учителей', 'fas fa-list', Position::class);
+        yield MenuItem::linkToCrud('Директора Интститутов', 'fas fa-list', Director::class);
+        yield MenuItem::linkToCrud('Учителя', 'fas fa-list', Teacher::class);
     }
 }

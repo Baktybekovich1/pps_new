@@ -30,6 +30,25 @@ class TeacherOrganization
     #[Groups('teacher:read')]
     private Institute $institute;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    #[Groups('teacher:read')]
+    private ?bool $regular = null;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $active = null;
+
+//    public function __construct(Teacher $teacher, Organization $org, Institute $inst)
+//    {
+//        $this->teacher = $teacher;
+//        $this->organization = $org;
+//        $this->institute = $inst;
+//    }
+
+    public function __toString(): string
+    {
+        return $this->organization->getName() . ' ' . $this->institute->getName();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,4 +86,25 @@ class TeacherOrganization
         $this->institute = $i;
         return $this;
     }
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    public function getRegular(): ?bool
+    {
+        return $this->regular;
+    }
+
+    public function setRegular(?bool $regular): void
+    {
+        $this->regular = $regular;
+    }
+
 }

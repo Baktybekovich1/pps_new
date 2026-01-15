@@ -30,5 +30,9 @@ services:
     public: true
     tags: [ 'controller.service_arguments' ]
 
+  App\EventListener\LoginSuccessListener:
+    tags:
+      - { name: kernel.event_listener, event: security.login_success, method: onLoginSuccess }
+
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

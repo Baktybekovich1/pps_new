@@ -33,8 +33,18 @@ security:
         check_path: /api/login
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    main:
+      lazy: true
+      provider: users
+      form_login:
+        login_path: /login
+        check_path: /login
+        default_target_path: /choose-role
+      logout:
+        path: /logout
+        target: /login
 
-#    teacher_login:
+        #    teacher_login:
 #      pattern: ^/api/teacher/login
 #      stateless: true
 #      provider: teachers
@@ -64,7 +74,7 @@ security:
 #      provider: app_user_provider
 
   access_control:
-#    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/admin, roles: ROLE_ADMIN }
 #    - { path: ^/admin, roles: ROLE_ADMIN }
 #    - { path: ^/api/user, roles: ROLE_USER }
 

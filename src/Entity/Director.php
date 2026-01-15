@@ -43,14 +43,19 @@ class Director
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'director')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist', 'remove'], inversedBy: 'director')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'director')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Institutions $institutions = null;
+    private ?Institute $institute = null;
 
+
+    public function __construct()
+    {
+        $this->user = new User();   // ← пустой объект, поля заполняются формой
+    }
 
     public function getId(): ?int
     {
@@ -70,14 +75,14 @@ class Director
         return $this;
     }
 
-    public function getInstitutions(): ?Institutions
+    public function getInstitute(): ?Institute
     {
-        return $this->institutions;
+        return $this->institute;
     }
 
-    public function setInstitutions(?Institutions $institutions): static
+    public function setInstitute(?Institute $institute): static
     {
-        $this->institutions = $institutions;
+        $this->institute = $institute;
 
         return $this;
     }

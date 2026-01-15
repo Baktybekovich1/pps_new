@@ -42,9 +42,7 @@ class Teacher implements UserInterface
     #[Groups('teacher:read')]
     private ?string $middleName = null;
 
-    #[ORM\Column(type: 'boolean', nullable: true)]
-    #[Groups('teacher:read')]
-    private ?bool $hasTrousers = null;
+
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -59,6 +57,11 @@ class Teacher implements UserInterface
     public function __construct()
     {
         $this->teacherOrganizations = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getFirstName().' '.$this->getLastName();
     }
 
     /** @return Collection<int,TeacherOrganization> */
@@ -106,6 +109,12 @@ class Teacher implements UserInterface
     public function getRoles(): array
     {
         return array_unique($this->roles);
+    }
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
     public function eraseCredentials(): void
@@ -157,16 +166,7 @@ class Teacher implements UserInterface
         return $this;
     }
 
-    public function getHasTrousers(): ?bool
-    {
-        return $this->hasTrousers;
-    }
 
-    public function setHasTrousers(?bool $v): self
-    {
-        $this->hasTrousers = $v;
-        return $this;
-    }
 
     public function getPosition(): Position
     {
