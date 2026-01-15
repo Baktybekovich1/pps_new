@@ -54,9 +54,13 @@ class Teacher implements UserInterface
     /** @var Collection<int, TeacherOrganization> */
     private Collection $teacherOrganizations;
 
+    #[ORM\OneToMany(targetEntity: TeacherAnswer::class, mappedBy: 'teacher')]
+    private Collection $teacherAnswers;
+
     public function __construct()
     {
         $this->teacherOrganizations = new ArrayCollection();
+        $this->teacherAnswers = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -176,6 +180,36 @@ class Teacher implements UserInterface
     public function setPosition(Position $p): self
     {
         $this->position = $p;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TeacherAnswer>
+     */
+    public function getTeacherAnswers(): Collection
+    {
+        return $this->teacherAnswers;
+    }
+
+    public function addTeacherAnswer(TeacherAnswer $teacherAnswer): static
+    {
+        if (!$this->teacherAnswers->contains($teacherAnswer)) {
+            $this->teacherAnswers->add($teacherAnswer);
+            $teacherAnswer->setTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeacherAnswer(TeacherAnswer $teacherAnswer): static
+    {
+        if ($this->teacherAnswers->removeElement($teacherAnswer)) {
+            // set the owning side to null (unless already changed)
+            if ($teacherAnswer->getTeacher() === $this) {
+                $teacherAnswer->setTeacher(null);
+            }
+        }
+
         return $this;
     }
 }

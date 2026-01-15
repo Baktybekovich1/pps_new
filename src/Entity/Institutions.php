@@ -29,17 +29,9 @@ class Institutions
     #[ORM\Column(nullable: true)]
     private ?int $totalTeachers = null;
 
-    #[ORM\OneToMany(targetEntity: Director::class, mappedBy: 'institutions', cascade: ['persist', 'remove'])]
-    private Collection $director;
 
-    #[ORM\OneToMany(targetEntity: InstitutionAnswer::class, mappedBy: 'institution', orphanRemoval: true)]
-    private Collection $institutionAnswers;
 
-    public function __construct()
-    {
-        $this->director = new ArrayCollection();
-        $this->institutionAnswers = new ArrayCollection();
-    }
+
 
 
     public function __toString(): string
@@ -99,35 +91,6 @@ class Institutions
         return $this;
     }
 
-    /**
-     * @return Collection<int, InstitutionAnswer>
-     */
-    public function getInstitutionAnswers(): Collection
-    {
-        return $this->institutionAnswers;
-    }
-
-    public function addInstitutionAnswer(InstitutionAnswer $institutionAnswer): static
-    {
-        if (!$this->institutionAnswers->contains($institutionAnswer)) {
-            $this->institutionAnswers->add($institutionAnswer);
-            $institutionAnswer->setInstitution($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInstitutionAnswer(InstitutionAnswer $institutionAnswer): static
-    {
-        if ($this->institutionAnswers->removeElement($institutionAnswer)) {
-            // set the owning side to null (unless already changed)
-            if ($institutionAnswer->getInstitution() === $this) {
-                $institutionAnswer->setInstitution(null);
-            }
-        }
-
-        return $this;
-    }
 
 
 }

@@ -9,7 +9,11 @@ use App\Entity\InstitutionQuestion;
 use App\Entity\InstitutionQuestionOption;
 use App\Entity\Organization;
 use App\Entity\Position;
+use App\Entity\QuestionSubtitle;
+use App\Entity\QuestionTitle;
+use App\Entity\Stage;
 use App\Entity\Teacher;
+use App\Entity\TeacherAnswer;
 use App\Entity\TeacherOrganization;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -60,11 +64,18 @@ class DashboardController extends AbstractDashboardController
 //        yield MenuItem::linkToCrud('Director label', 'fas fa-list', Director::class);
 //        yield MenuItem::linkToCrud('Institution Questions label', 'fas fa-list', InstitutionQuestion::class);
 //        yield MenuItem::linkToCrud('Institution Question Options label', 'fas fa-list', InstitutionQuestionOption::class);
-        yield MenuItem::linkToCrud('Пользователи', 'fas fa-list', User::class);
-        yield MenuItem::linkToCrud('Организации', 'fas fa-list', Organization::class);
-        yield MenuItem::linkToCrud('Институты', 'fas fa-list', Institute::class);
-        yield MenuItem::linkToCrud('Позиции учителей', 'fas fa-list', Position::class);
-        yield MenuItem::linkToCrud('Директора Интститутов', 'fas fa-list', Director::class);
-        yield MenuItem::linkToCrud('Учителя', 'fas fa-list', Teacher::class);
+        yield MenuItem::linkToCrud('Пользователи', 'fas fa-users', User::class);
+        yield MenuItem::linkToCrud('Организации', 'fas fa-school', Organization::class);
+        yield MenuItem::linkToCrud('Институты', 'fas fa-briefcase', Institute::class);
+        yield MenuItem::linkToCrud('Позиции учителей', 'fas fa-chalkboard-teacher', Position::class);
+        yield MenuItem::linkToCrud('Директора Интститутов', 'fas fa-user-tie', Director::class);
+        yield MenuItem::linkToCrud('Учителя', 'fas fa-user-graduate', Teacher::class);
+        yield MenuItem::subMenu('Вопросы учителей', 'fas fa-sitemap')
+            ->setSubItems([
+                MenuItem::linkToCrud('Этапы', 'fas fa-list-ol', Stage::class),
+                MenuItem::linkToCrud('Вопросы', 'fas fa-poll', QuestionTitle::class),
+                MenuItem::linkToCrud('Подвопросы', 'fas fa-vote-yea', QuestionSubtitle::class),
+                MenuItem::linkToCrud('Ответы учителей', 'fas fa-vote-yea', TeacherAnswer::class),
+                ]);
     }
 }
