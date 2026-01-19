@@ -13,6 +13,7 @@ class MeController extends AbstractController
     #[Route('/api/me', name: 'me', methods: ['GET'])]
     public function __invoke(#[CurrentUser] ?Teacher $teacher): Response
     {
+        dump('JWT user:', $this->getUser()?->getRoles(), 'Teacher:', $teacher);
         if (!$teacher) {
             return $this->json(['error' => 'Unauthorized'], 401);
         }
