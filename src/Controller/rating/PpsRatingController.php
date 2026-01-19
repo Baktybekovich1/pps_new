@@ -16,38 +16,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
+
 #[OA\Tag(name: 'Rating')]
 class PpsRatingController extends AbstractController
 {
     public function __construct(
-        private UserInfoRepository                   $userInfoRepository,
-        private UserResearchActivitiesListRepository $userActivitiesListsRepository,
-        private UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private UserRepository                       $userRepository,
-        private UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private UserOffenceRepository                $userOffenceRepository,
+        private UserInfoRepository     $userInfoRepository,
         private UserPointsCountService $userPointsCountService
     )
     {
     }
 
-    #[Route('/pps', name: 'app_pps_rating',methods: ['GET'])]
+    #[Route('/pps', name: 'app_pps_rating', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $pps = $this->userPointsCountService->UserPointsCount();
 
         return $this->json(['pps' => $pps]);
-
     }
 
 
-
-
-
-
-
-    #[Route('/users', name: 'app_pps_users',methods: ['GET'])]
+    #[Route('/users', name: 'app_pps_users', methods: ['GET'])]
     public function users_list(): JsonResponse
     {
         $userInfo = $this->userInfoRepository->findAll();
@@ -63,8 +52,6 @@ class PpsRatingController extends AbstractController
             'users' => $users
         ]);
     }
-
-
 
 
 }
