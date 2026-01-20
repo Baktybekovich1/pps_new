@@ -18,7 +18,7 @@ class MeController extends AbstractController
     {
         // Всегда через Security сервис
         $user = $security->getUser();
-
+        dump($security);
         dump($user);
         return $this->json($user);
     }
