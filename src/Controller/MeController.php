@@ -11,18 +11,14 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class MeController extends AbstractController
 {
-    public function __construct(
-        private readonly Request $request
-    )
-    {
-    }
+
 
     #[Route('/api/me', name: 'me', methods: ['GET'])]
-    public function __invoke(#[CurrentUser] ?Teacher $teacher): Response
+    public function __invoke(#[CurrentUser] ?Teacher $teacher,Request $request): Response
     {
         dump(
-            'Authorization header:', $this->request->headers->get('Authorization'),
-            'JWT user:', $this->getUser(),
+            'Authorization header:', $request->headers->get('Authorization'),
+            'JWT user:', $this->getParameter('name'),
             'Teacher:', $teacher,
             'JWT roles:', $this->getUser()?->getRoles()
         );
