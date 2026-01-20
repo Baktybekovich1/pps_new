@@ -18,7 +18,7 @@ class MeController extends AbstractController
     {
         dump(
             'Authorization header:', $request->headers->get('Authorization'),
-            'JWT user:', $this->getParameter('name'),
+
             'Teacher:', $teacher,
             'JWT roles:', $this->getUser()?->getRoles()
         );
