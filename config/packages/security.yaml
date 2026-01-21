@@ -45,7 +45,6 @@ security:
     api:
       pattern: ^/api
       stateless: true
-      provider: teachers
       jwt: ~
     #        ===============================
     #  firewalls:
