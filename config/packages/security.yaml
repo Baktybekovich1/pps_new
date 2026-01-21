@@ -12,6 +12,9 @@ security:
       entity:
         class: App\Entity\Teacher
         property: email
+    app_user_provider:
+      chain:
+        providers: [ 'users', 'teachers' ]
     #  firewalls:
     #    dev:
     #      pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -68,7 +71,7 @@ security:
     api:
       pattern: ^/api
       stateless: true
-      provider: teachers  # Для API используем Teacher провайдер
+      provider: app_user_provider  # Для API используем Teacher провайдер
       jwt: ~
       # Исключаем из JWT защищенные пути
       entry_point: jwt
