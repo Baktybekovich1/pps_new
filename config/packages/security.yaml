@@ -17,94 +17,94 @@ security:
     #        class: App\Entity\User
     #        property: username
     # used to reload user from session & other features (e.g. switch_user)
-    firewalls:
-      dev:
-        pattern: ^/(_(profiler|wdt)|css|images|js)/
-        security: false
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
 
-      google:
-        pattern: ^/api/auth/google
-        stateless: true
-        security: false
+    google:
+      pattern: ^/api/auth/google
+      stateless: true
+      security: false
 
-      login:
-        pattern: ^/api/login
-        stateless: true
-        provider: users
-        json_login:
-          check_path: /api/login
-          success_handler: lexik_jwt_authentication.handler.authentication_success
-          failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-      api:
-        pattern: ^/api
-        stateless: true
-        provider: teachers
-        jwt: ~
-      #        ===============================
-      #  firewalls:
-      #    dev:
-      #      pattern: ^/(_(profiler|wdt)|css|images|js)/
-      #      security: false
-      #    google:
-      #      pattern: ^/api/auth/google
-      #      stateless: true
-      #      security: false
-      #    login:
-      #      pattern: ^/api/login
-      #      stateless: true
-      #      provider: users
-      #      json_login:
-      #        check_path: /api/login
-      #        success_handler: lexik_jwt_authentication.handler.authentication_success
-      #        failure_handler: lexik_jwt_authentication.handler.authentication_failure
-      #    teacher_login:
-      #      pattern: ^/api/teacher/login
-      #      stateless: true
-      #      provider: teachers
-      #      json_login:
-      #        check_path: /api/teacher/login
-      #        success_handler: lexik_jwt_authentication.handler.authentication_success
-      #        failure_handler: lexik_jwt_authentication.handler.authentication_failure
-      #    main:
-      #      lazy: true
-      #      provider: users
-      #      form_login:
-      #        login_path: /login
-      #        check_path: /login
-      #        default_target_path: /choose-role
-      #      logout:
-      #        path: /logout
-      #        target: /login
-      #        =====================================================
-
-      #    teacher_login:
-      #      pattern: ^/api/teacher/login
-      #      stateless: true
-      #      provider: teachers
-      #      json_login:
-      #        check_path: /api/teacher/login
-      #        success_handler: lexik_jwt_authentication.handler.authentication_success
-      #        failure_handler: lexik_jwt_authentication.handler.authentication_failure
-      #      provider: app_user_provider
-
-      #    main:
-      #      lazy: true
-      #      provider: app_user_provider
-      #      form_login:
-      #        login_path: app_logino
-      #        check_path: app_logino
-      #        enable_csrf: true
-      #      logout:
-      #        path: app_logouto
-      # where to redirect after logout
-      # target: app_any_route
+    login:
+      pattern: ^/api/login
+      stateless: true
+      provider: users
+      json_login:
+        check_path: /api/login
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
     api:
       pattern: ^/api
       stateless: true
       provider: teachers
       jwt: ~
+    #        ===============================
+    #  firewalls:
+    #    dev:
+    #      pattern: ^/(_(profiler|wdt)|css|images|js)/
+    #      security: false
+    #    google:
+    #      pattern: ^/api/auth/google
+    #      stateless: true
+    #      security: false
+    #    login:
+    #      pattern: ^/api/login
+    #      stateless: true
+    #      provider: users
+    #      json_login:
+    #        check_path: /api/login
+    #        success_handler: lexik_jwt_authentication.handler.authentication_success
+    #        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    #    teacher_login:
+    #      pattern: ^/api/teacher/login
+    #      stateless: true
+    #      provider: teachers
+    #      json_login:
+    #        check_path: /api/teacher/login
+    #        success_handler: lexik_jwt_authentication.handler.authentication_success
+    #        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    #    main:
+    #      lazy: true
+    #      provider: users
+    #      form_login:
+    #        login_path: /login
+    #        check_path: /login
+    #        default_target_path: /choose-role
+    #      logout:
+    #        path: /logout
+    #        target: /login
+    #        =====================================================
+
+    #    teacher_login:
+    #      pattern: ^/api/teacher/login
+    #      stateless: true
+    #      provider: teachers
+    #      json_login:
+    #        check_path: /api/teacher/login
+    #        success_handler: lexik_jwt_authentication.handler.authentication_success
+    #        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+    #      provider: app_user_provider
+
+    #    main:
+    #      lazy: true
+    #      provider: app_user_provider
+    #      form_login:
+    #        login_path: app_logino
+    #        check_path: app_logino
+    #        enable_csrf: true
+    #      logout:
+    #        path: app_logouto
+    # where to redirect after logout
+    # target: app_any_route
+
+#    api:
+#      pattern: ^/api
+#      stateless: true
+#      provider: teachers
+#      jwt: ~
   #      provider: app_user_provider
 
   access_control:
