@@ -62,6 +62,10 @@ class Teacher implements UserInterface
         $this->teacherOrganizations = new ArrayCollection();
         $this->teacherAnswers = new ArrayCollection();
     }
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
 
     public function __toString(): string
     {
@@ -105,10 +109,6 @@ class Teacher implements UserInterface
         return $this;
     }
 
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
-    }
 
     public function getRoles(): array
     {
