@@ -1,7 +1,8 @@
+# config/packages/nelmio_cors.yaml
 nelmio_cors:
   defaults:
     origin_regex: true
-    allow_origin: ['^https?://.*$']
+    allow_origin: ['^http://localhost:5173$', '^https://.*$']
     allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
     allow_headers: ['Content-Type', 'Authorization']
     expose_headers: ['Authorization']
@@ -9,6 +10,6 @@ nelmio_cors:
 
   paths:
     '^/api':
-      allow_origin: ['^https?://.*$']
+      allow_origin: ['^http://localhost:5173$', '^https://.*$']
       allow_headers: ['Content-Type', 'Authorization']
       allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
