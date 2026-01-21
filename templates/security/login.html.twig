@@ -4,7 +4,7 @@
 
     <label>Password</label>
     <input type="password" name="_password"/>
-
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
     {% if error %}
         <div class="error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}

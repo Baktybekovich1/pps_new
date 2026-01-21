@@ -80,16 +80,15 @@ security:
     # Web интерфейс - для User с формой логина
     main:
       lazy: true
-      provider: users  # Для веб-интерфейса используем User провайдер
+      provider: users
       form_login:
         login_path: app_login
         check_path: app_login
         default_target_path: /choose-role
-        enable_csrf: true
+        enable_csrf: false  # ← ОТКЛЮЧИТЬ CSRF
       logout:
         path: app_logout
         target: app_login
-  #      provider: app_user_provider
 
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
