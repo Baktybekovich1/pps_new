@@ -22,6 +22,11 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
+    options:
+      pattern: ^/
+      methods: [ OPTIONS ]
+      security: false
+
     google:
       pattern: ^/api/auth/google
       stateless: true
@@ -36,11 +41,12 @@ security:
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-    api:
-      pattern: ^/api
-      stateless: true
-      provider: teachers
-      jwt: ~
+
+#    api:
+#      pattern: ^/api
+#      stateless: true
+#      provider: teachers
+#      jwt: ~
     #        ===============================
     #  firewalls:
     #    dev:
