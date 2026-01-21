@@ -42,11 +42,11 @@ security:
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
 
-#    api:
-#      pattern: ^/api
-#      stateless: true
-#      provider: teachers
-#      jwt: ~
+    api:
+      pattern: ^/api
+      stateless: true
+      provider: teachers
+      jwt: ~
     #        ===============================
     #  firewalls:
     #    dev:
