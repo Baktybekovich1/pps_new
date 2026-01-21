@@ -47,11 +47,15 @@ security:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
-    google:
+
+    # Обработка Google OAuth - без аутентификации
+    google_oauth:
       pattern: ^/api/auth/google
       stateless: true
       security: false
-    login:
+
+    # API логин для User (обычный JSON логин)
+    api_login:
       pattern: ^/api/login
       stateless: true
       provider: users
@@ -59,22 +63,29 @@ security:
         check_path: /api/login
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
-    main:
-      lazy: true
-      provider: users
-      form_login:
-        login_path: /login
-        check_path: /login
-        default_target_path: /choose-role
-      logout:
-        path: /logout
-        target: /login
 
+    # API endpoints - для Teacher с JWT
     api:
       pattern: ^/api
       stateless: true
-      provider: teachers
+      provider: teachers  # Для API используем Teacher провайдер
       jwt: ~
+      # Исключаем из JWT защищенные пути
+      entry_point: jwt
+      # Разрешаем анонимный доступ к некоторым API маршрутам
+
+    # Web интерфейс - для User с формой логина
+    main:
+      lazy: true
+      provider: users  # Для веб-интерфейса используем User провайдер
+      form_login:
+        login_path: app_login
+        check_path: app_login
+        default_target_path: /choose-role
+        enable_csrf: true
+      logout:
+        path: app_logout
+        target: app_login
   #      provider: app_user_provider
 
   access_control:
