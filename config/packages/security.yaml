@@ -22,10 +22,10 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
 
-    options:
-      pattern: ^/
-      methods: [ OPTIONS ]
-      security: false
+#    options:
+#      pattern: ^/
+#      methods: [ OPTIONS ]
+#      security: false
 
     google:
       pattern: ^/api/auth/google
@@ -45,6 +45,7 @@ security:
     api:
       pattern: ^/api
       stateless: true
+      provider: teachers
       jwt: ~
     #        ===============================
     #  firewalls:
