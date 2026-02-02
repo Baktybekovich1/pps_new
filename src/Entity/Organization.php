@@ -10,6 +10,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Vich\UploaderBundle\Mapping\Attribute as Vich;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Attribute\SerializedName;
+
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[UniqueEntity(fields: ['name'], message: 'Организация с таким названием уже есть')]
@@ -36,6 +38,16 @@ class Organization
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Institute::class, orphanRemoval: true)]
     private Collection $institutes;
 
+    #[Groups(['organization:read','teacher:read'])]
+    #[SerializedName('photoUrl')]
+    public function getPhotoUrl(): ?string
+    {
+        if (!$this->photoFilename) {
+            return null;
+        }
+
+        return '/uploads/organizations/' . $this->photoFilename;
+    }
     public function __construct()
     {
         $this->institutes = new ArrayCollection();
