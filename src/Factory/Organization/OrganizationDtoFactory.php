@@ -24,6 +24,7 @@ class OrganizationDtoFactory
         return new OrganizationDto(
             $organization->getId(),
             $organization->getName(),
+            $organization->getPhotoUrl(),
             $institutes
         );
     }
