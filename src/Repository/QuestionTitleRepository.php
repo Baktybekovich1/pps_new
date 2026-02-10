@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\QuestionTitle;
+use App\Entity\Teacher;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,23 @@ class QuestionTitleRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, QuestionTitle::class);
+    }
+
+    public function findTeacherTitlePointsTotal(int $qid, int $teacherId)
+    {
+        $qb = $this->createQueryBuilder('title');
+        $qb->select('sum(subtitle.point)')
+            ->innerJoin('title.subtitle', 'subtitle')
+            ->innerJoin('subtitle.answers' , 'answers')
+            ->innerJoin('answers.teacher', 'teacher')
+            ->where('title = :title')
+            ->andWhere('teacher = :teacher')
+            ->setParameter('title', $qid)
+            ->setParameter('teacher', $teacherId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult();
+        return $qb;
     }
 
 //    /**

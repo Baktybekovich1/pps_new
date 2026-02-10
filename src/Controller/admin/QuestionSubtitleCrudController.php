@@ -4,6 +4,7 @@ namespace App\Controller\admin;
 
 use App\Entity\QuestionSubtitle;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -22,6 +23,7 @@ class QuestionSubtitleCrudController extends AbstractCrudController
         return [
             IdField::new('id')->onlyOnIndex(),
             TextField::new('name'),
+            AssociationField::new('title')->renderAsNativeWidget(),
             IntegerField::new('point'),
         ];
     }

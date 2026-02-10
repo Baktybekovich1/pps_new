@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Teacher;
 use App\Entity\TeacherAnswer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,28 +22,15 @@ class TeacherAnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, TeacherAnswer::class);
     }
 
-//    /**
-//     * @return TeacherAnswer[] Returns an array of TeacherAnswer objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?TeacherAnswer
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getTeacherPointsCount(Teacher $teacher): int
+    {
+        return (int)$this->createQueryBuilder('answer')
+            ->select('COALESCE(SUM(subtitle.point), 0)')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->where('teacher = :eteacher')
+            ->setParameter('eteacher', $teacher)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
