@@ -7,13 +7,9 @@ use App\Form\TeacherWorkplaceDirectorFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 
 class TeacherCrudController extends AbstractCrudController
 {
@@ -26,15 +22,22 @@ class TeacherCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->onlyOnIndex(),
+
             TextField::new('email'),
             ArrayField::new('roles')->onlyOnIndex(),
+
             TextField::new('firstname'),
             TextField::new('lastname'),
             TextField::new('middlename'),
+
             AssociationField::new('position'),
+
             CollectionField::new('teacherOrganizations', 'Места работы')
                 ->setEntryType(TeacherWorkplaceDirectorFormType::class)
                 ->setFormTypeOption('by_reference', false)
+                ->allowAdd()
+                ->allowDelete()
+                ->renderExpanded(), // чтобы было удобно прямо на странице
         ];
     }
 }
