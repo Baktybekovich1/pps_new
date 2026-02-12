@@ -17,7 +17,6 @@ class Step2Request
     #[Assert\Length(max: 255)]
     public ?string $middleName = null;
 
-    public ?bool $hasTrousers = null;
 
     #[Assert\NotNull]
     public int $positionId;

@@ -29,8 +29,7 @@ class RegistrationStep2Action extends AbstractController
         $teacher
             ->setFirstName($dto->firstName)
             ->setLastName($dto->lastName)
-            ->setMiddleName($dto->middleName)
-            ->setHasTrousers($dto->hasTrousers);
+            ->setMiddleName($dto->middleName);
 
         // 2. должность
         $position = $this->positionRepo->find($dto->positionId);
@@ -54,7 +53,9 @@ class RegistrationStep2Action extends AbstractController
             $to = new \App\Entity\TeacherOrganization();
             $to->setTeacher($teacher)
                 ->setOrganization($institute->getOrganization())
-                ->setInstitute($institute);
+                ->setInstitute($institute)
+                ->setRegular($wp->regular)
+            ;
             $this->em->persist($to);
         }
 
