@@ -44,7 +44,7 @@ class TeacherInfoController extends AbstractController
     #[Route('/id', name: 'app_user_id', methods: ['GET'])]
     public function id(UserInterface $userInterface): JsonResponse
     {
-        $teacher = $this->teacherRepo->find($userInterface->getUserIdentifier());
+        $teacher = $this->teacherRepo->findOneBy(['email' => $userInterface->getUserIdentifier()]);
         return $this->json(["id" => $teacher->getId()]);
     }
 }
