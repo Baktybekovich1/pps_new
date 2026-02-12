@@ -2,6 +2,10 @@
 
 namespace App\Dto\Teacher;
 
+use App\Dto\Institute\InstituteInTeacherDto;
+use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class TeacherInfoDto
 {
     public function __construct(
@@ -10,7 +14,13 @@ class TeacherInfoDto
         public string $lastName,
         public string $middleName,
         public string $email,
-        public array $institutes
+        public string $position,
+        /**
+         * @var InstituteInTeacherDto[]
+         */
+        #[Type(InstituteInTeacherDto::class)]
+        #[Assert\Valid]
+        public array $institutes = []
     )
     {
     }

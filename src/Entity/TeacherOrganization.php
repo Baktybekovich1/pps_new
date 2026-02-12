@@ -92,9 +92,10 @@ class TeacherOrganization
         return $this->active;
     }
 
-    public function setActive(?bool $active): void
+    public function setActive(?bool $active): self
     {
         $this->active = $active;
+        return $this;
     }
 
     public function getRegular(): ?bool
@@ -102,9 +103,10 @@ class TeacherOrganization
         return $this->regular;
     }
 
-    public function setRegular(?bool $regular): void
+    public function setRegular(?bool $regular): self
     {
         $this->regular = $regular;
+        return $this;
     }
 
 }

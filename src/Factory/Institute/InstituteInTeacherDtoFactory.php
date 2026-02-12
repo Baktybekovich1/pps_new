@@ -23,8 +23,7 @@ class InstituteInTeacherDtoFactory
             $teacherOrganization->getOrganization()->getName(),
             $teacherOrganization->getInstitute()->getId(),
             $teacherOrganization->getInstitute()->getName(),
-            $teacherOrganization->getActive(),
-            $teacherOrganization->getRegular(),
+            $teacherOrganization->getRegular()
         );
     }
 }

@@ -9,7 +9,6 @@ class InstituteInTeacherDto
         public string $organizationName,
         public int $instituteId,
         public string $instituteName,
-        public bool $isActive,
         public bool $isRegular,
     )
     {

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Teacher;
 use App\Entity\TeacherOrganization;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,6 +20,27 @@ class TeacherOrganizationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TeacherOrganization::class);
+    }
+
+    public function deleteByTeacher(Teacher $teacher): void
+    {
+        $this->createQueryBuilder('to')
+            ->delete()
+            ->where('to.teacher = :teacher')
+            ->setParameter('teacher', $teacher)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function save(TeacherOrganization $teacherOrganization): bool
+    {
+        try {
+            $this->getEntityManager()->persist($teacherOrganization);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
     }
 
 //    /**

@@ -36,5 +36,15 @@ class TeacherRepository extends ServiceEntityRepository
 
         return (int) $points;
     }
+    public function save(Teacher $teacher): bool
+        {
+            try {
+                $this->getEntityManager()->persist($teacher);
+                $this->getEntityManager()->flush();
+                return true;
+            }catch (\Throwable $exception){
+                return false;
+            }
+        }
 
 }
