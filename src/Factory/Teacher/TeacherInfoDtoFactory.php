@@ -19,7 +19,7 @@ readonly class TeacherInfoDtoFactory
 
     public function factory(Teacher $teacher): TeacherInfoDto
     {
-        $teacherOrg = $this->teacherOrganizationRepository->findOneBy(['teacher' => $teacher]);
+        $teacherOrg = $this->teacherOrganizationRepository->findBy(['teacher' => $teacher]);
         $teacherInst = [];
         foreach ($teacherOrg as $item) {
             $teacherInst[] = $this->instituteInTeacherDtoFactory->factory($teacher, $item->getInstitute());
