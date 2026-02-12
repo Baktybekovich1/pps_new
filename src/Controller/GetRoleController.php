@@ -69,7 +69,7 @@ class GetRoleController extends AbstractController
         // у Teacher роль всегда 1 элемент (ROLE_TEACHER)
         // если нужно «admin» — добавьте поле/флаг
         $roles = $teacher->getRoles();        // ['ROLE_TEACHER'] или ['ROLE_TEACHER','ROLE_ADMIN']
-        $role = (count($roles) > 1) ? 'admin' : 'user';
+        $role = (count($roles) > 1) ? 'admin' : 'teacher';
 
         return $this->json(['role' => $role]);
     }
