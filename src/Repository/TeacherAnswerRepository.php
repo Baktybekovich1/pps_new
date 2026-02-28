@@ -33,4 +33,17 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function save(TeacherAnswer $answer): bool
+    {
+        try {
+            $this->getEntityManager()->persist($answer);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
+    }
+
+
 }
