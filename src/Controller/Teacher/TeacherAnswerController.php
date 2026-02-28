@@ -20,7 +20,7 @@ class TeacherAnswerController extends AbstractController
     {
     }
 
-    #[Route('/teacher/answer', methods: ['POST'])]
+    #[Route('/answer', methods: ['POST'])]
     public function index(UserInterface $user, #[MapRequestPayload] SetAwardDto $dto): JsonResponse
     {
         return $this->json( $this->teacherAnswerService->save($user->getUserIdentifier(), $dto));
