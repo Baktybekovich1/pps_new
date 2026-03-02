@@ -36,7 +36,6 @@ class TeacherInfoService
         $teacher->setFirstName($dto->firstName)
             ->setLastName($dto->lastName)
             ->setMiddleName($dto->middleName)
-            ->setEmail($dto->email)
             ->setPosition($this->positionRepository->find($dto->positionId));
         if ($this->teacherRepository->save($teacher)) {
             $this->teacherOrganizationRepository->deleteByTeacher($teacher);

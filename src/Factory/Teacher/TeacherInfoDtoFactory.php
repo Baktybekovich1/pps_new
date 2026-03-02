@@ -30,7 +30,7 @@ readonly class TeacherInfoDtoFactory
             $teacher->getLastName(),
             $teacher->getMiddleName(),
             $teacher->getEmail(),
-            $teacher->getPosition(),
+            $teacher->getPosition()->getName(),
             $teacherInst
         );
 
