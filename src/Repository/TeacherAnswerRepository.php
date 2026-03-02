@@ -34,6 +34,21 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function findTeacherAnswersByStage(int $teacherId, int $stageId): array
+    {
+        return $this->createQueryBuilder('answer')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
+            ->where('teacher.id = :teacherId')
+            ->andWhere('stage.id = :stageId')
+            ->setParameter('teacherId', $teacherId)
+            ->setParameter('stageId', $stageId)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(TeacherAnswer $answer): bool
     {
         try {

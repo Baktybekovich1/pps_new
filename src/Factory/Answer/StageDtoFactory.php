@@ -21,7 +21,7 @@ class StageDtoFactory
         $stageDto = new StageDto();
         $stageDto->stageId = $stage->getId();
         $stageDto->stageName = $stage->getName();
-        $answers = $this->teacherAnswerRepository->findBy(['stage' => $stage, 'teacher' => $teacher]);
+        $answers = $this->teacherAnswerRepository->findTeacherAnswersByStage($teacher->getId(), $stage->getId());
         $awards = [];
         foreach ($answers as $answer) {
             $awards[] = $this->answerDtoFactory->factory($answer);
