@@ -46,11 +46,11 @@ class TeacherInfoService
                     ->setTeacher($teacher)
                     ->setActive(true)
                     ->setRegular($institute->isRegular);
-                return $this->teacherOrganizationRepository->save($org);
+                $this->teacherOrganizationRepository->save($org);
             }
+            return true;
         }
         else return false;
-        return false;
     }
 
 }
