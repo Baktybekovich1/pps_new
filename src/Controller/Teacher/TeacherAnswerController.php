@@ -25,4 +25,11 @@ class TeacherAnswerController extends AbstractController
     {
         return $this->json( $this->teacherAnswerService->save($user->getUserIdentifier(), $dto));
     }
+
+    #[Route(path: '/answers', name: 'answers', methods: ['GET'])]
+    public function answers(UserInterface $user): JsonResponse
+    {
+        return $this->json($this->teacherAnswerService->getAll($user->getUserIdentifier()));
+    }
+
 }

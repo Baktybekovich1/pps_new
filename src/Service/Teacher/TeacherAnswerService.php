@@ -4,13 +4,20 @@ namespace App\Service\Teacher;
 
 use App\Dto\Award\SetAwardDto;
 use App\Entity\TeacherAnswer;
+use App\Factory\Answer\AnswerDtoFactory;
 use App\Repository\QuestionSubtitleRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\TeacherRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TeacherAnswerService
 {
-    public function __construct(private readonly TeacherRepository $teacherRepository, private readonly TeacherAnswerRepository $teacherAnswerRepository, private readonly QuestionSubtitleRepository $questionSubtitleRepository)
+    public function __construct(
+        private readonly TeacherRepository          $teacherRepository,
+        private readonly TeacherAnswerRepository    $teacherAnswerRepository,
+        private readonly QuestionSubtitleRepository $questionSubtitleRepository,
+        private readonly AnswerDtoFactory           $answerDtoFactory
+    )
     {
     }
 
@@ -23,6 +30,17 @@ class TeacherAnswerService
         $answer->setSubtitle($this->questionSubtitleRepository->find($dto->subtitleId));
         $answer->setLink($dto->link);
         return $this->teacherAnswerRepository->save($answer);
+    }
+
+    public function getAll(string $email): array
+    {
+        $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
+        $answers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher]);
+        $awards = [];
+        foreach ($answers as $answer) {
+            $awards[] = $this->answerDtoFactory->factory($answer);
+        }
+        return $awards;
     }
 
 }
