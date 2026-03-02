@@ -5,7 +5,9 @@ namespace App\Service\Teacher;
 use App\Dto\Award\SetAwardDto;
 use App\Entity\TeacherAnswer;
 use App\Factory\Answer\AnswerDtoFactory;
+use App\Factory\Answer\StageDtoFactory;
 use App\Repository\QuestionSubtitleRepository;
+use App\Repository\StageRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\TeacherRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +18,7 @@ class TeacherAnswerService
         private readonly TeacherRepository          $teacherRepository,
         private readonly TeacherAnswerRepository    $teacherAnswerRepository,
         private readonly QuestionSubtitleRepository $questionSubtitleRepository,
-        private readonly AnswerDtoFactory           $answerDtoFactory
+        private readonly StageDtoFactory           $stageDtoFactory, private readonly StageRepository $stageRepository
     )
     {
     }
@@ -35,10 +37,10 @@ class TeacherAnswerService
     public function getAll(string $email): array
     {
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
-        $answers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher]);
+        $stages = $this->stageRepository->findBy(['active' => true]);
         $awards = [];
-        foreach ($answers as $answer) {
-            $awards[] = $this->answerDtoFactory->factory($answer);
+        foreach ($stages as $stage) {
+            $awards[] = $this->stageDtoFactory->factory($teacher, $stage);
         }
         return $awards;
     }
