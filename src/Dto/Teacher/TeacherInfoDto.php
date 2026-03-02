@@ -18,7 +18,9 @@ class TeacherInfoDto
         /**
          * @var InstituteInTeacherDto[]
          */
-        #[Type(InstituteInTeacherDto::class)]
+        #[Assert\All([
+            new Assert\Type(type: InstituteInTeacherDto::class)
+        ])]
         #[Assert\Valid]
         public array $institutes = []
     )
