@@ -8,6 +8,7 @@ use App\Entity\TeacherOrganization;
 use App\Factory\Teacher\TeacherInfoDtoFactory;
 use App\Repository\InstituteRepository;
 use App\Repository\OrganizationRepository;
+use App\Repository\PositionRepository;
 use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -17,7 +18,7 @@ class TeacherInfoService
 
     public function __construct(
         private TeacherRepository     $teacherRepository,
-        private TeacherInfoDtoFactory $teacherInfoDtoFactory, private readonly TeacherOrganizationRepository $teacherOrganizationRepository, private readonly OrganizationRepository $organizationRepository, private readonly InstituteRepository $instituteRepository,
+        private TeacherInfoDtoFactory $teacherInfoDtoFactory, private readonly TeacherOrganizationRepository $teacherOrganizationRepository, private readonly OrganizationRepository $organizationRepository, private readonly InstituteRepository $instituteRepository, private readonly PositionRepository $positionRepository,
     )
     {
     }
@@ -36,7 +37,7 @@ class TeacherInfoService
             ->setLastName($dto->lastName)
             ->setMiddleName($dto->middleName)
             ->setEmail($dto->email)
-            ->setPosition($dto->position);
+            ->setPosition($this->positionRepository->find($dto->positionId));
         if ($this->teacherRepository->save($teacher)) {
             $this->teacherOrganizationRepository->deleteByTeacher($teacher);
             foreach ($dto->institutes as $institute) {

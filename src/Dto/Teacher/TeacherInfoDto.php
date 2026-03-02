@@ -14,7 +14,7 @@ class TeacherInfoDto
         public string $lastName,
         public string $middleName,
         public string $email,
-        public string $position,
+        public int $positionId,
         /**
          * @var InstituteInTeacherDto[]
          */
