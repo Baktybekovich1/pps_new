@@ -18,7 +18,7 @@ class TeacherAnswerService
         private readonly TeacherRepository          $teacherRepository,
         private readonly TeacherAnswerRepository    $teacherAnswerRepository,
         private readonly QuestionSubtitleRepository $questionSubtitleRepository,
-        private readonly StageDtoFactory           $stageDtoFactory, private readonly StageRepository $stageRepository
+        private readonly StageDtoFactory            $stageDtoFactory, private readonly StageRepository $stageRepository
     )
     {
     }
@@ -43,6 +43,22 @@ class TeacherAnswerService
             $awards[] = $this->stageDtoFactory->factory($teacher, $stage);
         }
         return $awards;
+    }
+
+    public function delete(string $email, int $answerId): bool
+    {
+        $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
+        $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
+        return $this->teacherAnswerRepository->remove($answer);
+    }
+
+    public function edit(string $email, int $answerId, string $answerLink): bool
+    {
+        $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
+        $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
+        $answer->setActive(true);
+        $answer->setLink($answerLink);
+        return $this->teacherAnswerRepository->save($answer);
     }
 
 }

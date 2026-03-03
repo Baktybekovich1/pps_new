@@ -59,6 +59,15 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             return false;
         }
     }
-
+    public function remove(TeacherAnswer $teacherAnswer): bool
+    {
+        try {
+            $this->getEntityManager()->remove($teacherAnswer);
+            $this->getEntityManager()->flush();
+            return true;
+        }catch (\Throwable $exception){
+            return false;
+        }
+    }
 
 }

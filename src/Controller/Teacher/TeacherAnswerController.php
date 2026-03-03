@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Teacher;
 
+use App\Dto\Answer\LinkDto;
 use App\Dto\Award\SetAwardDto;
 use App\Service\Teacher\TeacherAnswerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,5 +32,16 @@ class TeacherAnswerController extends AbstractController
     {
         return $this->json($this->teacherAnswerService->getAll($user->getUserIdentifier()));
     }
+    #[Route(path: '/answers/{answerId}', name: 'answers_delete', methods: ['GET'])]
+    public function answers_delete(UserInterface $user, Request $request): JsonResponse
+    {
+        return $this->json($this->teacherAnswerService->delete($user->getUserIdentifier(),$request->get('answerId')));
+    }
+    #[Route(path: '/answers/{answerId}', name: 'answers_edit', methods: ['PUT'])]
+    public function answers_edit(UserInterface $user, Request $request , #[MapRequestPayload] LinkDto $dto): JsonResponse
+    {
+        return $this->json($this->teacherAnswerService->edit($user->getUserIdentifier(),$request->get('answerId'),$dto->answerLink));
+    }
+
 
 }
