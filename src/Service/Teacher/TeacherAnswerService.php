@@ -45,14 +45,14 @@ class TeacherAnswerService
         return $awards;
     }
 
-    public function delete(string $email, int $answerId): bool
+    public function delete(string $email, $answerId): bool
     {
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
         $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
         return $this->teacherAnswerRepository->remove($answer);
     }
 
-    public function edit(string $email, int $answerId, string $answerLink): bool
+    public function edit(string $email, $answerId, string $answerLink): bool
     {
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
         $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
