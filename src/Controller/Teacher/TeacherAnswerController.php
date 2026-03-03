@@ -35,6 +35,7 @@ class TeacherAnswerController extends AbstractController
     #[Route(path: '/answers/{answerId}', name: 'answers_delete', methods: ['DELETE'])]
     public function answers_delete(UserInterface $user, Request $request): JsonResponse
     {
+        dd($request->get('answerId'));
         return $this->json($this->teacherAnswerService->delete($user->getUserIdentifier(),$request->get('answerId')));
     }
     #[Route(path: '/answers/{answerId}', name: 'answers_edit', methods: ['PUT'])]
