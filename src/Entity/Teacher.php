@@ -43,7 +43,6 @@ class Teacher implements UserInterface
     private ?string $middleName = null;
 
 
-
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('teacher:read')]
@@ -62,6 +61,7 @@ class Teacher implements UserInterface
         $this->teacherOrganizations = new ArrayCollection();
         $this->teacherAnswers = new ArrayCollection();
     }
+
     public function getUserIdentifier(): string
     {
         return $this->email;
@@ -69,7 +69,7 @@ class Teacher implements UserInterface
 
     public function __toString(): string
     {
-        return $this->getFirstName().' '.$this->getLastName();
+        return $this->getFirstName() . ' ' . $this->getLastName() . ' ' . $this->getMiddleName();
     }
 
     /** @return Collection<int,TeacherOrganization> */
@@ -114,6 +114,7 @@ class Teacher implements UserInterface
     {
         return array_unique($this->roles);
     }
+
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
@@ -169,7 +170,6 @@ class Teacher implements UserInterface
         $this->middleName = $m;
         return $this;
     }
-
 
 
     public function getPosition(): Position
