@@ -5,8 +5,8 @@ namespace App\Controller\admin;
 use ApiPlatform\Symfony\Security\Exception\AccessDeniedException;
 use App\Entity\Director;
 use App\Entity\Institute;
-use App\Entity\InstitutionQuestion;
-use App\Entity\InstitutionQuestionOption;
+use App\Entity\InstituteQuestionSubtitle;
+use App\Entity\InstituteQuestionTitle;
 use App\Entity\Organization;
 use App\Entity\Position;
 use App\Entity\QuestionSubtitle;
@@ -77,5 +77,10 @@ class DashboardController extends AbstractDashboardController
                 MenuItem::linkToCrud('Подвопросы', 'fas fa-vote-yea', QuestionSubtitle::class),
                 MenuItem::linkToCrud('Ответы учителей', 'fas fa-vote-yea', TeacherAnswer::class),
                 ]);
+        yield MenuItem::subMenu('Вопросы институтов', 'fas fa-sitemap')
+            ->setSubItems([
+                MenuItem::linkToCrud('Title', 'fas fa-book', InstituteQuestionTitle::class),
+                MenuItem::linkToCrud('Subtitle', 'fas fa-book', InstituteQuestionSubtitle::class),
+            ]);
     }
 }

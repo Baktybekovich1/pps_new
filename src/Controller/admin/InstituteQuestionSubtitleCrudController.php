@@ -2,18 +2,19 @@
 
 namespace App\Controller\admin;
 
-use App\Entity\InstitutionQuestion;
-
+use App\Entity\InstituteQuestionSubtitle;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class InstitutionQuestionCrudController extends AbstractCrudController
+class InstituteQuestionSubtitleCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return InstitutionQuestion::class;
+        return InstituteQuestionSubtitle::class;
     }
 
 
@@ -21,7 +22,10 @@ class InstitutionQuestionCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->onlyOnIndex(),
-            TextField::new('title')
+            TextField::new('name'),
+            AssociationField::new('title','Title')->renderAsNativeWidget(),
+            IntegerField::new('point'),
         ];
     }
+
 }

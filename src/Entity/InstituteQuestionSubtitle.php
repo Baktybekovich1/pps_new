@@ -2,47 +2,34 @@
 
 namespace App\Entity;
 
-use App\Repository\InstituteRepository;
+use App\Repository\InstituteQuestionSubtitleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ORM\Entity(repositoryClass: InstituteRepository::class)]
-class Institute
+#[ORM\Entity(repositoryClass: InstituteQuestionSubtitleRepository::class)]
+class InstituteQuestionSubtitle
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['institute:read','teacher:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['institute:read','teacher:read'])]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'institutes')]
-    private ?Organization $organization = null;
+    #[ORM\ManyToOne(inversedBy: 'subtitle')]
+    private ?InstituteQuestionTitle $title = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['institute:read','teacher:read'])]
-    private ?string $reduction = null;
+    #[ORM\Column]
+    private ?int $point = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $teacherTotal = null;
-
-    #[ORM\OneToMany(targetEntity: InstituteAnswer::class, mappedBy: 'institute')]
+    #[ORM\OneToMany(targetEntity: InstituteAnswer::class, mappedBy: 'subtitle')]
     private Collection $instituteAnswers;
 
     public function __construct()
     {
         $this->instituteAnswers = new ArrayCollection();
-    }
-
-
-    public function __toString(): string
-    {
-        return $this->getName();
     }
 
     public function getId(): ?int
@@ -62,38 +49,27 @@ class Institute
         return $this;
     }
 
-    public function getOrganization(): ?Organization
+    public function getTitle(): ?InstituteQuestionTitle
     {
-        return $this->organization;
+        return $this->title;
     }
 
-    public function setOrganization(?Organization $organization): static
+    public function setTitle(?InstituteQuestionTitle $title): static
     {
-        $this->organization = $organization;
+        $this->title = $title;
 
         return $this;
     }
 
-    public function getReduction(): ?string
+    public function getPoint(): ?int
     {
-        return $this->reduction;
+        return $this->point;
     }
 
-    public function setReduction(?string $reduction): static
+    public function setPoint(int $point): static
     {
-        $this->reduction = $reduction;
+        $this->point = $point;
 
-        return $this;
-    }
-
-    public function getTeacherTotal(): ?int
-    {
-        return $this->teacherTotal;
-    }
-
-    public function setTeacherTotal(?int $v): self
-    {
-        $this->teacherTotal = $v;
         return $this;
     }
 
@@ -109,7 +85,7 @@ class Institute
     {
         if (!$this->instituteAnswers->contains($instituteAnswer)) {
             $this->instituteAnswers->add($instituteAnswer);
-            $instituteAnswer->setInstitute($this);
+            $instituteAnswer->setSubtitle($this);
         }
 
         return $this;
@@ -119,8 +95,8 @@ class Institute
     {
         if ($this->instituteAnswers->removeElement($instituteAnswer)) {
             // set the owning side to null (unless already changed)
-            if ($instituteAnswer->getInstitute() === $this) {
-                $instituteAnswer->setInstitute(null);
+            if ($instituteAnswer->getSubtitle() === $this) {
+                $instituteAnswer->setSubtitle(null);
             }
         }
 
