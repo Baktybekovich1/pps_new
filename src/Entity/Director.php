@@ -43,9 +43,9 @@ class Director
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist', 'remove'], inversedBy: 'director')]
+    #[ORM\ManyToOne(targetEntity: Teacher::class, cascade: ['persist', 'remove'], inversedBy: 'director')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?User $user = null;
+    private ?Teacher $teacher = null;
 
     #[ORM\ManyToOne(inversedBy: 'director')]
     #[ORM\JoinColumn(nullable: false)]
@@ -54,7 +54,12 @@ class Director
 
     public function __construct()
     {
-        $this->user = new User();   // ← пустой объект, поля заполняются формой
+        $this->teacher = new Teacher();   // ← пустой объект, поля заполняются формой
+    }
+
+    public function __toString(): string
+    {
+        return $this->teacher->getFirstName() . ' ' . $this->teacher->getLastName() . ' ' . $this->teacher->getMiddleName();
     }
 
     public function getId(): ?int
@@ -62,15 +67,15 @@ class Director
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getTeacher(): ?Teacher
     {
-        return $this->user;
+        return $this->teacher;
     }
 
-    public function setUser(?User $user): static
+    public function setTeacher(?Teacher $teacher): static
     {
-        $this->user = $user;
-        $user->setRoles(['ROLE_DIRECTOR']);
+        $this->teacher = $teacher;
+        $teacher->setRoles(['ROLE_DIRECTOR']);
 
         return $this;
     }

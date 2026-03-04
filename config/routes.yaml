@@ -19,6 +19,11 @@ teacher_controllers:
   type: attribute
   prefix: /api/teacher
 
+admin_controllers:
+  resource: ../src/Controller/Admin
+  type: attribute
+  prefix: /api/admin
+
 award_controllers:
   resource: ../src/Controller/Award
   type: attribute

@@ -45,4 +45,25 @@ class DirectorRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function save(Director $director): bool
+    {
+        try {
+            $this->getEntityManager()->persist($director);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
+    }
+    public function remove(Director $director): bool
+    {
+        try {
+            $this->getEntityManager()->remove($director);
+            $this->getEntityManager()->flush();
+            return true;
+        }catch (\Throwable $exception){
+            return false;
+        }
+    }
 }
