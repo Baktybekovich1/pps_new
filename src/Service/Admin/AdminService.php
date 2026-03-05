@@ -29,6 +29,9 @@ readonly class AdminService
     public function removeDirector($directorId): bool
     {
         $director = $this->directorRepository->find($directorId);
+        $teacher = $director->getTeacher();
+        $teacher->setRoles(["ROLE_TEACHER"]);
+        $this->teacherRepository->save($teacher);
         return $this->directorRepository->remove($director);
     }
 }

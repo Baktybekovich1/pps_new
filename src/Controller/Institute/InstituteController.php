@@ -6,7 +6,8 @@ use App\Service\Instiute\InstituteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-
+use OpenApi\Attributes as OA;
+#[OA\Tag(name: 'Institute', description: 'Institute api')]
 class InstituteController extends AbstractController
 {
 
