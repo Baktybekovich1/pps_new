@@ -30,7 +30,7 @@ readonly class AdminService
     {
         $director = $this->directorRepository->find($directorId);
         $teacher = $director->getTeacher();
-        if ($this->directorRepository->directorCount($teacher) <= 1) {
+        if ($this->directorRepository->directorCount($teacher->getId()) <= 1) {
             $teacher->setRoles(["ROLE_TEACHER"]);
         }
         $this->teacherRepository->save($teacher);
