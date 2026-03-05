@@ -56,23 +56,25 @@ class DirectorRepository extends ServiceEntityRepository
             return false;
         }
     }
+
     public function remove(Director $director): bool
     {
         try {
             $this->getEntityManager()->remove($director);
             $this->getEntityManager()->flush();
             return true;
-        }catch (\Throwable $exception){
+        } catch (\Throwable $exception) {
             return false;
         }
     }
 
-    public function directorCount(int $teacherId):int
+    public function directorCount(int $teacherId): int
     {
         $qb = $this->createQueryBuilder('director');
         $qb->select('count(director.id)');
-        $qb->where('director.teacherId = :teacherId');
+        $qb->innerJoin('director.teacher', 'teacher');
+        $qb->where('teacher.id = :teacherId');
         $qb->setParameter('teacherId', $teacherId);
-        return (int) $qb->getQuery()->getSingleScalarResult();
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 }
