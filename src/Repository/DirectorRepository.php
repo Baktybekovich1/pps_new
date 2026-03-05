@@ -58,12 +58,12 @@ class DirectorRepository extends ServiceEntityRepository
     }
     public function remove(Director $director): bool
     {
-//        try {
+        try {
             $this->getEntityManager()->remove($director);
             $this->getEntityManager()->flush();
             return true;
-//        }catch (\Throwable $exception){
-//            return false;
-//        }
+        }catch (\Throwable $exception){
+            return false;
+        }
     }
 }
