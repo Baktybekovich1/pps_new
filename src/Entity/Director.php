@@ -43,7 +43,7 @@ class Director
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Teacher::class, cascade: ['persist', 'remove'], inversedBy: 'director')]
+    #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'director')]
     #[ORM\JoinColumn(nullable: true)]
     private ?Teacher $teacher = null;
 
