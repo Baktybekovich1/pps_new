@@ -66,4 +66,13 @@ class DirectorRepository extends ServiceEntityRepository
             return false;
         }
     }
+
+    public function directorCount(int $teacherId):int
+    {
+        $qb = $this->createQueryBuilder('director');
+        $qb->select('count(director.id)');
+        $qb->where('director.teacherId = :teacherId');
+        $qb->setParameter('teacherId', $teacherId);
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }
