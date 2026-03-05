@@ -3,6 +3,7 @@
 namespace App\Factory\Institute;
 
 use App\Dto\Institute\InstituteDto;
+use App\Dto\Institute\InstituteNameDto;
 use App\Entity\Institute;
 
 class InstituteDtoFactory
@@ -15,4 +16,14 @@ class InstituteDtoFactory
             $institute->getTeacherTotal(),
         );
     }
+
+    public function getName(Institute $institute): InstituteNameDto
+    {
+        $dto = new InstituteNameDto();
+        $dto->instituteId = $institute->getId();
+        $dto->name = (string)$institute;
+        return $dto;
+
+    }
+
 }

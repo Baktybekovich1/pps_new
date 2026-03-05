@@ -14,18 +14,18 @@ class Institute
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['institute:read','teacher:read'])]
+    #[Groups(['institute:read', 'teacher:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['institute:read','teacher:read'])]
+    #[Groups(['institute:read', 'teacher:read'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'institutes')]
     private ?Organization $organization = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['institute:read','teacher:read'])]
+    #[Groups(['institute:read', 'teacher:read'])]
     private ?string $reduction = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -42,7 +42,7 @@ class Institute
 
     public function __toString(): string
     {
-        return $this->getName();
+        return $this->getOrganization()->getName() . ' ' . $this->getName();
     }
 
     public function getId(): ?int

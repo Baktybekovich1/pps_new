@@ -49,6 +49,11 @@ expert_controllers:
   type: attribute
   prefix: /api/expert
 
+institute_controllers:
+  resource: ../src/Controller/Institute
+  type: attribute
+  prefix: /api/institute
+
 
 auth_controllers:
   resource: ../src/Controller/Auth
