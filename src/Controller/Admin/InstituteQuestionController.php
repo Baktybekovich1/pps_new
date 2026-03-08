@@ -47,7 +47,7 @@ class InstituteQuestionController extends AbstractController
         return $this->json($this->instituteQuestionService->removeInstituteQuestionSubtitle($request->get('subtitleId')));
     }
     #[Route(path: '/institute/question/subtitle/{subtitleId}', methods: ['PUT'])]
-    public function editSubtitle(Request $request,SetInstituteQuestionSubtitleDto $dto): JsonResponse
+    public function editSubtitle(Request $request,#[MapRequestPayload] SetInstituteQuestionSubtitleDto $dto): JsonResponse
     {
         return $this->json($this->instituteQuestionService->editInstituteQuestionSubtitle($request->get('subtitleId'),$dto));
     }
