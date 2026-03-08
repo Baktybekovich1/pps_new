@@ -34,8 +34,8 @@ class InstituteQuestionService
     public function setInstituteQuestionTitle(SetInstituteQuestionTitleDto $dto): bool
     {
         $questionTitle = new InstituteQuestionTitle();
-        $questionTitle->setName($dto->name);
-        $questionTitle->setActive($dto->active);
+        $questionTitle->setName($dto->titleName);
+        $questionTitle->setActive($dto->isActive);
         return $this->instituteQuestionTitleRepository->save($questionTitle);
     }
 
