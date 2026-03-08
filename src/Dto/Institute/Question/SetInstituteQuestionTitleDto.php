@@ -5,8 +5,8 @@ namespace App\Dto\Institute\Question;
 class SetInstituteQuestionTitleDto
 {
     public function __construct(
-        public string $name,
-        public bool $active,
+        public string $titleName,
+        public bool $isActive,
     )
     {
     }
