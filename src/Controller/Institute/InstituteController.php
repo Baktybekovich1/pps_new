@@ -2,7 +2,7 @@
 
 namespace App\Controller\Institute;
 
-use App\Service\Instiute\InstituteService;
+use App\Service\Institute\InstituteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;

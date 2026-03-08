@@ -45,4 +45,26 @@ class InstituteQuestionTitleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function save(InstituteQuestionTitle $instituteQuestionTitle): bool
+    {
+        try {
+            $this->getEntityManager()->persist($instituteQuestionTitle);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
+    }
+
+    public function remove(InstituteQuestionTitle $instituteQuestionTitle): bool
+    {
+        try {
+            $this->getEntityManager()->remove($instituteQuestionTitle);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
+    }
 }

@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Service\Instiute;
+namespace App\Service\Institute;
 
+use App\Dto\Institute\InstituteDto;
+use App\Dto\Institute\Question\SetInstituteQuestionTitleDto;
 use App\Entity\InstituteQuestionTitle;
 use App\Factory\Institute\InstituteDtoFactory;
 use App\Repository\InstituteQuestionTitleRepository;
@@ -13,7 +15,6 @@ class InstituteService
     public function __construct(
         private readonly InstituteDtoFactory $dtoFactory,
         private readonly InstituteRepository $instituteRepository,
-        private readonly InstituteQuestionTitleRepository $instituteQuestionTitleRepository,
     )
     {
     }
@@ -28,14 +29,4 @@ class InstituteService
         return $result;
     }
 
-    public function getInstituteQuestion(): array
-    {
-        $questions = $this->instituteQuestionTitleRepository->findAll();
-        $result = [];
-        foreach ($questions as $question) {
-            $result[] = $this->dtoFactory->getName($question);
-        }
-        return $result;
-
-    }
 }
