@@ -29,6 +29,12 @@ class InstituteQuestionController extends AbstractController
         return $this->json($this->instituteQuestionService->removeInstituteQuestionTitle($request->get('titleId')));
     }
 
+    #[Route(path: '/institute/question/title/{titleId}', methods: ['PUT'])]
+    public function editTitle(Request $request,#[MapRequestPayload] SetInstituteQuestionTitleDto $dto): JsonResponse
+    {
+        return $this->json($this->instituteQuestionService->editInstituteQuestionTitle($request->get('titleId'), $dto));
+    }
+
     #[Route(path: '/institute/question/subtitle', methods: ['POST'])]
     public function setSubtitle(#[MapRequestPayload] SetInstituteQuestionSubtitleDto $dto): JsonResponse
     {
@@ -40,6 +46,12 @@ class InstituteQuestionController extends AbstractController
     {
         return $this->json($this->instituteQuestionService->removeInstituteQuestionSubtitle($request->get('subtitleId')));
     }
+    #[Route(path: '/institute/question/subtitle/{subtitleId}', methods: ['PUT'])]
+    public function editSubtitle(Request $request,SetInstituteQuestionSubtitleDto $dto): JsonResponse
+    {
+        return $this->json($this->instituteQuestionService->editInstituteQuestionSubtitle($request->get('subtitleId'),$dto));
+    }
+
 
 
 

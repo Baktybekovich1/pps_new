@@ -70,12 +70,30 @@ class InstituteQuestionService
 
     public function removeInstituteQuestionTitle($titleId): bool
     {
-        return $this->instituteQuestionTitleRepository->remove($titleId);
+        return $this->instituteQuestionTitleRepository->remove($this->instituteQuestionTitleRepository->find($titleId));
     }
 
     public function removeInstituteQuestionSubtitle($subtitleId): bool
     {
-        return $this->instituteQuestionSubtitleRepository->remove($subtitleId);
+        return $this->instituteQuestionSubtitleRepository->remove($this->instituteQuestionSubtitleRepository->find($subtitleId));
     }
+
+    public function editInstituteQuestionTitle($titleId, SetInstituteQuestionTitleDto $dto): bool
+    {
+        $questionTitle = $this->instituteQuestionTitleRepository->find($titleId);
+        $questionTitle->setName($dto->titleName);
+        $questionTitle->setActive($dto->isActive);
+        return $this->instituteQuestionTitleRepository->save($questionTitle);
+    }
+
+    public function editInstituteQuestionSubtitle($subtitleId, SetInstituteQuestionSubtitleDto $dto): bool
+    {
+        $questionSubtitle = $this->instituteQuestionSubtitleRepository->find($subtitleId);
+        $questionSubtitle->setName($dto->subtitleName);
+        $questionSubtitle->setTitle($this->instituteQuestionTitleRepository->find($dto->titleId));
+        $questionSubtitle->setPoint($dto->point);
+        return $this->instituteQuestionSubtitleRepository->save($questionSubtitle);
+    }
+
 
 }
