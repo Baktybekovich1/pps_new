@@ -7,6 +7,7 @@ use App\Dto\Institute\Question\SetInstituteQuestionTitleDto;
 use App\Service\Institute\InstituteQuestionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -22,11 +23,22 @@ class InstituteQuestionController extends AbstractController
     {
         return $this->json($this->instituteQuestionService->setInstituteQuestionTitle($dto));
     }
+    #[Route(path: '/institute/question/title/{titleId}', methods: ['DELETE'])]
+    public function removeTitle(Request $request): JsonResponse
+    {
+        return $this->json($this->instituteQuestionService->removeInstituteQuestionTitle($request->get('titleId')));
+    }
 
     #[Route(path: '/institute/question/subtitle', methods: ['POST'])]
     public function setSubtitle(#[MapRequestPayload] SetInstituteQuestionSubtitleDto $dto): JsonResponse
     {
         return $this->json($this->instituteQuestionService->setInstituteQuestionSubtitle($dto));
+    }
+
+    #[Route(path: '/institute/question/subtitle/{subtitleId}', methods: ['DELETE'])]
+    public function removeSubtitle(Request $request): JsonResponse
+    {
+        return $this->json($this->instituteQuestionService->removeInstituteQuestionSubtitle($request->get('subtitleId')));
     }
 
 

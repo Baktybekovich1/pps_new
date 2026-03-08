@@ -42,7 +42,7 @@ class InstituteQuestionService
     public function setInstituteQuestionSubtitle(SetInstituteQuestionSubtitleDto $dto): bool
     {
         $questionSubtitle = new InstituteQuestionSubtitle();
-        $questionSubtitle->setName($dto->name);
+        $questionSubtitle->setName($dto->subtitleName);
         $questionSubtitle->setTitle($this->instituteQuestionTitleRepository->find($dto->titleId));
         $questionSubtitle->setPoint($dto->point);
         return $this->instituteQuestionSubtitleRepository->save($questionSubtitle);
@@ -67,4 +67,15 @@ class InstituteQuestionService
         }
         return $result;
     }
+
+    public function removeInstituteQuestionTitle($titleId): bool
+    {
+        return $this->instituteQuestionTitleRepository->remove($titleId);
+    }
+
+    public function removeInstituteQuestionSubtitle($subtitleId): bool
+    {
+        return $this->instituteQuestionSubtitleRepository->remove($subtitleId);
+    }
+
 }

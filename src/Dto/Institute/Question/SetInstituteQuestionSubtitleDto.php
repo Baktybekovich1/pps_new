@@ -6,7 +6,7 @@ class SetInstituteQuestionSubtitleDto
 {
     public function __construct(
         public int $titleId,
-        public string $name,
+        public string $subtitleName,
         public int $point,
     )
     {
