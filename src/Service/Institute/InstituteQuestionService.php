@@ -2,7 +2,9 @@
 
 namespace App\Service\Institute;
 
+use App\Dto\Institute\Question\SetInstituteQuestionSubtitleDto;
 use App\Dto\Institute\Question\SetInstituteQuestionTitleDto;
+use App\Entity\InstituteQuestionSubtitle;
 use App\Entity\InstituteQuestionTitle;
 use App\Factory\Institute\InstituteDtoFactory;
 use App\Repository\InstituteQuestionSubtitleRepository;
@@ -35,6 +37,15 @@ class InstituteQuestionService
         $questionTitle->setName($dto->name);
         $questionTitle->setActive($dto->active);
         return $this->instituteQuestionTitleRepository->save($questionTitle);
+    }
+
+    public function setInstituteQuestionSubtitle(SetInstituteQuestionSubtitleDto $dto): bool
+    {
+        $questionSubtitle = new InstituteQuestionSubtitle();
+        $questionSubtitle->setName($dto->name);
+        $questionSubtitle->setTitle($this->instituteQuestionTitleRepository->find($dto->titleId));
+        $questionSubtitle->setPoint($dto->point);
+        return $this->instituteQuestionSubtitleRepository->save($questionSubtitle);
     }
 
     public function getTitles(): array
