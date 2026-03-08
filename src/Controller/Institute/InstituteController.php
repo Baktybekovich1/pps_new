@@ -12,7 +12,7 @@ class InstituteController extends AbstractController
 {
 
     public function __construct(
-        private readonly InstituteService $instituteService
+        public readonly InstituteService $instituteService
     )
     {
     }
