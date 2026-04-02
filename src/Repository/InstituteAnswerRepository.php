@@ -21,6 +21,19 @@ class InstituteAnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, InstituteAnswer::class);
     }
 
+    public function getInstitutePoints(\App\Entity\Institute $institute): int
+    {
+        return (int)$this->createQueryBuilder('answer')
+            ->select('COALESCE(SUM(subtitle.point), 0)')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->where('answer.institute = :institute')
+            ->andWhere('answer.active = :active')
+            ->setParameter('institute', $institute)
+            ->setParameter('active', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return InstituteAnswer[] Returns an array of InstituteAnswer objects
 //     */
@@ -45,4 +58,15 @@ class InstituteAnswerRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function save(InstituteAnswer $answer): bool
+    {
+        try {
+            $this->getEntityManager()->persist($answer);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
+    }
 }

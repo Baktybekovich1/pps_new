@@ -44,10 +44,6 @@ class DirectorService
         }
 
         $institute = $director->getInstitute();
-        if (!$institute) {
-            throw new \Exception("Институт не найден", 404);
-        }
-
         $teachers = [];
         foreach ($institute->getTeacherOrganizations() as $to) {
             $t = $to->getTeacher();
@@ -78,10 +74,6 @@ class DirectorService
         }
 
         $institute = $director->getInstitute();
-        if (!$institute) {
-            throw new \Exception("Институт не найден", 404);
-        }
-
         $institute->setTeacherTotal($teacherTotal);
         $this->entityManager->flush();
     }
@@ -94,10 +86,6 @@ class DirectorService
         }
 
         $institute = $director->getInstitute();
-        if (!$institute) {
-            throw new \Exception("Институт не найден", 404);
-        }
-
         $answers = $this->instituteAnswerRepository->findBy(['institute' => $institute]);
 
         // Initialize answers if not already created
@@ -152,10 +140,6 @@ class DirectorService
         }
 
         $institute = $director->getInstitute();
-        if (!$institute) {
-            throw new \Exception("Институт не найден", 404);
-        }
-
         $to = $this->teacherOrganizationRepository->findOneBy([
             'teacher' => $targetTeacherId,
             'institute' => $institute

@@ -13,6 +13,8 @@ use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
 use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
+use App\Repository\InstituteRepository;
+use App\Repository\InstituteAnswerRepository;
 use App\Service\Organization\OrganizationPpsService;
 use App\Service\UserPointsCountService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -72,5 +74,54 @@ class PpsRatingController extends AbstractController
         ]);
     }
 
+    #[Route('/institutes', name: 'app_pps_institutes', methods: ['GET'])]
+    public function institutes_list(InstituteRepository $instituteRepository, InstituteAnswerRepository $instituteAnswerRepository): JsonResponse
+    {
+        $institutes = $instituteRepository->findAll();
+        $result = [];
+        foreach ($institutes as $institute) {
+            $points = $instituteAnswerRepository->getInstitutePoints($institute);
+            $result[] = [
+                'id' => $institute->getId(),
+                'name' => $institute->getName(),
+                'organization' => $institute->getOrganization() ? $institute->getOrganization()->getName() : 'N/A',
+                'points' => $points,
+                'teacherTotal' => $institute->getTeacherTotal()
+            ];
+        }
+
+        usort($result, function($a, $b) {
+            return $b['points'] <=> $a['points'];
+        });
+
+        return $this->json(['institutes' => $result]);
+    }
+
+    #[Route('/organization/{orgId}/institutes', name: 'app_organization_institutes_rating', methods: ['GET'])]
+    public function organization_institutes(
+        int $orgId,
+        InstituteRepository $instituteRepository,
+        InstituteAnswerRepository $instituteAnswerRepository
+    ): JsonResponse
+    {
+        $institutes = $instituteRepository->findByOrganization($orgId);
+        $result = [];
+        foreach ($institutes as $institute) {
+            $points = $instituteAnswerRepository->getInstitutePoints($institute);
+            $result[] = [
+                'id' => $institute->getId(),
+                'name' => $institute->getName(),
+                'reduction' => $institute->getReduction(),
+                'points' => $points,
+                'teacherTotal' => $institute->getTeacherTotal()
+            ];
+        }
+
+        usort($result, function($a, $b) {
+            return $b['points'] <=> $a['points'];
+        });
+
+        return $this->json(['institutes' => $result]);
+    }
 
 }
