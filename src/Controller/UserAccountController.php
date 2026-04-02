@@ -9,8 +9,10 @@ use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
-use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
+use App\Repository\UserResearchActivitiesListRepository;
+use App\Repository\TeacherRepository;
+use App\Repository\TeacherAnswerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,20 +27,24 @@ class UserAccountController extends AbstractController
         private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly TeacherRepository                    $teacherRepository,
+        private readonly TeacherAnswerRepository              $teacherAnswerRepository
     )
     {
     }
 
-    #[Route('api/user/account/{id}', name: 'app_user_account',methods: ['GET'])]
+    #[Route('api/user/account/{id}', name: 'app_user_account', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
-        $user = $this->userRepository->find($request->get('id'));
-        $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
-        $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
-        $userResearch = $this->userResearchActivitiesListRepository->findBy(['user' => $user]);
-        $userInnovative = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
-        $userSocial = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
-        if ($userInfo != null){
+        $id = $request->get('id');
+        $user = $this->userRepository->find($id);
+
+        if ($user) {
+            $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
+            if ($userInfo == null) {
+                return $this->json('Вы не заполинили "Личные данные"');
+            }
+
             $info = new UserInfoGetDto(
                 $userInfo->getId(),
                 $userInfo->getName(),
@@ -46,7 +52,11 @@ class UserAccountController extends AbstractController
                 $userInfo->getPosition()->getName(),
                 $userInfo->getRegular(),
                 $userInfo->getEmail());
-            // User Info
+
+            $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
+            $userResearch = $this->userResearchActivitiesListRepository->findBy(['user' => $user]);
+            $userInnovative = $this->userInnovativeEducationRepository->findBy(['user' => $user]);
+            $userSocial = $this->userSocialActivitiesRepository->findBy(['user' => $user]);
 
             $awards = [];
             foreach ($userAwards as $userAward) {
@@ -58,7 +68,6 @@ class UserAccountController extends AbstractController
                     $userAward->getStatus()
                 );
             }
-//        User Awards
 
             $research = [];
             foreach ($userResearch as $item) {
@@ -92,17 +101,49 @@ class UserAccountController extends AbstractController
                     $item->getStatus()
                 );
             }
-        }
-        else{
-            return $this->json('Вы не заполинили "Личные данные"');
+
+            return $this->json([
+                'userInfo' => $info,
+                'userAwards' => $awards,
+                'userResearch' => $research,
+                'userInnovative' => $innovative,
+                'userSocial' => $social
+            ]);
         }
 
-        return $this->json([
-            'userInfo' => $info,
-            'userAwards' => $awards,
-            'userResearch' => $research,
-            'userInnovative' => $innovative,
-            'userSocial' => $social
-        ]);
+        $teacher = $this->teacherRepository->find($id);
+        if ($teacher) {
+            $firstOrg = $teacher->getTeacherOrganizations()->first();
+            $info = new UserInfoGetDto(
+                $teacher->getId(),
+                (string)$teacher,
+                $firstOrg ? $firstOrg->getInstitute()->getName() : 'N/A',
+                $teacher->getPosition() ? $teacher->getPosition()->getName() : 'N/A',
+                $firstOrg ? $firstOrg->getRegular() : true,
+                $teacher->getEmail()
+            );
+
+            $teacherAnswers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher]);
+            $awards = [];
+            foreach ($teacherAnswers as $answer) {
+                $awards[] = new UserAwardsGetDto(
+                    $answer->getId(),
+                    $answer->getSubtitle()->getTitle()->getName() . ': ' . $answer->getSubtitle()->getName(),
+                    $answer->getLink() ?? '',
+                    (string)$answer->getSubtitle()->getTitle()->getStage()->getId(),
+                    $answer->isActive() ? 'active' : 'freeze'
+                );
+            }
+
+            return $this->json([
+                'userInfo' => $info,
+                'userAwards' => $awards,
+                'userResearch' => [],
+                'userInnovative' => [],
+                'userSocial' => []
+            ]);
+        }
+
+        return $this->json('Пользователь или преподаватель не найден', 404);
     }
 }

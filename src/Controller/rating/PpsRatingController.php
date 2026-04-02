@@ -11,6 +11,8 @@ use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\UserSocialActivitiesRepository;
+use App\Repository\TeacherOrganizationRepository;
+use App\Repository\TeacherRepository;
 use App\Service\Organization\OrganizationPpsService;
 use App\Service\UserPointsCountService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,8 +25,11 @@ use OpenApi\Attributes as OA;
 class PpsRatingController extends AbstractController
 {
     public function __construct(
-        private UserInfoRepository     $userInfoRepository,
-        private UserPointsCountService $userPointsCountService, private readonly OrganizationPpsService $organizationPpsService
+        private UserInfoRepository                   $userInfoRepository,
+        private UserPointsCountService               $userPointsCountService,
+        private readonly OrganizationPpsService      $organizationPpsService,
+        private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
+        private readonly TeacherRepository            $teacherRepository
     )
     {
     }
@@ -44,17 +49,24 @@ class PpsRatingController extends AbstractController
 
 
     #[Route('/users', name: 'app_pps_users', methods: ['GET'])]
-    public function users_list(): JsonResponse
+    public function users_list(Request $request): JsonResponse
     {
-        $userInfo = $this->userInfoRepository->findAll();
-        $users = [];
-        foreach ($userInfo as $value) {
-            $item = new UsersDto(
-                $value->getUser()->getId(),
-                $value->getName()
-            );
-            $users[] = $item;
+        $orgId = $request->get('orgId');
+        if ($orgId) {
+            $teacherOrgs = $this->teacherOrganizationRepository->findBy(['organization' => $orgId]);
+            $users = [];
+            foreach ($teacherOrgs as $to) {
+                $teacher = $to->getTeacher();
+                $users[] = new UsersDto($teacher->getId(), (string)$teacher);
+            }
+        } else {
+            $teacherEntities = $this->teacherRepository->findAll();
+            $users = [];
+            foreach ($teacherEntities as $teacher) {
+                $users[] = new UsersDto($teacher->getId(), (string)$teacher);
+            }
         }
+
         return $this->json([
             'users' => $users
         ]);
