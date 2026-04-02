@@ -2,6 +2,7 @@
 
 namespace App\Controller\Director;
 
+use App\Entity\Teacher;
 use App\Service\Director\DirectorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
