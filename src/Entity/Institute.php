@@ -34,9 +34,13 @@ class Institute
     #[ORM\OneToMany(targetEntity: InstituteAnswer::class, mappedBy: 'institute')]
     private Collection $instituteAnswers;
 
+    #[ORM\OneToMany(targetEntity: TeacherOrganization::class, mappedBy: 'institute')]
+    private Collection $teacherOrganizations;
+
     public function __construct()
     {
         $this->instituteAnswers = new ArrayCollection();
+        $this->teacherOrganizations = new ArrayCollection();
     }
 
 
@@ -125,5 +129,13 @@ class Institute
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, TeacherOrganization>
+     */
+    public function getTeacherOrganizations(): Collection
+    {
+        return $this->teacherOrganizations;
     }
 }

@@ -25,7 +25,7 @@ class TeacherOrganization
     #[Groups('teacher:read')]
     private Organization $organization;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'teacherOrganizations')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups('teacher:read')]
     private Institute $institute;
