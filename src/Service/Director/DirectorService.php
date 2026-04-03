@@ -106,6 +106,7 @@ class DirectorService
         foreach ($answers as $answer) {
             $result[] = new DirectorInstituteAnswerDto(
                 $answer->getId(),
+                $answer->getSubtitle()->getId(),
                 $answer->getSubtitle()->getTitle()->getName(),
                 $answer->getSubtitle()->getName(),
                 $answer->getLink(),
@@ -186,6 +187,7 @@ class DirectorService
             if ($answer->getLink()) {
                 $result[] = new DirectorInstituteAnswerDto(
                     $answer->getId(),
+                    $answer->getSubtitle()->getId(),
                     $answer->getSubtitle()->getTitle()->getName(),
                     $answer->getSubtitle()->getName(),
                     $answer->getLink(),
