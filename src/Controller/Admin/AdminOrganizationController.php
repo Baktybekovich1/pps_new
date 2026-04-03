@@ -75,8 +75,15 @@ class AdminOrganizationController extends AbstractController
             return $this->json(['error' => 'Organization not found'], 404);
         }
 
-        $this->entityManager->remove($organization);
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->remove($organization);
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            return $this->json([
+                'error' => 'Delete failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
 
         return $this->json(['message' => 'Organization deleted']);
     }
