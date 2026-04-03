@@ -78,10 +78,11 @@ class AdminOrganizationController extends AbstractController
         try {
             $this->entityManager->remove($organization);
             $this->entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->json([
                 'error' => 'Delete failed',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ], 500);
         }
 
