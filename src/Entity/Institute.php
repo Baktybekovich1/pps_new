@@ -32,10 +32,10 @@ class Institute
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $teacherTotal = null;
 
-    #[ORM\OneToMany(targetEntity: InstituteAnswer::class, mappedBy: 'institute')]
+    #[ORM\OneToMany(targetEntity: InstituteAnswer::class, mappedBy: 'institute', cascade: ['remove'], orphanRemoval: true)]
     private Collection $instituteAnswers;
 
-    #[ORM\OneToMany(targetEntity: TeacherOrganization::class, mappedBy: 'institute')]
+    #[ORM\OneToMany(targetEntity: TeacherOrganization::class, mappedBy: 'institute', cascade: ['remove'], orphanRemoval: true)]
     private Collection $teacherOrganizations;
 
     public function __construct()

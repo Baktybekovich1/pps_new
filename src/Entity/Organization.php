@@ -38,6 +38,9 @@ class Organization
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Institute::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $institutes;
 
+    #[ORM\OneToMany(targetEntity: TeacherOrganization::class, mappedBy: 'organization', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $teacherOrganizations;
+
     #[Groups(['organization:read','teacher:read'])]
     #[SerializedName('photoUrl')]
     public function getPhotoUrl(): ?string
@@ -51,6 +54,7 @@ class Organization
     public function __construct()
     {
         $this->institutes = new ArrayCollection();
+        $this->teacherOrganizations = new ArrayCollection();
     }
 
     public function __toString(): string
