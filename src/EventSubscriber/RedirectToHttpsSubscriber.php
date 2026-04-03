@@ -13,6 +13,11 @@ class RedirectToHttpsSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
+        // Skip API routes - they use stateless JWT auth, redirecting would break them
+        if (str_starts_with($request->getPathInfo(), '/api/')) {
+            return;
+        }
+
         if (!$request->isSecure() && $_SERVER['APP_ENV'] === 'prod') {
             $url = 'https://' . $request->getHttpHost() . $request->getRequestUri();
             $event->setResponse(new RedirectResponse($url));
