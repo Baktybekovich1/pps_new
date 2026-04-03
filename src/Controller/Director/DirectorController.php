@@ -56,6 +56,43 @@ class DirectorController extends AbstractController
         return $this->json(['message' => 'Success']);
     }
 
+    #[Route(path: '/institute/answers', name: 'director_institute_answer_add', methods: ['POST'])]
+    public function add_answer(Request $request): JsonResponse
+    {
+        /** @var Teacher $user */
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true);
+        $subtitleId = (int)($data['subtitleId'] ?? 0);
+        $link = trim((string)($data['answerLink'] ?? ''));
+
+        if (!$subtitleId || !$link) {
+            return $this->json(['error' => 'subtitleId и answerLink обязательны'], 400);
+        }
+
+        if (!str_starts_with($link, 'http')) {
+            $link = 'https://' . $link;
+        }
+
+        try {
+            $result = $this->directorService->addInstituteAward($user, $subtitleId, $link);
+            return $this->json($result, 201);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
+        }
+    }
+
+    #[Route(path: '/institute/awards', name: 'director_institute_awards_list', methods: ['GET'])]
+    public function get_awards(): JsonResponse
+    {
+        /** @var Teacher $user */
+        $user = $this->getUser();
+        try {
+            return $this->json($this->directorService->getInstituteAwards($user));
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
+        }
+    }
+
     #[Route(path: '/institute/teacher/{id}', name: 'director_institute_teacher_remove', methods: ['DELETE'])]
     public function remove_teacher(int $id): JsonResponse
     {

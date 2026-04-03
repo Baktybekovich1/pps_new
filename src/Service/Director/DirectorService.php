@@ -132,6 +132,70 @@ class DirectorService
         $this->entityManager->flush();
     }
 
+    /**
+     * Adds a new award entry (new InstituteAnswer row) for a given subtitle.
+     * This allows multiple awards of the same type.
+     */
+    public function addInstituteAward(Teacher $teacher, int $subtitleId, string $link): array
+    {
+        $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
+        if (!$director) {
+            throw new \Exception("Access Denied", 403);
+        }
+
+        $subtitle = $this->subtitleRepository->find($subtitleId);
+        if (!$subtitle) {
+            throw new \Exception("Subtitle not found", 404);
+        }
+
+        $institute = $director->getInstitute();
+
+        $answer = new InstituteAnswer();
+        $answer->setInstitute($institute);
+        $answer->setSubtitle($subtitle);
+        $answer->setLink($link);
+        $answer->setActive(true);
+
+        $this->entityManager->persist($answer);
+        $this->entityManager->flush();
+
+        return [
+            'id' => $answer->getId(),
+            'subtitleName' => $subtitle->getName(),
+            'titleName' => $subtitle->getTitle()->getName(),
+            'answerLink' => $link,
+            'point' => $subtitle->getPoint(),
+        ];
+    }
+
+    /**
+     * Returns only answered institute awards (where link is not null/empty).
+     */
+    public function getInstituteAwards(Teacher $teacher): array
+    {
+        $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
+        if (!$director) {
+            throw new \Exception("Access Denied", 403);
+        }
+
+        $institute = $director->getInstitute();
+        $answers = $this->instituteAnswerRepository->findBy(['institute' => $institute]);
+
+        $result = [];
+        foreach ($answers as $answer) {
+            if ($answer->getLink()) {
+                $result[] = new DirectorInstituteAnswerDto(
+                    $answer->getId(),
+                    $answer->getSubtitle()->getTitle()->getName(),
+                    $answer->getSubtitle()->getName(),
+                    $answer->getLink(),
+                    $answer->getSubtitle()->getPoint()
+                );
+            }
+        }
+        return $result;
+    }
+
     public function removeTeacherFromInstitute(Teacher $teacher, int $targetTeacherId): void
     {
         $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
