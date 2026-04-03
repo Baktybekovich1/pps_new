@@ -81,11 +81,14 @@ class AdminOrganizationController extends AbstractController
             
             return $this->json(['message' => 'Organization deleted']);
         } catch (\Throwable $e) {
-            return $this->json([
-                'error' => 'Delete failed',
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => 'Delete failed aggressively',
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ], 500);
+            ]);
+            exit;
         }
     }
 }
