@@ -70,14 +70,16 @@ class AdminOrganizationController extends AbstractController
     #[Route('/organizations/{id}', name: 'admin_organization_delete', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
-        $organization = $this->organizationRepository->find($id);
-        if (!$organization) {
-            return $this->json(['error' => 'Organization not found'], 404);
-        }
-
         try {
+            $organization = $this->organizationRepository->find($id);
+            if (!$organization) {
+                return $this->json(['error' => 'Organization not found'], 404);
+            }
+
             $this->entityManager->remove($organization);
             $this->entityManager->flush();
+            
+            return $this->json(['message' => 'Organization deleted']);
         } catch (\Throwable $e) {
             return $this->json([
                 'error' => 'Delete failed',
@@ -85,7 +87,5 @@ class AdminOrganizationController extends AbstractController
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
-
-        return $this->json(['message' => 'Organization deleted']);
     }
 }
