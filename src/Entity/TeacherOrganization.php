@@ -17,16 +17,16 @@ class TeacherOrganization
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'teacherOrganizations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Teacher $teacher;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups('teacher:read')]
     private Organization $organization;
 
     #[ORM\ManyToOne(inversedBy: 'teacherOrganizations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups('teacher:read')]
     private Institute $institute;
 

@@ -22,6 +22,7 @@ class Institute
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'institutes')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Organization $organization = null;
 
     #[ORM\Column(length: 255, nullable: true)]

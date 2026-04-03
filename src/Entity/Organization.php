@@ -35,7 +35,7 @@ class Organization
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $photoUpdatedAt = null;   // для Vich
 
-    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Institute::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: Institute::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $institutes;
 
     #[Groups(['organization:read','teacher:read'])]

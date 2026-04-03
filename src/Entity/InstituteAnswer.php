@@ -15,6 +15,7 @@ class InstituteAnswer
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'instituteAnswers')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Institute $institute = null;
 
     #[ORM\ManyToOne(inversedBy: 'instituteAnswers')]
