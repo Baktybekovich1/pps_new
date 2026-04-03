@@ -102,4 +102,48 @@ class DirectorController extends AbstractController
         return $this->json(['message' => 'Success']);
     }
 
+    #[Route(path: '/institute/awards/{id}', name: 'director_institute_award_edit', methods: ['PATCH'])]
+    public function edit_award(int $id, Request $request): JsonResponse
+    {
+        /** @var Teacher $user */
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true);
+        $link = trim((string)($data['answerLink'] ?? ''));
+        if (!$link) return $this->json(['error' => 'answerLink обязателен'], 400);
+        try {
+            $this->directorService->editInstituteAward($user, $id, $link);
+            return $this->json(['message' => 'Updated']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
+        }
+    }
+
+    #[Route(path: '/institute/awards/{id}', name: 'director_institute_award_delete', methods: ['DELETE'])]
+    public function delete_award(int $id): JsonResponse
+    {
+        /** @var Teacher $user */
+        $user = $this->getUser();
+        try {
+            $this->directorService->deleteInstituteAward($user, $id);
+            return $this->json(['message' => 'Deleted']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
+        }
+    }
+
+    #[Route(path: '/institute/awards/{id}/freeze', name: 'director_institute_award_freeze', methods: ['PATCH'])]
+    public function freeze_award(int $id, Request $request): JsonResponse
+    {
+        /** @var Teacher $user */
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true);
+        $active = (bool)($data['active'] ?? false);
+        try {
+            $this->directorService->setInstituteAwardActive($user, $id, $active);
+            return $this->json(['message' => 'Updated']);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
+        }
+    }
+
 }

@@ -216,4 +216,38 @@ class DirectorService
             $this->entityManager->flush();
         }
     }
+
+    private function findOwnedAward(Teacher $teacher, int $answerId): \App\Entity\InstituteAnswer
+    {
+        $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
+        if (!$director) throw new \Exception('Access Denied', 403);
+
+        $answer = $this->instituteAnswerRepository->find($answerId);
+        if (!$answer || $answer->getInstitute() !== $director->getInstitute()) {
+            throw new \Exception('Not found or forbidden', 403);
+        }
+        return $answer;
+    }
+
+    public function editInstituteAward(Teacher $teacher, int $answerId, string $link): void
+    {
+        $answer = $this->findOwnedAward($teacher, $answerId);
+        if (!str_starts_with($link, 'http')) $link = 'https://' . $link;
+        $answer->setLink($link);
+        $this->entityManager->flush();
+    }
+
+    public function deleteInstituteAward(Teacher $teacher, int $answerId): void
+    {
+        $answer = $this->findOwnedAward($teacher, $answerId);
+        $this->entityManager->remove($answer);
+        $this->entityManager->flush();
+    }
+
+    public function setInstituteAwardActive(Teacher $teacher, int $answerId, bool $active): void
+    {
+        $answer = $this->findOwnedAward($teacher, $answerId);
+        $answer->setActive($active);
+        $this->entityManager->flush();
+    }
 }
