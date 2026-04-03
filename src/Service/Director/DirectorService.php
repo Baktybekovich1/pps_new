@@ -110,7 +110,8 @@ class DirectorService
                 $answer->getSubtitle()->getTitle()->getName(),
                 $answer->getSubtitle()->getName(),
                 $answer->getLink(),
-                $answer->getSubtitle()->getPoint()
+                $answer->getSubtitle()->getPoint(),
+                $answer->isActive()
             );
         }
 
@@ -191,7 +192,8 @@ class DirectorService
                     $answer->getSubtitle()->getTitle()->getName(),
                     $answer->getSubtitle()->getName(),
                     $answer->getLink(),
-                    $answer->getSubtitle()->getPoint()
+                    $answer->getSubtitle()->getPoint(),
+                    $answer->isActive()
                 );
             }
         }

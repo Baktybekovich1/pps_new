@@ -10,6 +10,7 @@ class DirectorInstituteAnswerDto
         public ?string $titleName,
         public ?string $subtitleName,
         public ?string $answerLink,
-        public ?int $point
+        public ?int $point,
+        public ?bool $isActive
     ) {}
 }

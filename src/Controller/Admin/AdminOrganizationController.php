@@ -18,7 +18,7 @@ class AdminOrganizationController extends AbstractController
     ) {
     }
 
-    #[Route('/organizations', name: 'admin_organization_create', methods: ['POST'])]
+    #[Route('/organizations', name: 'api_admin_organization_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
@@ -43,7 +43,7 @@ class AdminOrganizationController extends AbstractController
         return $this->json(['message' => 'Organization created', 'id' => $organization->getId()]);
     }
 
-    #[Route('/organizations/{id}', name: 'admin_organization_update', methods: ['POST', 'PUT'])]
+    #[Route('/organizations/{id}', name: 'api_admin_organization_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
@@ -71,7 +71,7 @@ class AdminOrganizationController extends AbstractController
         return $this->json(['message' => 'Organization updated']);
     }
 
-    #[Route('/organizations/{id}', name: 'admin_organization_delete', methods: ['DELETE'])]
+    #[Route('/organizations/{id}', name: 'api_admin_organization_delete', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
         if (!$this->isGranted('ROLE_ADMIN')) {
