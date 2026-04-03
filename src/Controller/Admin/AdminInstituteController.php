@@ -10,9 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-
-#[IsGranted('ROLE_ADMIN')]
 class AdminInstituteController extends AbstractController
 {
     public function __construct(
@@ -25,6 +22,9 @@ class AdminInstituteController extends AbstractController
     #[Route('/institutes', name: 'admin_institute_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['error' => 'Access denied'], 403);
+        }
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['name']) || !isset($data['organization_id'])) {
@@ -57,6 +57,9 @@ class AdminInstituteController extends AbstractController
     #[Route('/institutes/{id}', name: 'admin_institute_update', methods: ['PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['error' => 'Access denied'], 403);
+        }
         $institute = $this->instituteRepository->find($id);
         if (!$institute) {
             return $this->json(['error' => 'Institute not found'], 404);
@@ -93,6 +96,9 @@ class AdminInstituteController extends AbstractController
     #[Route('/institutes/{id}', name: 'admin_institute_delete', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            return $this->json(['error' => 'Access denied'], 403);
+        }
         $institute = $this->instituteRepository->find($id);
         if (!$institute) {
             return $this->json(['error' => 'Institute not found'], 404);
