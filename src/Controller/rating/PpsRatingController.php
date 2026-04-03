@@ -75,12 +75,14 @@ class PpsRatingController extends AbstractController
     }
 
     #[Route('/institutes', name: 'app_pps_institutes', methods: ['GET'])]
-    public function institutes_list(InstituteRepository $instituteRepository, InstituteAnswerRepository $instituteAnswerRepository): JsonResponse
+    public function institutes_list(InstituteRepository $instituteRepository, InstituteAnswerRepository $instituteAnswerRepository, \App\Repository\TeacherAnswerRepository $teacherAnswerRepository): JsonResponse
     {
         $institutes = $instituteRepository->findAll();
         $result = [];
         foreach ($institutes as $institute) {
-            $points = $instituteAnswerRepository->getInstitutePoints($institute);
+            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute);
+            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute);
+            $points = $basePoints + $teacherPoints;
             $result[] = [
                 'id' => $institute->getId(),
                 'name' => $institute->getName(),
@@ -101,13 +103,16 @@ class PpsRatingController extends AbstractController
     public function organization_institutes(
         int $orgId,
         InstituteRepository $instituteRepository,
-        InstituteAnswerRepository $instituteAnswerRepository
+        InstituteAnswerRepository $instituteAnswerRepository,
+        \App\Repository\TeacherAnswerRepository $teacherAnswerRepository
     ): JsonResponse
     {
         $institutes = $instituteRepository->findByOrganization($orgId);
         $result = [];
         foreach ($institutes as $institute) {
-            $points = $instituteAnswerRepository->getInstitutePoints($institute);
+            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute);
+            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute);
+            $points = $basePoints + $teacherPoints;
             $result[] = [
                 'id' => $institute->getId(),
                 'name' => $institute->getName(),

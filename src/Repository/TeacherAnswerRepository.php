@@ -34,6 +34,23 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function getStaffTeacherPointsForInstitute(\App\Entity\Institute $institute): int
+    {
+        return (int) $this->createQueryBuilder('answer')
+            ->select('COALESCE(SUM(subtitle.point), 0)')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('teacher.teacherOrganizations', 'org')
+            ->where('org.institute = :institute')
+            ->andWhere('org.regular = :regular')
+            ->andWhere('answer.active = :answerActive')
+            ->setParameter('institute', $institute)
+            ->setParameter('regular', true)
+            ->setParameter('answerActive', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findTeacherAnswersByStage(int $teacherId, int $stageId): array
     {
         return $this->createQueryBuilder('answer')
