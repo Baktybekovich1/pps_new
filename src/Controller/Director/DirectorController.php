@@ -10,18 +10,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_DIRECTOR')]
 class DirectorController extends AbstractController
 {
     public function __construct(private readonly DirectorService $directorService)
     {
     }
+
+    /** Public: used by AdminDirectors page to list all directors */
     #[Route(path: '/', name: 'find_all', methods: ['GET'])]
     public function get_all(): JsonResponse
     {
         return $this->json($this->directorService->findAllDirectors());
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute', name: 'director_institute', methods: ['GET'])]
     public function get_institute(): JsonResponse
     {
@@ -30,6 +32,7 @@ class DirectorController extends AbstractController
         return $this->json($this->directorService->getInstituteData($user));
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute', name: 'director_institute_update', methods: ['PUT'])]
     public function update_institute(Request $request): JsonResponse
     {
@@ -39,6 +42,7 @@ class DirectorController extends AbstractController
         return $this->json(['message' => 'Success']);
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/answers', name: 'director_institute_answers', methods: ['GET'])]
     public function get_answers(): JsonResponse
     {
@@ -56,6 +60,7 @@ class DirectorController extends AbstractController
         return $this->json(['message' => 'Success']);
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/answers', name: 'director_institute_answer_add', methods: ['POST'])]
     public function add_answer(Request $request): JsonResponse
     {
@@ -81,6 +86,7 @@ class DirectorController extends AbstractController
         }
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/awards', name: 'director_institute_awards_list', methods: ['GET'])]
     public function get_awards(): JsonResponse
     {
@@ -93,6 +99,7 @@ class DirectorController extends AbstractController
         }
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/teacher/{id}', name: 'director_institute_teacher_remove', methods: ['DELETE'])]
     public function remove_teacher(int $id): JsonResponse
     {
@@ -102,6 +109,7 @@ class DirectorController extends AbstractController
         return $this->json(['message' => 'Success']);
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/awards/{id}', name: 'director_institute_award_edit', methods: ['PATCH'])]
     public function edit_award(int $id, Request $request): JsonResponse
     {
@@ -118,6 +126,7 @@ class DirectorController extends AbstractController
         }
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/awards/{id}', name: 'director_institute_award_delete', methods: ['DELETE'])]
     public function delete_award(int $id): JsonResponse
     {
@@ -131,6 +140,7 @@ class DirectorController extends AbstractController
         }
     }
 
+    #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/awards/{id}/freeze', name: 'director_institute_award_freeze', methods: ['PATCH'])]
     public function freeze_award(int $id, Request $request): JsonResponse
     {
