@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 
-#[Route('/api/admin/institute/awards')]
+#[Route('/institute/awards')]
 #[OA\Tag(name: 'Admin Institute Awards')]
 class AdminInstituteAwardController extends AbstractController
 {
