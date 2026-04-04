@@ -68,17 +68,17 @@ class GetRoleController extends AbstractController
 
         // у Teacher роль всегда 1 элемент (ROLE_TEACHER)
         // если нужно «admin» — добавьте поле/флаг
-        $roles = $teacher->getRoles();        // ['ROLE_TEACHER'] или ['ROLE_TEACHER','ROLE_ADMIN']
-        if ($roles[0] == "ROLE_ADMIN"){
+        $roles = $teacher->getRoles();
+
+        if (in_array("ROLE_ADMIN", $roles)) {
             $role = "admin";
-        }
-        else if ($roles[0] == "ROLE_DIRECTOR"){
+        } else if (in_array("ROLE_DIRECTOR", $roles)) {
             $role = "director";
-        }
-        else if ($roles[0] == "ROLE_TEACHER"){
+        } else if (in_array("ROLE_EXPERT", $roles)) {
+            $role = "expert";
+        } else if (in_array("ROLE_TEACHER", $roles)) {
             $role = "teacher";
-        }
-        else {
+        } else {
             $role = "visitor";
         }
 

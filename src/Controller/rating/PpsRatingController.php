@@ -17,6 +17,7 @@ use App\Repository\InstituteRepository;
 use App\Repository\InstituteAnswerRepository;
 use App\Service\Organization\OrganizationPpsService;
 use App\Service\UserPointsCountService;
+use App\Repository\ExpertAdjustmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +32,8 @@ class PpsRatingController extends AbstractController
         private UserPointsCountService               $userPointsCountService,
         private readonly OrganizationPpsService      $organizationPpsService,
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
-        private readonly TeacherRepository            $teacherRepository
+        private readonly TeacherRepository            $teacherRepository,
+        private readonly ExpertAdjustmentRepository    $expertAdjustmentRepository
     )
     {
     }
@@ -82,7 +84,8 @@ class PpsRatingController extends AbstractController
         foreach ($institutes as $institute) {
             $basePoints = $instituteAnswerRepository->getInstitutePoints($institute);
             $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute);
-            $points = $basePoints + $teacherPoints;
+            $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
+            $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
                 'id' => $institute->getId(),
                 'name' => $institute->getName(),
@@ -112,7 +115,8 @@ class PpsRatingController extends AbstractController
         foreach ($institutes as $institute) {
             $basePoints = $instituteAnswerRepository->getInstitutePoints($institute);
             $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute);
-            $points = $basePoints + $teacherPoints;
+            $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
+            $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
                 'id' => $institute->getId(),
                 'name' => $institute->getName(),

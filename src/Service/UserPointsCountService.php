@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Dto\RatingDto\PpsRatingDto;
 use App\Dto\RatingDto\PpsRatingSumDto;
 use App\Entity\UserOffence;
-use App\Repository\UserExpertPointRepository;
+use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -25,8 +25,9 @@ class UserPointsCountService
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly UserRepository                       $userRepository,
-        private readonly UserInfoRepository                   $userInfoRepository, private readonly UserExpertPointRepository $userExpertPointRepository)
-    {
+        private readonly UserInfoRepository                   $userInfoRepository,
+        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
+    ) {
     }
 
     public function UserPointsCount(): array
@@ -84,12 +85,13 @@ class UserPointsCountService
         $socialCall = $this->userSocialActivitiesRepository->getUserPoints($user->getId());
         $offence = $this->userOffenceRepository->getUserPoints($user->getId());
         $sum = $activyCall + $upac + $eduCall + $socialCall - $offence;
-        $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
 
-        foreach ($expertPoints as $expertPoint) {
-            $point = $expertPoint->getPoint();
-            $sum += $point;
-        }
+        // Add expert adjustments (note: this service still works on legacy User entity for now)
+        // Adjustments are now primarily targetting Teacher entity, but we keep this for consistency if needed.
+        // Actually, if we're moving everything to Teacher, we should update this service or its usage.
+        
+        $expertPointsSum = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($user->getId());
+        $sum += $expertPointsSum;
 
         return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
 

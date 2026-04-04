@@ -38,10 +38,14 @@ class Institute
     #[ORM\OneToMany(targetEntity: TeacherOrganization::class, mappedBy: 'institute', cascade: ['remove'], orphanRemoval: true)]
     private Collection $teacherOrganizations;
 
+    #[ORM\OneToMany(targetEntity: ExpertAdjustment::class, mappedBy: 'targetInstitute')]
+    private Collection $expertAdjustments;
+
     public function __construct()
     {
         $this->instituteAnswers = new ArrayCollection();
         $this->teacherOrganizations = new ArrayCollection();
+        $this->expertAdjustments = new ArrayCollection();
     }
 
 
@@ -138,5 +142,35 @@ class Institute
     public function getTeacherOrganizations(): Collection
     {
         return $this->teacherOrganizations;
+    }
+
+    /**
+     * @return Collection<int, ExpertAdjustment>
+     */
+    public function getExpertAdjustments(): Collection
+    {
+        return $this->expertAdjustments;
+    }
+
+    public function addExpertAdjustment(ExpertAdjustment $expertAdjustment): static
+    {
+        if (!$this->expertAdjustments->contains($expertAdjustment)) {
+            $this->expertAdjustments->add($expertAdjustment);
+            $expertAdjustment->setTargetInstitute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpertAdjustment(ExpertAdjustment $expertAdjustment): static
+    {
+        if ($this->expertAdjustments->removeElement($expertAdjustment)) {
+            // set the owning side to null (unless already changed)
+            if ($expertAdjustment->getTargetInstitute() === $this) {
+                $expertAdjustment->setTargetInstitute(null);
+            }
+        }
+
+        return $this;
     }
 }

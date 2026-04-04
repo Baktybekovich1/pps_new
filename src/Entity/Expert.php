@@ -17,18 +17,16 @@ class Expert
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'expert', cascade: ['persist', 'remove'])]
-    private ?User $account = null;
+    #[ORM\OneToOne(inversedBy: 'expert', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Teacher $teacher = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $jobTitle = null;
-
-    #[ORM\OneToMany(targetEntity: UserExpertPoint::class, mappedBy: 'expert')]
-    private Collection $userExpertPoints;
+    #[ORM\OneToMany(targetEntity: ExpertAdjustment::class, mappedBy: 'expert', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $expertAdjustments;
 
     public function __construct()
     {
-        $this->userExpertPoints = new ArrayCollection();
+        $this->expertAdjustments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -36,14 +34,14 @@ class Expert
         return $this->id;
     }
 
-    public function getAccount(): ?User
+    public function getTeacher(): ?Teacher
     {
-        return $this->account;
+        return $this->teacher;
     }
 
-    public function setAccount(?User $account): static
+    public function setTeacher(?Teacher $teacher): static
     {
-        $this->account = $account;
+        $this->teacher = $teacher;
 
         return $this;
     }
@@ -61,27 +59,30 @@ class Expert
     }
 
 
-    public function getUserExpertPoints(): Collection
+    /**
+     * @return Collection<int, ExpertAdjustment>
+     */
+    public function getExpertAdjustments(): Collection
     {
-        return $this->userExpertPoints;
+        return $this->expertAdjustments;
     }
 
-    public function addUserExpertPoint(UserExpertPoint $userExpertPoint): static
+    public function addExpertAdjustment(ExpertAdjustment $expertAdjustment): static
     {
-        if (!$this->userExpertPoints->contains($userExpertPoint)) {
-            $this->userExpertPoints->add($userExpertPoint);
-            $userExpertPoint->setExpert($this);
+        if (!$this->expertAdjustments->contains($expertAdjustment)) {
+            $this->expertAdjustments->add($expertAdjustment);
+            $expertAdjustment->setExpert($this);
         }
 
         return $this;
     }
 
-    public function removeUserExpertPoint(UserExpertPoint $userExpertPoint): static
+    public function removeExpertAdjustment(ExpertAdjustment $expertAdjustment): static
     {
-        if ($this->userExpertPoints->removeElement($userExpertPoint)) {
+        if ($this->expertAdjustments->removeElement($expertAdjustment)) {
             // set the owning side to null (unless already changed)
-            if ($userExpertPoint->getExpert() === $this) {
-                $userExpertPoint->setExpert(null);
+            if ($expertAdjustment->getExpert() === $this) {
+                $expertAdjustment->setExpert(null);
             }
         }
 

@@ -13,6 +13,7 @@ use App\Repository\UserSocialActivitiesRepository;
 use App\Repository\UserResearchActivitiesListRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
+use App\Repository\ExpertAdjustmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +29,8 @@ class UserAccountController extends AbstractController
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
         private readonly TeacherRepository                    $teacherRepository,
-        private readonly TeacherAnswerRepository              $teacherAnswerRepository
+        private readonly TeacherAnswerRepository              $teacherAnswerRepository,
+        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
     )
     {
     }
@@ -50,7 +52,7 @@ class UserAccountController extends AbstractController
                 $userInfo->getName(),
                 $userInfo->getInstitutions()->getName(),
                 $userInfo->getPosition()->getName(),
-                $userInfo->getRegular(),
+                (string)$userInfo->getRegular(),
                 $userInfo->getEmail());
 
             $userAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user]);
@@ -102,12 +104,23 @@ class UserAccountController extends AbstractController
                 );
             }
 
+            // Find associated teacher for adjustments
+            $teacher = $this->teacherRepository->find($user->getId());
+
             return $this->json([
                 'userInfo' => $info,
                 'userAwards' => $awards,
                 'userResearch' => $research,
                 'userInnovative' => $innovative,
-                'userSocial' => $social
+                'userSocial' => $social,
+                'expertAdjustments' => $teacher ? array_map(fn($a) => [
+                    'id' => $a->getId(),
+                    'points' => $a->getPoints(),
+                    'reason' => $a->getReason(),
+                    'expertName' => $a->getExpert()->getJobTitle(),
+                    'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
+                    'isActive' => $a->isActive()
+                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true])) : []
             ]);
         }
 
@@ -119,7 +132,7 @@ class UserAccountController extends AbstractController
                 (string)$teacher,
                 $firstOrg ? $firstOrg->getInstitute()->getName() : 'N/A',
                 $teacher->getPosition() ? $teacher->getPosition()->getName() : 'N/A',
-                $firstOrg ? $firstOrg->getRegular() : true,
+                (string)$firstOrg?->getRegular(),
                 $teacher->getEmail()
             );
 
@@ -140,7 +153,15 @@ class UserAccountController extends AbstractController
                 'userAwards' => $awards,
                 'userResearch' => [],
                 'userInnovative' => [],
-                'userSocial' => []
+                'userSocial' => [],
+                'expertAdjustments' => array_map(fn($a) => [
+                    'id' => $a->getId(),
+                    'points' => $a->getPoints(),
+                    'reason' => $a->getReason(),
+                    'expertName' => $a->getExpert()->getJobTitle(),
+                    'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
+                    'isActive' => $a->isActive()
+                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true]))
             ]);
         }
 

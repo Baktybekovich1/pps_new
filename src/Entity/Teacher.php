@@ -56,10 +56,17 @@ class Teacher implements UserInterface
     #[ORM\OneToMany(targetEntity: TeacherAnswer::class, mappedBy: 'teacher')]
     private Collection $teacherAnswers;
 
+    #[ORM\OneToOne(mappedBy: 'teacher', targetEntity: Expert::class, cascade: ['persist'])]
+    private ?Expert $expert = null;
+
+    #[ORM\OneToMany(targetEntity: ExpertAdjustment::class, mappedBy: 'targetTeacher')]
+    private Collection $expertAdjustments;
+
     public function __construct()
     {
         $this->teacherOrganizations = new ArrayCollection();
         $this->teacherAnswers = new ArrayCollection();
+        $this->expertAdjustments = new ArrayCollection();
     }
 
     public function getUserIdentifier(): string
@@ -207,6 +214,58 @@ class Teacher implements UserInterface
             // set the owning side to null (unless already changed)
             if ($teacherAnswer->getTeacher() === $this) {
                 $teacherAnswer->setTeacher(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getExpert(): ?Expert
+    {
+        return $this->expert;
+    }
+
+    public function setExpert(?Expert $expert): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($expert === null && $this->expert !== null) {
+            $this->expert->setTeacher(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($expert !== null && $expert->getTeacher() !== $this) {
+            $expert->setTeacher($this);
+        }
+
+        $this->expert = $expert;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExpertAdjustment>
+     */
+    public function getExpertAdjustments(): Collection
+    {
+        return $this->expertAdjustments;
+    }
+
+    public function addExpertAdjustment(ExpertAdjustment $expertAdjustment): static
+    {
+        if (!$this->expertAdjustments->contains($expertAdjustment)) {
+            $this->expertAdjustments->add($expertAdjustment);
+            $expertAdjustment->setTargetTeacher($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpertAdjustment(ExpertAdjustment $expertAdjustment): static
+    {
+        if ($this->expertAdjustments->removeElement($expertAdjustment)) {
+            // set the owning side to null (unless already changed)
+            if ($expertAdjustment->getTargetTeacher() === $this) {
+                $expertAdjustment->setTargetTeacher(null);
             }
         }
 
