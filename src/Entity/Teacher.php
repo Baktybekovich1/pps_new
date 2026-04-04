@@ -21,7 +21,7 @@ class Teacher implements UserInterface
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\Email]
-    private string $email;
+    private string $email = '';
 
     #[ORM\Column(type: 'json')]
     private array $roles = ['ROLE_TEACHER'];
@@ -46,7 +46,7 @@ class Teacher implements UserInterface
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups('teacher:read')]
-    private Position $position;
+    private ?Position $position = null;
 
     #[ORM\OneToMany(mappedBy: 'teacher', targetEntity: TeacherOrganization::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups('teacher:read')]
@@ -179,12 +179,12 @@ class Teacher implements UserInterface
     }
 
 
-    public function getPosition(): Position
+    public function getPosition(): ?Position
     {
         return $this->position;
     }
 
-    public function setPosition(Position $p): self
+    public function setPosition(?Position $p): self
     {
         $this->position = $p;
         return $this;

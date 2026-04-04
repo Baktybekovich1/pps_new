@@ -5,12 +5,9 @@ namespace App\Controller\rating;
 use App\Dto\RatingDto\PpsRatingDto;
 use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\UserInfoRepository;
-use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
-use App\Repository\UserPersonalAwardsRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserResearchActivitiesListRepository;
-use App\Repository\UserSocialActivitiesRepository;
+use App\Repository\TeacherRepository;
+use App\Repository\TeacherAnswerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -23,11 +20,8 @@ class ComtehnoPpsRatingController extends AbstractController
 
     public function __construct(
         private readonly UserInfoRepository                   $userInfoRepository,
-        private readonly UserResearchActivitiesListRepository $userActivitiesListsRepository,
-        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private readonly UserRepository                       $userRepository,
-        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly TeacherRepository                    $teacherRepository,
+        private readonly TeacherAnswerRepository              $teacherAnswerRepository,
         private readonly UserOffenceRepository                $userOffenceRepository, 
         private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
     )
@@ -38,81 +32,70 @@ class ComtehnoPpsRatingController extends AbstractController
     public function index(): JsonResponse
     {
         $pps = [];
-        $users = $this->userRepository->findAll();
+        $teachers = $this->teacherRepository->findAll();
 
-        foreach ($users as $user) {
-            $info = $this->userInfoRepository->findOneBy(['user' => $user]);
+        foreach ($teachers as $teacher) {
+            $firstOrg = $teacher->getTeacherOrganizations()->first();
+            if (!$firstOrg) continue;
 
-            if ($info == null) {
-
-                continue;
-
-            }
-            if ($info->getInstitutions()->getUniversity() != 'Комтехно') {
+            $institute = $firstOrg->getInstitute();
+            if ($institute->getUniversity() != 'Комтехно') {
                 continue;
             }
 
-            $fun = $this->getBigPoints($user);
+            $fun = $this->getBigPoints($teacher);
 
-            if (isset($pps[$user->getId()])) {
-                /** @var PpsRatingDto $dto */
-
-                $dto = $pps[$user->getId()];
-                $dto->id = $user->getId();
-                $dto->researchPoints += $fun['research'];
-                $dto->awardPoints += $fun['awards'];
-                $dto->innovativePoints += $fun['innovative'];
-                $dto->socialPoints += $fun['social'];
-                $dto->sum += $fun['sum'];
-
-            } else {
-                $pps[$user->getId()] = new PpsRatingDto(
-                    $user->getId(),
-                    $info->getName(),
-                    $info->getInstitutions()->getName(),
-                    $fun['research'],
-                    $fun['awards'],
-                    $fun['innovative'],
-                    $fun['social'],
-                    $fun['sum']
-                );
-            }
+            $pps[$teacher->getId()] = new PpsRatingDto(
+                $teacher->getId(),
+                (string)$teacher,
+                $institute->getName(),
+                $fun['research'],
+                $fun['awards'],
+                $fun['innovative'],
+                $fun['social'],
+                $fun['sum']
+            );
         }
-
 
         return $this->json(['pps' => $pps]);
     }
 
-    public function getBigPoints($user)
+    public function getBigPoints($teacher)
     {
-        $activity = $this->userActivitiesListsRepository->findBy(['user' => $user, 'status' => 'active']);
-        $activyCall = $this->getPoints($activity);
-        $personalAwards = $this->userPersonalAwardsRepository->findBy(['user' => $user, 'status' => 'active']);
-        $upac = $this->getPoints($personalAwards);
-        $educations = $this->userInnovativeEducationRepository->findBy(['user' => $user, 'status' => 'active']);
-        $eduCall = $this->getPoints($educations);
-        $socials = $this->userSocialActivitiesRepository->findBy(['user' => $user, 'status' => 'active']);
-        $socialCall = $this->getPoints($socials);
-        $offence = $this->userOffenceRepository->findBy(['user' => $user]);
-        $sum = $activyCall + $upac + $eduCall + $socialCall;
-        foreach ($offence as $value) {
-            $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
-        }
-
-        $sum += $this->expertAdjustmentRepository->getTeacherAdjustedPoints($user->getId());
+        $answers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher, 'active' => true]);
         
-        return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
+        $researchPoints = 0;
+        $awardPoints = 0;
+        $innovativePoints = 0;
+        $socialPoints = 0;
+        $sum = 0;
 
-    }
-
-    public function getPoints($objects)
-    {
-        $coll = 0;
-        foreach ($objects as $object) {
-            $coll += $object->getPoints();
+        foreach ($answers as $answer) {
+            $points = $answer->getSubtitle()->getPoint();
+            $sum += $points;
+            
+            $stageId = $answer->getSubtitle()->getTitle()->getStage()->getId();
+            
+            switch ($stageId) {
+                case 1: $researchPoints += $points; break;
+                case 2: $awardPoints += $points; break;
+                case 3: $innovativePoints += $points; break;
+                case 4: $socialPoints += $points; break;
+            }
         }
-        return $coll;
 
+        $offence = $this->userOffenceRepository->getUserPoints($teacher->getId());
+        $sum -= $offence;
+
+        $sum += $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        
+        return [
+            'research' => $researchPoints, 
+            'awards' => $awardPoints, 
+            'innovative' => $innovativePoints, 
+            'social' => $socialPoints, 
+            'sum' => $sum
+        ];
     }
 
 

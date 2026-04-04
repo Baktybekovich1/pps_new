@@ -3,7 +3,6 @@
 namespace App\Controller\user;
 
 
-use App\Controller\user\UserInnovativeEducationController;
 use App\Dto\UserInfoDto;
 use App\Dto\UserInfoGetDto;
 use App\Entity\Position;
@@ -11,11 +10,7 @@ use App\Entity\UserInfo;
 use App\Repository\InstitutionsRepository;
 use App\Repository\PositionRepository;
 use App\Repository\UserInfoRepository;
-use App\Repository\UserInnovativeEducationRepository;
-use App\Repository\UserPersonalAwardsRepository;
 use App\Repository\UserRepository;
-use App\Repository\UserResearchActivitiesListRepository;
-use App\Repository\UserSocialActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,11 +27,7 @@ class UserInfoController extends AbstractController
         private readonly PositionRepository                   $positionsRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly UserRepository                       $userRepository,
-        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository,
-        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly PositionRepository                   $positionRepository, private readonly UserInnovativeEducationController $userInnovativeEducationController
+        private readonly PositionRepository                   $positionRepository
     )
     {
     }

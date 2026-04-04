@@ -7,24 +7,18 @@ use App\Dto\RatingDto\PpsRatingSumDto;
 use App\Entity\UserOffence;
 use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\UserInfoRepository;
-use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
-use App\Repository\UserPersonalAwardsRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserResearchActivitiesListRepository;
-use App\Repository\UserSocialActivitiesRepository;
+use App\Repository\TeacherRepository;
+use App\Repository\TeacherAnswerRepository;
 
 class UserPointsCountService
 {
 
 
     public function __construct(
-        private readonly UserResearchActivitiesListRepository $userActivitiesListsRepository,
-        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
+        private readonly TeacherAnswerRepository              $teacherAnswerRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
-        private readonly UserRepository                       $userRepository,
+        private readonly TeacherRepository                    $teacherRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
         private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
     ) {
@@ -33,68 +27,81 @@ class UserPointsCountService
     public function UserPointsCount(): array
     {
         $pps = [];
-        $users = $this->userRepository->findAll();
+        $teachers = $this->teacherRepository->findAll();
 
-        foreach ($users as $user) {
-            $info = $this->userInfoRepository->findOneBy(['user' => $user]);
+        foreach ($teachers as $teacher) {
+            // Find organization/institute for teacher
+            $firstOrg = $teacher->getTeacherOrganizations()->first();
+            if (!$firstOrg) continue;
 
-            if ($info == null) {
-
-                continue;
-
-            }
-            if ($info->getInstitutions()->getUniversity() != 'МУИТ') {
+            $institute = $firstOrg->getInstitute();
+            if ($institute->getUniversity() != 'МУИТ') {
                 continue;
             }
 
-            $fun = $this->getBigPoints($user);
+            $fun = $this->getBigPoints($teacher);
 
-            if (isset($pps[$user->getId()])) {
-                /** @var PpsRatingDto $dto */
-
-                $dto = $pps[$user->getId()];
-                $dto->id = $user->getId();
-                $dto->researchPoints += $fun['research'];
-                $dto->awardPoints += $fun['awards'];
-                $dto->innovativePoints += $fun['innovative'];
-                $dto->socialPoints += $fun['social'];
-                $dto->sum += $fun['sum'];
-
-            } else {
-                $pps[$user->getId()] = new PpsRatingDto(
-                    $user->getId(),
-                    $info->getName(),
-                    $info->getInstitutions()->getName(),
-                    $fun['research'],
-                    $fun['awards'],
-                    $fun['innovative'],
-                    $fun['social'],
-                    $fun['sum']
-                );
-            }
+            $pps[$teacher->getId()] = new PpsRatingDto(
+                $teacher->getId(),
+                (string)$teacher,
+                $institute->getName(),
+                $fun['research'],
+                $fun['awards'],
+                $fun['innovative'],
+                $fun['social'],
+                $fun['sum']
+            );
         }
         return $pps;
 
     }
 
-    public function getBigPoints($user)
+    public function getBigPoints($teacher)
     {
-        $activyCall = $this->userActivitiesListsRepository->getUserPoints($user->getId());
-        $upac = $this->userPersonalAwardsRepository->getUserPoints($user->getId());
-        $eduCall = $this->userInnovativeEducationRepository->getUserPoints($user->getId());
-        $socialCall = $this->userSocialActivitiesRepository->getUserPoints($user->getId());
-        $offence = $this->userOffenceRepository->getUserPoints($user->getId());
-        $sum = $activyCall + $upac + $eduCall + $socialCall - $offence;
-
-        // Add expert adjustments (note: this service still works on legacy User entity for now)
-        // Adjustments are now primarily targetting Teacher entity, but we keep this for consistency if needed.
-        // Actually, if we're moving everything to Teacher, we should update this service or its usage.
+        // Calculate points from TeacherAnswer based on Stage names or IDs
+        // In this project (based on previous edits and TeacherAnswerRepository):
+        // Stage 1: Research, Stage 2: Awards, Stage 3: Innovative, Stage 4: Social (example mapping)
         
-        $expertPointsSum = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($user->getId());
+        $answers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher, 'active' => true]);
+        
+        $researchPoints = 0;
+        $awardPoints = 0;
+        $innovativePoints = 0;
+        $socialPoints = 0;
+        $sum = 0;
+
+        foreach ($answers as $answer) {
+            $points = $answer->getSubtitle()->getPoint();
+            $sum += $points;
+            
+            $stageId = $answer->getSubtitle()->getTitle()->getStage()->getId();
+            
+            // Map stage IDs to categories (this mapping might need refinement based on DB)
+            switch ($stageId) {
+                case 1: $researchPoints += $points; break;
+                case 2: $awardPoints += $points; break;
+                case 3: $innovativePoints += $points; break;
+                case 4: $socialPoints += $points; break;
+            }
+        }
+
+        // Deduct offences (offsets)
+        // UserOffence still exists and might relate to User entity. 
+        // We assume User and Teacher share IDs or have a relationship.
+        $offence = $this->userOffenceRepository->getUserPoints($teacher->getId());
+        $sum -= $offence;
+
+        // Add expert adjustments
+        $expertPointsSum = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
         $sum += $expertPointsSum;
 
-        return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
-
+        return [
+            'research' => $researchPoints, 
+            'awards' => $awardPoints, 
+            'innovative' => $innovativePoints, 
+            'social' => $socialPoints, 
+            'sum' => $sum
+        ];
     }
 
 }
