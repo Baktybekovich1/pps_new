@@ -39,8 +39,48 @@ class UserAccountController extends AbstractController
     public function index(Request $request): JsonResponse
     {
         $id = $request->get('id');
-        $user = $this->userRepository->find($id);
+        $teacher = $this->teacherRepository->find($id);
+        if ($teacher) {
+            $firstOrg = $teacher->getTeacherOrganizations()->first();
+            $info = new UserInfoGetDto(
+                $teacher->getId(),
+                (string)$teacher,
+                $firstOrg ? $firstOrg->getInstitute()->getName() : 'N/A',
+                $teacher->getPosition() ? $teacher->getPosition()->getName() : 'N/A',
+                (string)$firstOrg?->getRegular(),
+                $teacher->getEmail()
+            );
 
+            $teacherAnswers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher]);
+            $awards = [];
+            foreach ($teacherAnswers as $answer) {
+                $awards[] = new UserAwardsGetDto(
+                    $answer->getId(),
+                    $answer->getSubtitle()->getTitle()->getName() . ': ' . $answer->getSubtitle()->getName(),
+                    $answer->getLink() ?? '',
+                    (string)$answer->getSubtitle()->getTitle()->getStage()->getId(),
+                    $answer->isActive() ? 'active' : 'freeze'
+                );
+            }
+
+            return $this->json([
+                'userInfo' => $info,
+                'userAwards' => $awards,
+                'userResearch' => [],
+                'userInnovative' => [],
+                'userSocial' => [],
+                'expertAdjustments' => array_map(fn($a) => [
+                    'id' => $a->getId(),
+                    'points' => $a->getPoints(),
+                    'reason' => $a->getReason(),
+                    'expertName' => $a->getExpert()->getJobTitle(),
+                    'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
+                    'isActive' => $a->isActive()
+                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true]))
+            ]);
+        }
+
+        $user = $this->userRepository->find($id);
         if ($user) {
             $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
             if ($userInfo == null) {
@@ -104,8 +144,8 @@ class UserAccountController extends AbstractController
                 );
             }
 
-            // Find associated teacher for adjustments
-            $teacher = $this->teacherRepository->find($user->getId());
+            // Also check for expert adjustments if this user has a teacher record with same ID
+            $teacherForAdj = $this->teacherRepository->find($user->getId());
 
             return $this->json([
                 'userInfo' => $info,
@@ -113,55 +153,14 @@ class UserAccountController extends AbstractController
                 'userResearch' => $research,
                 'userInnovative' => $innovative,
                 'userSocial' => $social,
-                'expertAdjustments' => $teacher ? array_map(fn($a) => [
+                'expertAdjustments' => $teacherForAdj ? array_map(fn($a) => [
                     'id' => $a->getId(),
                     'points' => $a->getPoints(),
                     'reason' => $a->getReason(),
                     'expertName' => $a->getExpert()->getJobTitle(),
                     'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
                     'isActive' => $a->isActive()
-                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true])) : []
-            ]);
-        }
-
-        $teacher = $this->teacherRepository->find($id);
-        if ($teacher) {
-            $firstOrg = $teacher->getTeacherOrganizations()->first();
-            $info = new UserInfoGetDto(
-                $teacher->getId(),
-                (string)$teacher,
-                $firstOrg ? $firstOrg->getInstitute()->getName() : 'N/A',
-                $teacher->getPosition() ? $teacher->getPosition()->getName() : 'N/A',
-                (string)$firstOrg?->getRegular(),
-                $teacher->getEmail()
-            );
-
-            $teacherAnswers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher]);
-            $awards = [];
-            foreach ($teacherAnswers as $answer) {
-                $awards[] = new UserAwardsGetDto(
-                    $answer->getId(),
-                    $answer->getSubtitle()->getTitle()->getName() . ': ' . $answer->getSubtitle()->getName(),
-                    $answer->getLink() ?? '',
-                    (string)$answer->getSubtitle()->getTitle()->getStage()->getId(),
-                    $answer->isActive() ? 'active' : 'freeze'
-                );
-            }
-
-            return $this->json([
-                'userInfo' => $info,
-                'userAwards' => $awards,
-                'userResearch' => [],
-                'userInnovative' => [],
-                'userSocial' => [],
-                'expertAdjustments' => array_map(fn($a) => [
-                    'id' => $a->getId(),
-                    'points' => $a->getPoints(),
-                    'reason' => $a->getReason(),
-                    'expertName' => $a->getExpert()->getJobTitle(),
-                    'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
-                    'isActive' => $a->isActive()
-                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true]))
+                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacherForAdj, 'isActive' => true])) : []
             ]);
         }
 
