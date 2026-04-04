@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-#[Route('/api/expert')]
+#[Route('')]
 class ExpertController extends AbstractController
 {
     public function __construct(
