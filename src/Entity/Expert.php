@@ -24,6 +24,9 @@ class Expert
     #[ORM\OneToMany(targetEntity: ExpertAdjustment::class, mappedBy: 'expert', cascade: ['remove'], orphanRemoval: true)]
     private Collection $expertAdjustments;
 
+    #[ORM\Column(length: 255)]
+    private ?string $jobTitle = null;
+
     public function __construct()
     {
         $this->expertAdjustments = new ArrayCollection();
