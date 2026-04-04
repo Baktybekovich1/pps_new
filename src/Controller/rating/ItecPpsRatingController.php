@@ -3,7 +3,7 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
-use App\Repository\UserExpertPointRepository;
+use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\UserInfoRepository;
 use App\Repository\UserInnovativeEducationRepository;
 use App\Repository\UserOffenceRepository;
@@ -28,7 +28,8 @@ class ItecPpsRatingController extends AbstractController
         private readonly UserRepository                       $userRepository,
         private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
         private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly UserOffenceRepository                $userOffenceRepository, private readonly UserExpertPointRepository $userExpertPointRepository
+        private readonly UserOffenceRepository                $userOffenceRepository, 
+        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
     )
     {
     }
@@ -100,12 +101,7 @@ class ItecPpsRatingController extends AbstractController
             $sum -= $value->getOffenceList()->getPoints() * $value->getQuantity();
         }
 
-        $expertPoints = $this->userExpertPointRepository->findBy(['teacher' => $user]);
-
-        foreach ($expertPoints as $expertPoint) {
-            $point = $expertPoint->getPoint();
-            $sum += $point;
-        }
+        $sum += $this->expertAdjustmentRepository->getTeacherAdjustedPoints($user->getId());
 
         return ['research' => $activyCall, 'awards' => $upac, 'innovative' => $eduCall, 'social' => $socialCall, 'sum' => $sum];
 
