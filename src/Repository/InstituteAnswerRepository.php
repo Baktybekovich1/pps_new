@@ -27,16 +27,14 @@ class InstituteAnswerRepository extends ServiceEntityRepository
             ->select('COALESCE(SUM(subtitle.point), 0)')
             ->innerJoin('answer.subtitle', 'subtitle')
             ->innerJoin('subtitle.title', 'title')
-            ->innerJoin('title.stage', 'stage')
             ->where('answer.institute = :institute')
             ->andWhere('answer.active = :active')
             ->setParameter('institute', $institute)
             ->setParameter('active', true);
 
         if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
-                ->setParameter('currentYear', $currentYear)
-                ->setParameter('isPermanent', true);
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
         }
 
         return (int)$qb->getQuery()->getSingleScalarResult();
