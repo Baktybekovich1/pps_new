@@ -59,14 +59,8 @@ class UserOffenceRepository extends ServiceEntityRepository
 
     public function getUserPoints($userId): int
     {
-        $qb = $this->createQueryBuilder('uo');
-        $qb->select('sum(uo.quantity) * sum(list.points) as points')
-            ->leftJoin('uo.offenceList', 'list')
-            ->where('uo.user = :userId')
-            ->groupBy('uo.user')
-            ->setParameter(':userId', $userId);
-        $result = $qb->getQuery()->getOneOrNullResult();
-        return $result['points'] ?? 0;
+        // Points calculation is disabled because the offence_list table (weights) was removed.
+        return 0;
     }
 
 }
