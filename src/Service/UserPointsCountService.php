@@ -6,7 +6,6 @@ use App\Dto\RatingDto\PpsRatingDto;
 use App\Dto\RatingDto\PpsRatingSumDto;
 use App\Entity\UserOffence;
 use App\Repository\ExpertAdjustmentRepository;
-use App\Repository\UserInfoRepository;
 use App\Repository\UserOffenceRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
@@ -20,7 +19,6 @@ class UserPointsCountService
         private readonly TeacherAnswerRepository              $teacherAnswerRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly TeacherRepository                    $teacherRepository,
-        private readonly UserInfoRepository                   $userInfoRepository,
         private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository,
         private readonly YearsRepository                     $yearsRepository
     ) {

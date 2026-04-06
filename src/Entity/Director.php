@@ -43,11 +43,11 @@ class Director
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Teacher::class, inversedBy: 'director')]
+    #[ORM\ManyToOne(targetEntity: Teacher::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Teacher $teacher = null;
 
-    #[ORM\ManyToOne(inversedBy: 'director')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Institute $institute = null;
 

@@ -25,7 +25,7 @@ class ExpertAdjustment
     #[Groups(['adjustment:read'])]
     private ?Teacher $targetTeacher = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'expertAdjustments')]
     #[Groups(['adjustment:read'])]
     private ?Institute $targetInstitute = null;
 

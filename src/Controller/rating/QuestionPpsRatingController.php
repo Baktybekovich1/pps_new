@@ -7,7 +7,6 @@ use App\Dto\RatingDto\QuestionPPSRatingDto;
 use App\Repository\QuestionSubtitleRepository;
 use App\Repository\QuestionTitleRepository;
 use App\Repository\TeacherAnswerRepository;
-use App\Repository\UserInfoRepository;
 use App\Repository\UserRepository;
 use App\Repository\TeacherRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +20,6 @@ class QuestionPpsRatingController extends AbstractController
 
 
     public function __construct(
-        private readonly UserInfoRepository           $userInfoRepository,
         private readonly TeacherRepository            $teacherRepository,
         private readonly TeacherAnswerRepository      $teacherAnswerRepository,
         private readonly QuestionTitleRepository      $questionTitleRepository,

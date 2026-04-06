@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Dto\UserAccount\UserAwardsGetDto;
 use App\Dto\UserAccount\UserResearchGetDto;
 use App\Dto\UserInfoGetDto;
-use App\Repository\UserInfoRepository;
 use App\Repository\UserRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
@@ -19,7 +18,6 @@ class UserAccountController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository                       $userRepository,
-        private readonly UserInfoRepository                   $userInfoRepository,
         private readonly TeacherRepository                    $teacherRepository,
         private readonly TeacherAnswerRepository              $teacherAnswerRepository,
         private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
@@ -74,37 +72,36 @@ class UserAccountController extends AbstractController
 
         $user = $this->userRepository->find($id);
         if ($user) {
-            $userInfo = $this->userInfoRepository->findOneBy(['user' => $user]);
-            if ($userInfo == null) {
-                return $this->json('Вы не заполинили "Личные данные"');
+            // Find teacher by email
+            $teacher = $this->teacherRepository->findOneBy(['email' => $user->getUsername()]);
+            if ($teacher) {
+                $firstOrg = $teacher->getTeacherOrganizations()->first();
+                $info = new UserInfoGetDto(
+                    $teacher->getId(),
+                    (string)$teacher,
+                    $firstOrg ? $firstOrg->getInstitute()->getName() : 'N/A',
+                    $teacher->getPosition() ? $teacher->getPosition()->getName() : 'N/A',
+                    (string)$firstOrg?->getRegular(),
+                    $teacher->getEmail()
+                );
+
+                return $this->json([
+                    'userInfo' => $info,
+                    'userAwards' => [], // could fill or redirect
+                    'userResearch' => [],
+                    'userInnovative' => [],
+                    'userSocial' => [],
+                    'expertAdjustments' => array_map(fn($a) => [
+                        'id' => $a->getId(),
+                        'points' => $a->getPoints(),
+                        'reason' => $a->getReason(),
+                        'expertName' => $a->getExpert()->getJobTitle(),
+                        'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
+                        'isActive' => $a->isActive()
+                    ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true]))
+                ]);
             }
-
-            $info = new UserInfoGetDto(
-                $userInfo->getId(),
-                $userInfo->getName(),
-                $userInfo->getInstitutions()->getName(),
-                $userInfo->getPosition()->getName(),
-                (string)$userInfo->getRegular(),
-                $userInfo->getEmail());
-
-            // Check for expert adjustments if this user has a teacher record with same ID
-            $teacherForAdj = $this->teacherRepository->find($user->getId());
-
-            return $this->json([
-                'userInfo' => $info,
-                'userAwards' => [],
-                'userResearch' => [],
-                'userInnovative' => [],
-                'userSocial' => [],
-                'expertAdjustments' => $teacherForAdj ? array_map(fn($a) => [
-                    'id' => $a->getId(),
-                    'points' => $a->getPoints(),
-                    'reason' => $a->getReason(),
-                    'expertName' => $a->getExpert()->getJobTitle(),
-                    'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
-                    'isActive' => $a->isActive()
-                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacherForAdj, 'isActive' => true])) : []
-            ]);
+            return $this->json('Профиль преподавателя не найден для этого пользователя');
         }
 
         return $this->json('Пользователь или преподаватель не найден', 404);

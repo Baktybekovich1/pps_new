@@ -4,7 +4,6 @@ namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
 use App\Dto\RatingDto\UsersDto;
-use App\Repository\UserInfoRepository;
 use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\InstituteRepository;
@@ -23,7 +22,6 @@ use OpenApi\Attributes as OA;
 class PpsRatingController extends AbstractController
 {
     public function __construct(
-        private UserInfoRepository                   $userInfoRepository,
         private UserPointsCountService               $userPointsCountService,
         private readonly OrganizationPpsService      $organizationPpsService,
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,

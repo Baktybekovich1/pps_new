@@ -4,9 +4,8 @@ namespace App\Controller;
 
 use App\Dto\UserInfoGetDto;
 use App\Entity\Teacher;
-use App\Repository\InstitutionsRepository;
+use App\Repository\InstituteRepository;
 use App\Repository\PositionRepository;
-use App\Repository\UserInfoRepository;
 use App\Repository\UserOffenceRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +21,7 @@ class GetRoleController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository                       $userRepository,
-        private readonly UserInfoRepository                   $userInfoRepository,
-        private readonly InstitutionsRepository               $institutionsRepository,
+        private readonly InstituteRepository                 $instituteRepository,
         private readonly PositionRepository                   $positionsRepository,
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly UserPasswordHasherInterface          $passwordHasher
@@ -82,7 +80,7 @@ class GetRoleController extends AbstractController
     public function user_info(): JsonResponse
     {
         $positions = $this->positionsRepository->findAll();
-        $institutes = $this->institutionsRepository->findAll();
+        $institutes = $this->instituteRepository->findAll();
         $university = ["МУИТ", "КИТЭ", "Комтехно"];
         $post = [];
 //        foreach ($institutes as $institute) {

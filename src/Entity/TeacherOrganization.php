@@ -20,7 +20,7 @@ class TeacherOrganization
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Teacher $teacher;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'teacherOrganizations')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Groups('teacher:read')]
     private Organization $organization;

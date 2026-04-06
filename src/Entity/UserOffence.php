@@ -16,8 +16,6 @@ class UserOffence
     #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: OffenceList::class)]
-    private ?OffenceList $offenceList;
 
     #[ORM\Column]
     private ?int $quantity = null;
@@ -39,16 +37,6 @@ class UserOffence
     }
 
 
-    public function getOffenceList(): ?OffenceList
-    {
-        return $this->offenceList;
-    }
-
-
-    public function setOffenceList(?OffenceList $offenceList): void
-    {
-        $this->offenceList = $offenceList;
-    }
 
     public function getQuantity(): ?int
     {

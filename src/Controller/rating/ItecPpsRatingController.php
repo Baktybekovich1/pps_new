@@ -4,7 +4,6 @@ namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
 use App\Repository\ExpertAdjustmentRepository;
-use App\Repository\UserInfoRepository;
 use App\Repository\UserOffenceRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
@@ -19,7 +18,6 @@ class ItecPpsRatingController extends AbstractController
 
 
     public function __construct(
-        private readonly UserInfoRepository                   $userInfoRepository,
         private readonly TeacherRepository                    $teacherRepository,
         private readonly TeacherAnswerRepository              $teacherAnswerRepository,
         private readonly UserOffenceRepository                $userOffenceRepository, 
