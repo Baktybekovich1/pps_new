@@ -22,33 +22,69 @@ class TeacherAnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, TeacherAnswer::class);
     }
 
-    public function getTeacherPointsCount(Teacher $teacher): int
+    public function getTeacherPointsCount(Teacher $teacher, ?\App\Entity\Years $currentYear = null): int
     {
-        return (int)$this->createQueryBuilder('answer')
+        $qb = $this->createQueryBuilder('answer')
             ->select('COALESCE(SUM(subtitle.point), 0)')
             ->innerJoin('answer.teacher', 'teacher')
             ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
             ->where('teacher = :eteacher')
-            ->setParameter('eteacher', $teacher)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('eteacher', $teacher);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
+                ->setParameter('currentYear', $currentYear)
+                ->setParameter('isPermanent', true);
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getStaffTeacherPointsForInstitute(\App\Entity\Institute $institute): int
+    public function getTeacherPointsCountByTeacherId(int $teacherId, ?\App\Entity\Years $currentYear = null): int
     {
-        return (int) $this->createQueryBuilder('answer')
+        $qb = $this->createQueryBuilder('answer')
             ->select('COALESCE(SUM(subtitle.point), 0)')
             ->innerJoin('answer.teacher', 'teacher')
             ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
+            ->where('teacher.id = :teacherId')
+            ->setParameter('teacherId', $teacherId);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
+                ->setParameter('currentYear', $currentYear)
+                ->setParameter('isPermanent', true);
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function getStaffTeacherPointsForInstitute(\App\Entity\Institute $institute, ?\App\Entity\Years $currentYear = null): int
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->select('COALESCE(SUM(subtitle.point), 0)')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
             ->innerJoin('teacher.teacherOrganizations', 'org')
             ->where('org.institute = :institute')
             ->andWhere('org.regular = :regular')
             ->andWhere('answer.active = :answerActive')
             ->setParameter('institute', $institute)
             ->setParameter('regular', true)
-            ->setParameter('answerActive', true)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('answerActive', true);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
+                ->setParameter('currentYear', $currentYear)
+                ->setParameter('isPermanent', true);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     public function findTeacherAnswersByStage(int $teacherId, int $stageId): array
@@ -64,6 +100,28 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->setParameter('stageId', $stageId)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getTeacherPointsCountByStage(int $teacherId, int $stageId, ?\App\Entity\Years $currentYear = null): int
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->select('COALESCE(SUM(subtitle.point), 0)')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
+            ->where('teacher.id = :teacherId')
+            ->andWhere('stage.id = :stageId')
+            ->setParameter('teacherId', $teacherId)
+            ->setParameter('stageId', $stageId);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
+                ->setParameter('currentYear', $currentYear)
+                ->setParameter('isPermanent', true);
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
     public function save(TeacherAnswer $answer): bool

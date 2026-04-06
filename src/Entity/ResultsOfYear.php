@@ -17,8 +17,8 @@ class ResultsOfYear
     #[ORM\JoinColumn(nullable: false)]
     private ?Years $year = null;
 
-    #[ORM\ManyToOne(inversedBy: 'resultsOfYears')]
-    private ?User $account = null;
+    #[ORM\ManyToOne]
+    private ?Teacher $teacher = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $awardPoints = null;
@@ -52,14 +52,14 @@ class ResultsOfYear
         return $this;
     }
 
-    public function getAccount(): ?User
+    public function getTeacher(): ?Teacher
     {
-        return $this->account;
+        return $this->teacher;
     }
 
-    public function setAccount(?User $account): static
+    public function setTeacher(?Teacher $teacher): static
     {
-        $this->account = $account;
+        $this->teacher = $teacher;
 
         return $this;
     }

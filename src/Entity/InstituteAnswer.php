@@ -27,6 +27,9 @@ class InstituteAnswer
     #[ORM\Column]
     private ?bool $active = null;
 
+    #[ORM\ManyToOne]
+    private ?Years $academicYear = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class InstituteAnswer
     public function setActive(bool $active): static
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getAcademicYear(): ?Years
+    {
+        return $this->academicYear;
+    }
+
+    public function setAcademicYear(?Years $academicYear): static
+    {
+        $this->academicYear = $academicYear;
 
         return $this;
     }

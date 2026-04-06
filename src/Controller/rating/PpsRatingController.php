@@ -5,19 +5,13 @@ namespace App\Controller\rating;
 use App\Dto\RatingDto\PpsRatingDto;
 use App\Dto\RatingDto\UsersDto;
 use App\Repository\UserInfoRepository;
-use App\Repository\UserInnovativeEducationRepository;
-use App\Repository\UserOffenceRepository;
-use App\Repository\UserPersonalAwardsRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserResearchActivitiesListRepository;
-use App\Repository\UserSocialActivitiesRepository;
 use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\InstituteRepository;
 use App\Repository\InstituteAnswerRepository;
 use App\Service\Organization\OrganizationPpsService;
 use App\Service\UserPointsCountService;
-use App\Repository\ExpertAdjustmentRepository;
+use App\Repository\YearsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +27,8 @@ class PpsRatingController extends AbstractController
         private readonly OrganizationPpsService      $organizationPpsService,
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
         private readonly TeacherRepository            $teacherRepository,
-        private readonly ExpertAdjustmentRepository    $expertAdjustmentRepository
+        private readonly ExpertAdjustmentRepository    $expertAdjustmentRepository,
+        private readonly YearsRepository             $yearsRepository
     )
     {
     }
@@ -79,11 +74,10 @@ class PpsRatingController extends AbstractController
     #[Route('/institutes', name: 'app_pps_institutes', methods: ['GET'])]
     public function institutes_list(InstituteRepository $instituteRepository, InstituteAnswerRepository $instituteAnswerRepository, \App\Repository\TeacherAnswerRepository $teacherAnswerRepository): JsonResponse
     {
-        $institutes = $instituteRepository->findAll();
-        $result = [];
+        $currentYear = $this->yearsRepository->findCurrentYear();
         foreach ($institutes as $institute) {
-            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute);
-            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute);
+            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $currentYear);
+            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $currentYear);
             $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
             $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
@@ -110,11 +104,10 @@ class PpsRatingController extends AbstractController
         \App\Repository\TeacherAnswerRepository $teacherAnswerRepository
     ): JsonResponse
     {
-        $institutes = $instituteRepository->findByOrganization($orgId);
-        $result = [];
+        $currentYear = $this->yearsRepository->findCurrentYear();
         foreach ($institutes as $institute) {
-            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute);
-            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute);
+            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $currentYear);
+            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $currentYear);
             $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
             $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [

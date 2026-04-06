@@ -18,6 +18,12 @@ class Years
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\Column(nullable: true, options: ['default' => false])]
+    private ?bool $isCurrent = false;
+
+    #[ORM\Column(nullable: true, options: ['default' => false])]
+    private ?bool $isLocked = false;
+
     #[ORM\OneToMany(targetEntity: ResultsOfYear::class, mappedBy: 'year')]
     private Collection $resultsOfYears;
 
@@ -69,6 +75,30 @@ class Years
                 $resultsOfYear->setYear(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isCurrent(): ?bool
+    {
+        return $this->isCurrent;
+    }
+
+    public function setIsCurrent(?bool $isCurrent): static
+    {
+        $this->isCurrent = $isCurrent;
+
+        return $this;
+    }
+
+    public function isLocked(): ?bool
+    {
+        return $this->isLocked;
+    }
+
+    public function setIsLocked(?bool $isLocked): static
+    {
+        $this->isLocked = $isLocked;
 
         return $this;
     }

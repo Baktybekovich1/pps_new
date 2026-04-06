@@ -10,6 +10,7 @@ use App\Repository\UserInfoRepository;
 use App\Repository\UserOffenceRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
+use App\Repository\YearsRepository;
 
 class UserPointsCountService
 {
@@ -20,7 +21,8 @@ class UserPointsCountService
         private readonly UserOffenceRepository                $userOffenceRepository,
         private readonly TeacherRepository                    $teacherRepository,
         private readonly UserInfoRepository                   $userInfoRepository,
-        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
+        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository,
+        private readonly YearsRepository                     $yearsRepository
     ) {
     }
 
@@ -62,28 +64,14 @@ class UserPointsCountService
         // In this project (based on previous edits and TeacherAnswerRepository):
         // Stage 1: Research, Stage 2: Awards, Stage 3: Innovative, Stage 4: Social (example mapping)
         
-        $answers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher, 'active' => true]);
+        $currentYear = $this->yearsRepository->findCurrentYear();
         
-        $researchPoints = 0;
-        $awardPoints = 0;
-        $innovativePoints = 0;
-        $socialPoints = 0;
-        $sum = 0;
-
-        foreach ($answers as $answer) {
-            $points = $answer->getSubtitle()->getPoint();
-            $sum += $points;
-            
-            $stageId = $answer->getSubtitle()->getTitle()->getStage()->getId();
-            
-            // Map stage IDs to categories (this mapping might need refinement based on DB)
-            switch ($stageId) {
-                case 1: $researchPoints += $points; break;
-                case 2: $awardPoints += $points; break;
-                case 3: $innovativePoints += $points; break;
-                case 4: $socialPoints += $points; break;
-            }
-        }
+        $researchPoints = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 1, $currentYear);
+        $awardPoints = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 2, $currentYear);
+        $innovativePoints = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 3, $currentYear);
+        $socialPoints = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 4, $currentYear);
+        
+        $sum = $researchPoints + $awardPoints + $innovativePoints + $socialPoints;
 
         // Deduct offences (offsets)
         // UserOffence still exists and might relate to User entity. 

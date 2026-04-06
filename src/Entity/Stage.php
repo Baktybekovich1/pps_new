@@ -24,6 +24,9 @@ class Stage
     #[ORM\OneToMany(targetEntity: QuestionTitle::class, mappedBy: 'stage')]
     private Collection $questionTitles;
 
+    #[ORM\Column(nullable: true, options: ['default' => false])]
+    private ?bool $isPermanent = false;
+
     public function __construct()
     {
         $this->questionTitles = new ArrayCollection();
@@ -89,6 +92,18 @@ class Stage
                 $questionTitle->setStage(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isPermanent(): ?bool
+    {
+        return $this->isPermanent;
+    }
+
+    public function setIsPermanent(?bool $isPermanent): static
+    {
+        $this->isPermanent = $isPermanent;
 
         return $this;
     }

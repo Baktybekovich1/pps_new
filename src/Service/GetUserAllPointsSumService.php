@@ -2,41 +2,30 @@
 
 namespace App\Service;
 
-use App\Dto\RatingDto\PpsRatingSumDto;
-use App\Repository\UserInfoRepository;
-use App\Repository\UserInnovativeEducationRepository;
+use App\Repository\TeacherAnswerRepository;
 use App\Repository\UserOffenceRepository;
-use App\Repository\UserPersonalAwardsRepository;
-use App\Repository\UserRepository;
-use App\Repository\UserResearchActivitiesListRepository;
-use App\Repository\UserSocialActivitiesRepository;
+use App\Repository\ExpertAdjustmentRepository;
+use App\Repository\YearsRepository;
 
 class GetUserAllPointsSumService
 {
     public function __construct(
-        private readonly UserResearchActivitiesListRepository $userActivitiesListsRepository,
-        private readonly UserPersonalAwardsRepository         $userPersonalAwardsRepository,
-        private readonly UserInnovativeEducationRepository    $userInnovativeEducationRepository,
-        private readonly UserSocialActivitiesRepository       $userSocialActivitiesRepository,
-        private readonly UserOffenceRepository                $userOffenceRepository,
-        private readonly UserRepository                       $userRepository,
-        private readonly UserInfoRepository                   $userInfoRepository, private readonly UserResearchActivitiesListRepository $userResearchActivitiesListRepository)
+        private readonly TeacherAnswerRepository      $teacherAnswerRepository,
+        private readonly UserOffenceRepository        $userOffenceRepository,
+        private readonly ExpertAdjustmentRepository   $expertAdjustmentRepository,
+        private readonly YearsRepository             $yearsRepository
+    )
     {
     }
 
-    public function getUserAllPointsSum(int $userId): int
+    public function getUserAllPointsSum(int $teacherId): int
     {
-        $user = $this->userRepository->find($userId);
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        $sum = $this->teacherAnswerRepository->getTeacherPointsCountByTeacherId($teacherId, $currentYear);
+        $offence = $this->userOffenceRepository->getUserPoints($teacherId);
+        $adjustment = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacherId);
 
-        $sum = $this->userPersonalAwardsRepository->getUserPoints($userId)
-            + $this->userInnovativeEducationRepository->getUserPoints($userId)
-            + $this->userSocialActivitiesRepository->getUserPoints($userId)
-            + $this->userResearchActivitiesListRepository->getUserPoints($userId);
-
-        $offence = $this->userOffenceRepository->getUserPoints($userId);
-
-
-        return $sum - $offence;
+        return $sum - $offence + $adjustment;
     }
 
 }

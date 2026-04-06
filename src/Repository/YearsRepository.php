@@ -34,4 +34,8 @@ class YearsRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function findCurrentYear(): ?Years
+    {
+        return $this->findOneBy(['isCurrent' => true]);
+    }
 }

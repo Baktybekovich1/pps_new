@@ -21,17 +21,25 @@ class InstituteAnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, InstituteAnswer::class);
     }
 
-    public function getInstitutePoints(\App\Entity\Institute $institute): int
+    public function getInstitutePoints(\App\Entity\Institute $institute, ?\App\Entity\Years $currentYear = null): int
     {
-        return (int)$this->createQueryBuilder('answer')
+        $qb = $this->createQueryBuilder('answer')
             ->select('COALESCE(SUM(subtitle.point), 0)')
             ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
             ->where('answer.institute = :institute')
             ->andWhere('answer.active = :active')
             ->setParameter('institute', $institute)
-            ->setParameter('active', true)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('active', true);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
+                ->setParameter('currentYear', $currentYear)
+                ->setParameter('isPermanent', true);
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
 //    /**
