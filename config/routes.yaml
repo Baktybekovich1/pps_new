@@ -9,10 +9,6 @@ api_login_check:
   path: /api/login
 
 
-user_controllers:
-  resource: ../src/Controller/user
-  type: attribute
-  prefix: /api/user
 
 teacher_controllers:
   resource: ../src/Controller/Teacher
