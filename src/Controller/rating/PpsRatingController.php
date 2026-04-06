@@ -12,6 +12,7 @@ use App\Repository\InstituteAnswerRepository;
 use App\Service\Organization\OrganizationPpsService;
 use App\Service\UserPointsCountService;
 use App\Repository\YearsRepository;
+use App\Repository\ExpertAdjustmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,6 +76,8 @@ class PpsRatingController extends AbstractController
     public function institutes_list(InstituteRepository $instituteRepository, InstituteAnswerRepository $instituteAnswerRepository, \App\Repository\TeacherAnswerRepository $teacherAnswerRepository): JsonResponse
     {
         $currentYear = $this->yearsRepository->findCurrentYear();
+        $institutes = $instituteRepository->findAll();
+        $result = [];
         foreach ($institutes as $institute) {
             $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $currentYear);
             $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $currentYear);
@@ -105,6 +108,8 @@ class PpsRatingController extends AbstractController
     ): JsonResponse
     {
         $currentYear = $this->yearsRepository->findCurrentYear();
+        $institutes = $instituteRepository->findByOrganization($orgId);
+        $result = [];
         foreach ($institutes as $institute) {
             $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $currentYear);
             $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $currentYear);
