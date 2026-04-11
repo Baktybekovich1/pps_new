@@ -12,7 +12,8 @@ class PpsRatingDto
         public int             $awardPoints,
         public int             $innovativePoints,
         public int             $socialPoints,
-        public int             $sum
+        public int             $sum,
+        public int             $expertPoints = 0
     )
     {
     }

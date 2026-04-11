@@ -51,7 +51,8 @@ class ComtehnoPpsRatingController extends AbstractController
                 $fun['awards'],
                 $fun['innovative'],
                 $fun['social'],
-                $fun['sum']
+                $fun['sum'],
+                $fun['expert']
             );
         }
 
@@ -85,14 +86,16 @@ class ComtehnoPpsRatingController extends AbstractController
         $offence = $this->userOffenceRepository->getUserPoints($teacher->getId());
         $sum -= $offence;
 
-        $sum += $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        $sum += $expertPoints;
         
         return [
             'research' => $researchPoints, 
             'awards' => $awardPoints, 
             'innovative' => $innovativePoints, 
             'social' => $socialPoints, 
-            'sum' => $sum
+            'sum' => $sum,
+            'expert' => $expertPoints
         ];
     }
 

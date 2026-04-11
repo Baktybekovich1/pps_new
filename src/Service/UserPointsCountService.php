@@ -49,7 +49,8 @@ class UserPointsCountService
                 $fun['awards'],
                 $fun['innovative'],
                 $fun['social'],
-                $fun['sum']
+                $fun['sum'],
+                $fun['expert']
             );
         }
         return $pps;
@@ -86,7 +87,8 @@ class UserPointsCountService
             'awards' => $awardPoints, 
             'innovative' => $innovativePoints, 
             'social' => $socialPoints, 
-            'sum' => $sum
+            'sum' => $sum,
+            'expert' => $expertPointsSum
         ];
     }
 

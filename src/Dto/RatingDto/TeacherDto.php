@@ -9,6 +9,7 @@ class TeacherDto
         public string $name,
         public array $awards,
         public int $total,
+        public int $expertPoints = 0,
     )
     {
     }

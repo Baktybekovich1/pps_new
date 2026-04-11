@@ -85,6 +85,7 @@ class PpsRatingController extends AbstractController
                 'id' => $institute->getId(),
                 'name' => $institute->getName(),
                 'organization' => $institute->getOrganization() ? $institute->getOrganization()->getName() : 'N/A',
+                'expertPoints' => $expertPoints,
                 'points' => $points,
                 'teacherTotal' => $institute->getTeacherTotal()
             ];
@@ -117,6 +118,7 @@ class PpsRatingController extends AbstractController
                 'id' => $institute->getId(),
                 'name' => $institute->getName(),
                 'reduction' => $institute->getReduction(),
+                'expertPoints' => $expertPoints,
                 'points' => $points,
                 'teacherTotal' => $institute->getTeacherTotal()
             ];
