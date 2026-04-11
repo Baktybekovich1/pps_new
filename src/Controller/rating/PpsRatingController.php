@@ -32,6 +32,18 @@ class PpsRatingController extends AbstractController
     {
     }
 
+    /**
+     * Определяет год по query-параметру ?yearId, либо берёт текущий
+     */
+    private function resolveYear(Request $request): ?\App\Entity\Years
+    {
+        $yearId = $request->query->get('yearId');
+        if ($yearId) {
+            return $this->yearsRepository->find((int)$yearId);
+        }
+        return $this->yearsRepository->findCurrentYear();
+    }
+
     #[Route('/pps', name: 'app_pps_rating', methods: ['GET'])]
     public function index(): JsonResponse
     {
@@ -71,22 +83,27 @@ class PpsRatingController extends AbstractController
     }
 
     #[Route('/institutes', name: 'app_pps_institutes', methods: ['GET'])]
-    public function institutes_list(InstituteRepository $instituteRepository, InstituteAnswerRepository $instituteAnswerRepository, \App\Repository\TeacherAnswerRepository $teacherAnswerRepository): JsonResponse
+    public function institutes_list(
+        Request $request,
+        InstituteRepository $instituteRepository,
+        InstituteAnswerRepository $instituteAnswerRepository,
+        \App\Repository\TeacherAnswerRepository $teacherAnswerRepository
+    ): JsonResponse
     {
-        $currentYear = $this->yearsRepository->findCurrentYear();
+        $year = $this->resolveYear($request);
         $institutes = $instituteRepository->findAll();
         $result = [];
         foreach ($institutes as $institute) {
-            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $currentYear);
-            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $currentYear);
+            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $year);
+            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $year);
             $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
             $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
-                'id' => $institute->getId(),
-                'name' => $institute->getName(),
+                'id'           => $institute->getId(),
+                'name'         => $institute->getName(),
                 'organization' => $institute->getOrganization() ? $institute->getOrganization()->getName() : 'N/A',
                 'expertPoints' => $expertPoints,
-                'points' => $points,
+                'points'       => $points,
                 'teacherTotal' => $institute->getTeacherTotal()
             ];
         }
@@ -101,25 +118,26 @@ class PpsRatingController extends AbstractController
     #[Route('/organization/{orgId}/institutes', name: 'app_organization_institutes_rating', methods: ['GET'])]
     public function organization_institutes(
         int $orgId,
+        Request $request,
         InstituteRepository $instituteRepository,
         InstituteAnswerRepository $instituteAnswerRepository,
         \App\Repository\TeacherAnswerRepository $teacherAnswerRepository
     ): JsonResponse
     {
-        $currentYear = $this->yearsRepository->findCurrentYear();
+        $year = $this->resolveYear($request);
         $institutes = $instituteRepository->findByOrganization($orgId);
         $result = [];
         foreach ($institutes as $institute) {
-            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $currentYear);
-            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $currentYear);
+            $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $year);
+            $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $year);
             $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
             $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
-                'id' => $institute->getId(),
-                'name' => $institute->getName(),
-                'reduction' => $institute->getReduction(),
+                'id'           => $institute->getId(),
+                'name'         => $institute->getName(),
+                'reduction'    => $institute->getReduction(),
                 'expertPoints' => $expertPoints,
-                'points' => $points,
+                'points'       => $points,
                 'teacherTotal' => $institute->getTeacherTotal()
             ];
         }

@@ -3,32 +3,44 @@
 namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
+use App\Entity\Years;
 use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\UserOffenceRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
+use App\Repository\YearsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(name: 'Rating')]
 class ItecPpsRatingController extends AbstractController
 {
-
-
     public function __construct(
         private readonly TeacherRepository                    $teacherRepository,
         private readonly TeacherAnswerRepository              $teacherAnswerRepository,
-        private readonly UserOffenceRepository                $userOffenceRepository, 
-        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
+        private readonly UserOffenceRepository                $userOffenceRepository,
+        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository,
+        private readonly YearsRepository                     $yearsRepository
     )
     {
     }
 
-    #[Route('itec/pps', name: 'itec_pps_rating', methods: ['GET'])]
-    public function index(): JsonResponse
+    private function resolveYear(Request $request): ?Years
     {
+        $yearId = $request->query->get('yearId');
+        if ($yearId) {
+            return $this->yearsRepository->find((int)$yearId);
+        }
+        return $this->yearsRepository->findCurrentYear();
+    }
+
+    #[Route('itec/pps', name: 'itec_pps_rating', methods: ['GET'])]
+    public function index(Request $request): JsonResponse
+    {
+        $year = $this->resolveYear($request);
         $pps = [];
         $teachers = $this->teacherRepository->findAll();
 
@@ -41,7 +53,7 @@ class ItecPpsRatingController extends AbstractController
                 continue;
             }
 
-            $fun = $this->getBigPoints($teacher);
+            $fun = $this->getBigPoints($teacher, $year);
 
             $pps[$teacher->getId()] = new PpsRatingDto(
                 $teacher->getId(),
@@ -59,44 +71,28 @@ class ItecPpsRatingController extends AbstractController
         return $this->json(['pps' => $pps]);
     }
 
-    public function getBigPoints($teacher)
+    public function getBigPoints($teacher, ?Years $year = null): array
     {
-        $answers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher, 'active' => true]);
-        
-        $researchPoints = 0;
-        $awardPoints = 0;
-        $innovativePoints = 0;
-        $socialPoints = 0;
-        $sum = 0;
+        $researchPoints   = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 1, $year);
+        $awardPoints      = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 2, $year);
+        $innovativePoints = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 3, $year);
+        $socialPoints     = $this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 4, $year);
 
-        foreach ($answers as $answer) {
-            $points = $answer->getSubtitle()->getPoint();
-            $sum += $points;
-            
-            $stageId = $answer->getSubtitle()->getTitle()->getStage()->getId();
-            
-            switch ($stageId) {
-                case 1: $researchPoints += $points; break;
-                case 2: $awardPoints += $points; break;
-                case 3: $innovativePoints += $points; break;
-                case 4: $socialPoints += $points; break;
-            }
-        }
+        $sum = $researchPoints + $awardPoints + $innovativePoints + $socialPoints;
 
         $offence = $this->userOffenceRepository->getUserPoints($teacher->getId());
         $sum -= $offence;
 
         $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
         $sum += $expertPoints;
-        
+
         return [
-            'research' => $researchPoints, 
-            'awards' => $awardPoints, 
-            'innovative' => $innovativePoints, 
-            'social' => $socialPoints, 
-            'sum' => $sum,
-            'expert' => $expertPoints
+            'research'   => $researchPoints,
+            'awards'     => $awardPoints,
+            'innovative' => $innovativePoints,
+            'social'     => $socialPoints,
+            'sum'        => $sum,
+            'expert'     => $expertPoints
         ];
     }
-
 }
