@@ -10,7 +10,7 @@ use App\Repository\QuestionSubtitleRepository;
 use App\Repository\StageRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\TeacherRepository;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\YearsRepository;
 
 class TeacherAnswerService
 {
@@ -18,19 +18,37 @@ class TeacherAnswerService
         private readonly TeacherRepository          $teacherRepository,
         private readonly TeacherAnswerRepository    $teacherAnswerRepository,
         private readonly QuestionSubtitleRepository $questionSubtitleRepository,
-        private readonly StageDtoFactory            $stageDtoFactory, private readonly StageRepository $stageRepository
+        private readonly StageDtoFactory            $stageDtoFactory,
+        private readonly StageRepository            $stageRepository,
+        private readonly YearsRepository            $yearsRepository,
     )
     {
     }
 
+    /**
+     * Сохранить новую награду/ответ преподавателя.
+     * Проверяет: год не заблокирован.
+     * Привязывает ответ к текущему академическому году.
+     *
+     * @throws \RuntimeException если год заблокирован
+     */
     public function save($email, SetAwardDto $dto): bool
     {
+        // Проверяем блокировку текущего года
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        if ($currentYear && $currentYear->isLocked()) {
+            throw new \RuntimeException('Год заблокирован. Добавление наград недоступно.', 423);
+        }
+
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
         $answer = new TeacherAnswer();
         $answer->setTeacher($teacher);
         $answer->setActive(true);
         $answer->setSubtitle($this->questionSubtitleRepository->find($dto->subtitleId));
         $answer->setLink($dto->link);
+        // Привязываем к текущему году
+        $answer->setAcademicYear($currentYear);
+
         return $this->teacherAnswerRepository->save($answer);
     }
 
@@ -54,6 +72,12 @@ class TeacherAnswerService
 
     public function edit(string $email, $answerId, string $answerLink): bool
     {
+        // Проверяем блокировку текущего года
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        if ($currentYear && $currentYear->isLocked()) {
+            throw new \RuntimeException('Год заблокирован. Редактирование недоступно.', 423);
+        }
+
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
         $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
         $answer->setActive(true);

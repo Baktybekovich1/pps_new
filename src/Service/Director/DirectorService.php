@@ -11,6 +11,7 @@ use App\Repository\DirectorRepository;
 use App\Repository\InstituteAnswerRepository;
 use App\Repository\InstituteQuestionSubtitleRepository;
 use App\Repository\TeacherOrganizationRepository;
+use App\Repository\YearsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class DirectorService
@@ -21,7 +22,8 @@ class DirectorService
         private readonly InstituteAnswerRepository $instituteAnswerRepository,
         private readonly InstituteQuestionSubtitleRepository $subtitleRepository,
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly YearsRepository $yearsRepository,
     )
     {
     }
@@ -140,6 +142,12 @@ class DirectorService
      */
     public function addInstituteAward(Teacher $teacher, int $subtitleId, string $link): array
     {
+        // Проверяем блокировку года
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        if ($currentYear && $currentYear->isLocked()) {
+            throw new \Exception('Год заблокирован. Добавление наград недоступно.', 423);
+        }
+
         $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
         if (!$director) {
             throw new \Exception("Access Denied", 403);
@@ -157,16 +165,18 @@ class DirectorService
         $answer->setSubtitle($subtitle);
         $answer->setLink($link);
         $answer->setActive(true);
+        // Привязываем к текущему году
+        $answer->setAcademicYear($currentYear);
 
         $this->entityManager->persist($answer);
         $this->entityManager->flush();
 
         return [
-            'id' => $answer->getId(),
+            'id'           => $answer->getId(),
             'subtitleName' => $subtitle->getName(),
-            'titleName' => $subtitle->getTitle()->getName(),
-            'answerLink' => $link,
-            'point' => $subtitle->getPoint(),
+            'titleName'    => $subtitle->getTitle()->getName(),
+            'answerLink'   => $link,
+            'point'        => $subtitle->getPoint(),
         ];
     }
 

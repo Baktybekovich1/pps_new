@@ -24,7 +24,12 @@ class TeacherAnswerController extends AbstractController
     #[Route('/answer', methods: ['POST'])]
     public function index(UserInterface $user, #[MapRequestPayload] SetAwardDto $dto): JsonResponse
     {
-        return $this->json( $this->teacherAnswerService->save($user->getUserIdentifier(), $dto));
+        try {
+            $result = $this->teacherAnswerService->save($user->getUserIdentifier(), $dto);
+            return $this->json($result);
+        } catch (\RuntimeException $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 423);
+        }
     }
 
     #[Route(path: '/answers', name: 'answers', methods: ['GET'])]
@@ -32,16 +37,21 @@ class TeacherAnswerController extends AbstractController
     {
         return $this->json($this->teacherAnswerService->getAll($user->getUserIdentifier()));
     }
+
     #[Route(path: '/answers/{answerId}', name: 'answers_delete', methods: ['DELETE'])]
     public function answers_delete(UserInterface $user, Request $request): JsonResponse
     {
-        return $this->json($this->teacherAnswerService->delete($user->getUserIdentifier(),$request->get('answerId')));
+        return $this->json($this->teacherAnswerService->delete($user->getUserIdentifier(), $request->get('answerId')));
     }
+
     #[Route(path: '/answers/{answerId}', name: 'answers_edit', methods: ['PUT'])]
-    public function answers_edit(UserInterface $user, Request $request , #[MapRequestPayload] LinkDto $dto): JsonResponse
+    public function answers_edit(UserInterface $user, Request $request, #[MapRequestPayload] LinkDto $dto): JsonResponse
     {
-        return $this->json($this->teacherAnswerService->edit($user->getUserIdentifier(),$request->get('answerId'),$dto->answerLink));
+        try {
+            $result = $this->teacherAnswerService->edit($user->getUserIdentifier(), $request->get('answerId'), $dto->answerLink);
+            return $this->json($result);
+        } catch (\RuntimeException $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 423);
+        }
     }
-
-
 }
