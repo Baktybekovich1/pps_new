@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ExpertAdjustment;
+use App\Entity\Years;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,27 +40,54 @@ class ExpertAdjustmentRepository extends ServiceEntityRepository
         }
     }
 
-    public function getTeacherAdjustedPoints(int $teacherId): int
+    public function getTeacherAdjustedPoints(int $teacherId, ?Years $year = null): int
     {
-        return (int)$this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->select('SUM(a.points)')
             ->where('a.targetTeacher = :teacherId')
             ->andWhere('a.isActive = :active')
             ->setParameter('teacherId', $teacherId)
-            ->setParameter('active', true)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('active', true);
+
+        if ($year) {
+            $qb->andWhere('a.academicYear = :year')
+                ->setParameter('year', $year);
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
     }
 
-    public function getInstituteAdjustedPoints(int $instituteId): int
+    public function getInstituteAdjustedPoints(int $instituteId, ?Years $year = null): int
     {
-        return (int)$this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->select('SUM(a.points)')
             ->where('a.targetInstitute = :instituteId')
             ->andWhere('a.isActive = :active')
             ->setParameter('instituteId', $instituteId)
+            ->setParameter('active', true);
+
+        if ($year) {
+            $qb->andWhere('a.academicYear = :year')
+                ->setParameter('year', $year);
+        }
+
+        return (int)$qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function findActiveByTeacherAndYear(\App\Entity\Teacher $teacher, ?Years $year = null): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.targetTeacher = :teacher')
+            ->andWhere('a.isActive = :active')
+            ->setParameter('teacher', $teacher)
             ->setParameter('active', true)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->orderBy('a.createdAt', 'DESC');
+
+        if ($year) {
+            $qb->andWhere('a.academicYear = :year')
+                ->setParameter('year', $year);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -79,7 +79,7 @@ class UserPointsCountService
         $sum -= $offence;
 
         // Add expert adjustments
-        $expertPointsSum = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        $expertPointsSum = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $currentYear);
         $sum += $expertPointsSum;
 
         return [

@@ -31,6 +31,8 @@ class UserAccountController extends AbstractController
     public function index(Request $request): JsonResponse
     {
         $id = $request->get('id');
+        $yearId = $request->query->getInt('yearId') ?: null;
+        $selectedYear = $yearId ? $this->yearsRepository->find($yearId) : $this->yearsRepository->findCurrentYear();
         $teacher = $this->teacherRepository->find($id);
         if ($teacher) {
             $firstOrg = $teacher->getTeacherOrganizations()->first();
@@ -43,8 +45,7 @@ class UserAccountController extends AbstractController
                 $teacher->getEmail()
             );
 
-            $currentYear = $this->yearsRepository->findCurrentYear();
-            $teacherAnswers = $this->teacherAnswerRepository->findByTeacherAndYear($teacher, $currentYear);
+            $teacherAnswers = $this->teacherAnswerRepository->findByTeacherAndYear($teacher, $selectedYear);
             $awards = [];
             foreach ($teacherAnswers as $answer) {
                 $awards[] = new UserAwardsGetDto(
@@ -69,7 +70,7 @@ class UserAccountController extends AbstractController
                     'expertName' => $a->getExpert()->getJobTitle(),
                     'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
                     'isActive' => $a->isActive()
-                ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true]))
+                ], $this->expertAdjustmentRepository->findActiveByTeacherAndYear($teacher, $selectedYear))
             ]);
         }
 
@@ -101,7 +102,7 @@ class UserAccountController extends AbstractController
                         'expertName' => $a->getExpert()->getJobTitle(),
                         'createdAt' => $a->getCreatedAt()->format('Y-m-d'),
                         'isActive' => $a->isActive()
-                    ], $this->expertAdjustmentRepository->findBy(['targetTeacher' => $teacher, 'isActive' => true]))
+                    ], $this->expertAdjustmentRepository->findActiveByTeacherAndYear($teacher, $selectedYear))
                 ]);
             }
             return $this->json('Профиль преподавателя не найден для этого пользователя');

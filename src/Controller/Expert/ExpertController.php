@@ -102,9 +102,12 @@ class ExpertController extends AbstractController
             return $this->json(['error' => 'Invalid target type'], 400);
         }
 
-        $this->expertService->addAdjustment($expert, $targetTeacher, $targetInstitute, $points, $reason);
-
-        return $this->json(['message' => 'Adjustment added successfully']);
+        try {
+            $this->expertService->addAdjustment($expert, $targetTeacher, $targetInstitute, $points, $reason);
+            return $this->json(['message' => 'Adjustment added successfully']);
+        } catch (\RuntimeException $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 409);
+        }
     }
 
     #[Route('/targets', name: 'api_expert_targets', methods: ['GET'])]

@@ -83,7 +83,7 @@ class ItecPpsRatingController extends AbstractController
         $offence = $this->userOffenceRepository->getUserPoints($teacher->getId());
         $sum -= $offence;
 
-        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $year);
         $sum += $expertPoints;
 
         return [

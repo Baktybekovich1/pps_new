@@ -96,7 +96,7 @@ class PpsRatingController extends AbstractController
         foreach ($institutes as $institute) {
             $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $year);
             $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $year);
-            $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
+            $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId(), $year);
             $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
                 'id'           => $institute->getId(),
@@ -130,7 +130,7 @@ class PpsRatingController extends AbstractController
         foreach ($institutes as $institute) {
             $basePoints = $instituteAnswerRepository->getInstitutePoints($institute, $year);
             $teacherPoints = $teacherAnswerRepository->getStaffTeacherPointsForInstitute($institute, $year);
-            $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId());
+            $expertPoints = $this->expertAdjustmentRepository->getInstituteAdjustedPoints($institute->getId(), $year);
             $points = $basePoints + $teacherPoints + $expertPoints;
             $result[] = [
                 'id'           => $institute->getId(),

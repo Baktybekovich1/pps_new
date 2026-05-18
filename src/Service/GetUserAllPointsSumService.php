@@ -23,7 +23,7 @@ class GetUserAllPointsSumService
         $currentYear = $this->yearsRepository->findCurrentYear();
         $sum = $this->teacherAnswerRepository->getTeacherPointsCountByTeacherId($teacherId, $currentYear);
         $offence = $this->userOffenceRepository->getUserPoints($teacherId);
-        $adjustment = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacherId);
+        $adjustment = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacherId, $currentYear);
 
         return $sum - $offence + $adjustment;
     }

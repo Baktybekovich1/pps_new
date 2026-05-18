@@ -41,6 +41,10 @@ class ExpertAdjustment
     #[Groups(['adjustment:read'])]
     private bool $isActive = true;
 
+    #[ORM\ManyToOne]
+    #[Groups(['adjustment:read'])]
+    private ?Years $academicYear = null;
+
     #[ORM\Column]
     #[Groups(['adjustment:read'])]
     private ?\DateTimeImmutable $createdAt = null;
@@ -123,6 +127,18 @@ class ExpertAdjustment
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getAcademicYear(): ?Years
+    {
+        return $this->academicYear;
+    }
+
+    public function setAcademicYear(?Years $academicYear): static
+    {
+        $this->academicYear = $academicYear;
 
         return $this;
     }

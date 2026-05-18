@@ -51,7 +51,7 @@ class UserPointsCountSumService
         $sum = $this->teacherAnswerRepository->getTeacherPointsCount($teacher, $currentYear);
 
         $sum -= $this->userOffenceRepository->getUserPoints($teacher->getId());
-        $sum += $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        $sum += $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $currentYear);
 
         return ['sum' => $sum];
     }

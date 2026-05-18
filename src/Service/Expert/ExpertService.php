@@ -7,12 +7,14 @@ use App\Entity\ExpertAdjustment;
 use App\Entity\Teacher;
 use App\Entity\Institute;
 use App\Repository\ExpertAdjustmentRepository;
+use App\Repository\YearsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ExpertService
 {
     public function __construct(
         private readonly ExpertAdjustmentRepository $expertAdjustmentRepository,
+        private readonly YearsRepository $yearsRepository,
         private readonly EntityManagerInterface $entityManager
     ) {
     }
@@ -24,6 +26,11 @@ class ExpertService
         int $points, 
         string $reason
     ): ExpertAdjustment {
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        if (!$currentYear) {
+            throw new \RuntimeException('Текущий год не установлен. Обратитесь к администратору.', 409);
+        }
+
         $adjustment = new ExpertAdjustment();
         $adjustment->setExpert($expert);
         $adjustment->setTargetTeacher($targetTeacher);
@@ -31,6 +38,7 @@ class ExpertService
         $adjustment->setPoints($points);
         $adjustment->setReason($reason);
         $adjustment->setIsActive(true);
+        $adjustment->setAcademicYear($currentYear);
 
         $this->entityManager->persist($adjustment);
         $this->entityManager->flush();

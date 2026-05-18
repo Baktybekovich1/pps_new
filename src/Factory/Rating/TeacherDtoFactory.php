@@ -33,7 +33,7 @@ class TeacherDtoFactory
         }
         $currentYear = $this->yearsRepository->findCurrentYear();
         $baseTotal = $this->teacherAnswerRepository->getTeacherPointsCount($teacher, $currentYear);
-        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId());
+        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $currentYear);
 
         return new TeacherDto(
             $teacher->getId(),
