@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Teacher;
 use App\Entity\TeacherAnswer;
+use App\Entity\Years;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -100,6 +101,73 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->setParameter('stageId', $stageId)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findTeacherAnswersByStageAndYear(int $teacherId, int $stageId, ?Years $currentYear = null): array
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
+            ->where('teacher.id = :teacherId')
+            ->andWhere('stage.id = :stageId')
+            ->setParameter('teacherId', $teacherId)
+            ->setParameter('stageId', $stageId);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findActiveByTeacherAndYear(Teacher $teacher, ?Years $currentYear = null): array
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->where('answer.teacher = :teacher')
+            ->andWhere('answer.active = :active')
+            ->setParameter('teacher', $teacher)
+            ->setParameter('active', true);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByTeacherAndYear(Teacher $teacher, ?Years $currentYear = null): array
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->where('answer.teacher = :teacher')
+            ->setParameter('teacher', $teacher);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findOneByTeacherAndYear(int $answerId, Teacher $teacher, ?Years $currentYear = null): ?TeacherAnswer
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->where('answer.id = :answerId')
+            ->andWhere('answer.teacher = :teacher')
+            ->setParameter('answerId', $answerId)
+            ->setParameter('teacher', $teacher)
+            ->setMaxResults(1);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     public function getTeacherPointsCountByStage(int $teacherId, int $stageId, ?\App\Entity\Years $currentYear = null): int

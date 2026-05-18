@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\ExpertAdjustmentRepository;
+use App\Repository\YearsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,8 @@ class UserAccountController extends AbstractController
         private readonly UserRepository                       $userRepository,
         private readonly TeacherRepository                    $teacherRepository,
         private readonly TeacherAnswerRepository              $teacherAnswerRepository,
-        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository
+        private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository,
+        private readonly YearsRepository                      $yearsRepository
     )
     {
     }
@@ -41,7 +43,8 @@ class UserAccountController extends AbstractController
                 $teacher->getEmail()
             );
 
-            $teacherAnswers = $this->teacherAnswerRepository->findBy(['teacher' => $teacher]);
+            $currentYear = $this->yearsRepository->findCurrentYear();
+            $teacherAnswers = $this->teacherAnswerRepository->findByTeacherAndYear($teacher, $currentYear);
             $awards = [];
             foreach ($teacherAnswers as $answer) {
                 $awards[] = new UserAwardsGetDto(

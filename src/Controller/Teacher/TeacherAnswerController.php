@@ -33,15 +33,21 @@ class TeacherAnswerController extends AbstractController
     }
 
     #[Route(path: '/answers', name: 'answers', methods: ['GET'])]
-    public function answers(UserInterface $user): JsonResponse
+    public function answers(UserInterface $user, Request $request): JsonResponse
     {
-        return $this->json($this->teacherAnswerService->getAll($user->getUserIdentifier()));
+        $yearId = $request->query->getInt('yearId') ?: null;
+        return $this->json($this->teacherAnswerService->getAll($user->getUserIdentifier(), $yearId));
     }
 
     #[Route(path: '/answers/{answerId}', name: 'answers_delete', methods: ['DELETE'])]
     public function answers_delete(UserInterface $user, Request $request): JsonResponse
     {
-        return $this->json($this->teacherAnswerService->delete($user->getUserIdentifier(), $request->get('answerId')));
+        try {
+            $result = $this->teacherAnswerService->delete($user->getUserIdentifier(), $request->get('answerId'));
+            return $this->json($result);
+        } catch (\RuntimeException $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 404);
+        }
     }
 
     #[Route(path: '/answers/{answerId}', name: 'answers_edit', methods: ['PUT'])]

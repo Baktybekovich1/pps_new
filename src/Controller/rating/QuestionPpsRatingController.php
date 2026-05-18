@@ -4,11 +4,13 @@ namespace App\Controller\rating;
 
 use App\Dto\RatingDto\PpsRatingDto;
 use App\Dto\RatingDto\QuestionPPSRatingDto;
+use App\Entity\Years;
 use App\Repository\QuestionSubtitleRepository;
 use App\Repository\QuestionTitleRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\UserRepository;
 use App\Repository\TeacherRepository;
+use App\Repository\YearsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +25,20 @@ class QuestionPpsRatingController extends AbstractController
         private readonly TeacherRepository            $teacherRepository,
         private readonly TeacherAnswerRepository      $teacherAnswerRepository,
         private readonly QuestionTitleRepository      $questionTitleRepository,
-        private readonly QuestionSubtitleRepository   $questionSubtitleRepository
+        private readonly QuestionSubtitleRepository   $questionSubtitleRepository,
+        private readonly YearsRepository              $yearsRepository
     )
     {
+    }
+
+    private function resolveYear(Request $request): ?Years
+    {
+        $yearId = $request->query->get('yearId');
+        if ($yearId) {
+            return $this->yearsRepository->find((int)$yearId);
+        }
+
+        return $this->yearsRepository->findCurrentYear();
     }
 
     private function getCommonQuestionRating(Request $request, string $university): array
@@ -35,6 +48,7 @@ class QuestionPpsRatingController extends AbstractController
         
         if (!$titleId) return [];
         
+        $year = $this->resolveYear($request);
         $pps = [];
         $teachers = $this->teacherRepository->findAll();
         
@@ -44,8 +58,7 @@ class QuestionPpsRatingController extends AbstractController
                 continue;
             }
 
-            $criteria = ['teacher' => $teacher, 'active' => true];
-            $answers = $this->teacherAnswerRepository->findBy($criteria);
+            $answers = $this->teacherAnswerRepository->findActiveByTeacherAndYear($teacher, $year);
             
             $points = 0;
             foreach ($answers as $answer) {

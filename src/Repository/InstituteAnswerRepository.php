@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\InstituteAnswer;
+use App\Entity\Years;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -74,5 +75,54 @@ class InstituteAnswerRepository extends ServiceEntityRepository
         } catch (\Throwable $exception) {
             return false;
         }
+    }
+
+    public function findByInstituteAndYear(\App\Entity\Institute $institute, ?Years $currentYear = null): array
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->where('answer.institute = :institute')
+            ->setParameter('institute', $institute);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findOneByIdAndInstituteAndYear(
+        int $answerId,
+        \App\Entity\Institute $institute,
+        ?Years $currentYear = null
+    ): ?InstituteAnswer {
+        $qb = $this->createQueryBuilder('answer')
+            ->where('answer.id = :answerId')
+            ->andWhere('answer.institute = :institute')
+            ->setParameter('answerId', $answerId)
+            ->setParameter('institute', $institute)
+            ->setMaxResults(1);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function findOneByIdAndYear(int $answerId, ?Years $currentYear = null): ?InstituteAnswer
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->where('answer.id = :answerId')
+            ->setParameter('answerId', $answerId)
+            ->setMaxResults(1);
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

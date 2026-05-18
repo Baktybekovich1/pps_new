@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Dto\AdminFreezeSetAwardDto;
 use App\Repository\InstituteAnswerRepository;
 use App\Repository\InstituteRepository;
+use App\Repository\YearsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +20,7 @@ class AdminInstituteAwardController extends AbstractController
     public function __construct(
         private readonly InstituteAnswerRepository $instituteAnswerRepository,
         private readonly InstituteRepository $instituteRepository,
+        private readonly YearsRepository $yearsRepository,
         private readonly EntityManagerInterface $entityManager
     ) {}
 
@@ -34,7 +36,8 @@ class AdminInstituteAwardController extends AbstractController
             return $this->json(['message' => 'Институт не найден'], 404);
         }
 
-        $answers = $this->instituteAnswerRepository->findBy(['institute' => $institute]);
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        $answers = $this->instituteAnswerRepository->findByInstituteAndYear($institute, $currentYear);
         $result = [];
         foreach ($answers as $answer) {
             if (!$answer->getLink()) continue; // only answered
@@ -58,11 +61,13 @@ class AdminInstituteAwardController extends AbstractController
             return $this->json(['error' => 'Access denied'], 403);
         }
 
+        $currentYear = $this->yearsRepository->findCurrentYear();
+
         foreach ($dto->idBag as $item) {
             $id = is_array($item) ? ($item['id'] ?? null) : $item;
             if ($id === null) continue;
 
-            $entity = $this->instituteAnswerRepository->find($id);
+            $entity = $this->instituteAnswerRepository->findOneByIdAndYear((int)$id, $currentYear);
             if ($entity) {
                 $entity->setActive($action === 'active');
                 $this->entityManager->persist($entity);

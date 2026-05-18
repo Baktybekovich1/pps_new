@@ -34,8 +34,11 @@ class TeacherAnswerService
      */
     public function save($email, SetAwardDto $dto): bool
     {
-        // Проверяем блокировку текущего года
         $currentYear = $this->yearsRepository->findCurrentYear();
+        if (!$currentYear) {
+            throw new \RuntimeException('Текущий год не установлен. Обратитесь к администратору.', 409);
+        }
+
         if ($currentYear && $currentYear->isLocked()) {
             throw new \RuntimeException('Год заблокирован. Добавление наград недоступно.', 423);
         }
@@ -52,13 +55,14 @@ class TeacherAnswerService
         return $this->teacherAnswerRepository->save($answer);
     }
 
-    public function getAll(string $email): array
+    public function getAll(string $email, ?int $yearId = null): array
     {
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
+        $currentYear = $yearId ? $this->yearsRepository->find($yearId) : $this->yearsRepository->findCurrentYear();
         $stages = $this->stageRepository->findBy(['active' => true]);
         $awards = [];
         foreach ($stages as $stage) {
-            $awards[] = $this->stageDtoFactory->factory($teacher, $stage);
+            $awards[] = $this->stageDtoFactory->factory($teacher, $stage, $currentYear);
         }
         return $awards;
     }
@@ -66,7 +70,13 @@ class TeacherAnswerService
     public function delete(string $email, $answerId): bool
     {
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
-        $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        $answer = $this->teacherAnswerRepository->findOneByTeacherAndYear((int)$answerId, $teacher, $currentYear);
+
+        if (!$answer) {
+            throw new \RuntimeException('Награда не найдена в текущем году.', 404);
+        }
+
         return $this->teacherAnswerRepository->remove($answer);
     }
 
@@ -79,7 +89,13 @@ class TeacherAnswerService
         }
 
         $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
-        $answer = $this->teacherAnswerRepository->findOneBy(['id' => $answerId, 'teacher' => $teacher]);
+        $answer = $this->teacherAnswerRepository->findOneByTeacherAndYear((int)$answerId, $teacher, $currentYear);
+        if (!$answer) {
+            throw new \RuntimeException('Награда не найдена в текущем году.', 404);
+        }
+        if ($answer->getAcademicYear() === null && $currentYear) {
+            $answer->setAcademicYear($currentYear);
+        }
         $answer->setActive(true);
         $answer->setLink($answerLink);
         return $this->teacherAnswerRepository->save($answer);
