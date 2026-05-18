@@ -88,7 +88,8 @@ class DirectorService
         }
 
         $institute = $director->getInstitute();
-        $answers = $this->instituteAnswerRepository->findBy(['institute' => $institute]);
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        $answers = $this->instituteAnswerRepository->findByInstituteAndYear($institute, $currentYear);
 
         // Initialize answers if not already created
         if (empty($answers)) {
@@ -98,10 +99,11 @@ class DirectorService
                 $answer->setInstitute($institute);
                 $answer->setSubtitle($subtitle);
                 $answer->setActive(false);
+                $answer->setAcademicYear($currentYear);
                 $this->entityManager->persist($answer);
             }
             $this->entityManager->flush();
-            $answers = $this->instituteAnswerRepository->findBy(['institute' => $institute]);
+            $answers = $this->instituteAnswerRepository->findByInstituteAndYear($institute, $currentYear);
         }
 
         $result = [];
@@ -123,12 +125,23 @@ class DirectorService
     public function updateInstituteAnswer(Teacher $teacher, int $answerId, string $link): void
     {
         $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
-        $answer = $this->instituteAnswerRepository->find($answerId);
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        $answer = null;
+        if ($director) {
+            $answer = $this->instituteAnswerRepository->findOneByIdAndInstituteAndYear(
+                $answerId,
+                $director->getInstitute(),
+                $currentYear
+            );
+        }
 
-        if (!$director || !$answer || $answer->getInstitute() !== $director->getInstitute()) {
+        if (!$director || !$answer) {
             throw new \Exception("Access Denied", 403);
         }
 
+        if ($answer->getAcademicYear() === null && $currentYear) {
+            $answer->setAcademicYear($currentYear);
+        }
         $answer->setLink($link);
         if ($link !== '') {
             $answer->setActive(true);
@@ -142,8 +155,11 @@ class DirectorService
      */
     public function addInstituteAward(Teacher $teacher, int $subtitleId, string $link): array
     {
-        // Проверяем блокировку года
         $currentYear = $this->yearsRepository->findCurrentYear();
+        if (!$currentYear) {
+            throw new \Exception('Текущий год не установлен. Обратитесь к администратору.', 409);
+        }
+
         if ($currentYear && $currentYear->isLocked()) {
             throw new \Exception('Год заблокирован. Добавление наград недоступно.', 423);
         }
@@ -183,7 +199,7 @@ class DirectorService
     /**
      * Returns only answered institute awards (where link is not null/empty).
      */
-    public function getInstituteAwards(Teacher $teacher): array
+    public function getInstituteAwards(Teacher $teacher, ?int $yearId = null): array
     {
         $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
         if (!$director) {
@@ -191,7 +207,8 @@ class DirectorService
         }
 
         $institute = $director->getInstitute();
-        $answers = $this->instituteAnswerRepository->findBy(['institute' => $institute]);
+        $currentYear = $yearId ? $this->yearsRepository->find($yearId) : $this->yearsRepository->findCurrentYear();
+        $answers = $this->instituteAnswerRepository->findByInstituteAndYear($institute, $currentYear);
 
         $result = [];
         foreach ($answers as $answer) {
@@ -234,8 +251,13 @@ class DirectorService
         $director = $this->directorRepository->findOneBy(['teacher' => $teacher]);
         if (!$director) throw new \Exception('Access Denied', 403);
 
-        $answer = $this->instituteAnswerRepository->find($answerId);
-        if (!$answer || $answer->getInstitute() !== $director->getInstitute()) {
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        $answer = $this->instituteAnswerRepository->findOneByIdAndInstituteAndYear(
+            $answerId,
+            $director->getInstitute(),
+            $currentYear
+        );
+        if (!$answer) {
             throw new \Exception('Not found or forbidden', 403);
         }
         return $answer;
@@ -244,6 +266,10 @@ class DirectorService
     public function editInstituteAward(Teacher $teacher, int $answerId, string $link): void
     {
         $answer = $this->findOwnedAward($teacher, $answerId);
+        $currentYear = $this->yearsRepository->findCurrentYear();
+        if ($answer->getAcademicYear() === null && $currentYear) {
+            $answer->setAcademicYear($currentYear);
+        }
         if (!str_starts_with($link, 'http')) $link = 'https://' . $link;
         $answer->setLink($link);
         $this->entityManager->flush();

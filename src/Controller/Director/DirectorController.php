@@ -88,12 +88,13 @@ class DirectorController extends AbstractController
 
     #[IsGranted('ROLE_DIRECTOR')]
     #[Route(path: '/institute/awards', name: 'director_institute_awards_list', methods: ['GET'])]
-    public function get_awards(): JsonResponse
+    public function get_awards(Request $request): JsonResponse
     {
         /** @var Teacher $user */
         $user = $this->getUser();
+        $yearId = $request->query->getInt('yearId') ?: null;
         try {
-            return $this->json($this->directorService->getInstituteAwards($user));
+            return $this->json($this->directorService->getInstituteAwards($user, $yearId));
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], $e->getCode() ?: 500);
         }
