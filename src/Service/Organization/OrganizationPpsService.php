@@ -2,6 +2,7 @@
 
 namespace App\Service\Organization;
 
+use App\Entity\Years;
 use App\Factory\Rating\TeacherDtoFactory;
 use App\Repository\OrganizationRepository;
 use App\Repository\QuestionTitleRepository;
@@ -24,7 +25,7 @@ class OrganizationPpsService
     {
     }
 
-    public function organizationPps(int $organizationId)
+    public function organizationPps(int $organizationId, ?Years $year = null): array
     {
 
         $organization = $this->organizationRepository->find($organizationId);
@@ -34,7 +35,7 @@ class OrganizationPpsService
         $teacherOrganization = $this->teacherOrganizationRepository->findBy(['organization' => $organization]);
         $teachers = [];
         foreach ($teacherOrganization as $item) {
-            $teachers[$item->getTeacher()->getId()] =  $this->teacherDtoFactory->factory($item->getTeacher());
+            $teachers[$item->getTeacher()->getId()] = $this->teacherDtoFactory->factory($item->getTeacher(), $year);
         }
         return $teachers;
 

@@ -54,7 +54,9 @@ class PpsRatingController extends AbstractController
     #[Route('/organization/{orgId}/pps', name: 'app_organization_pps_rating', methods: ['GET'])]
     public function orgPps(Request $request): JsonResponse
     {
-        return $this->json($this->organizationPpsService->organizationPps($request->get('orgId')));
+        $year = $this->resolveYear($request);
+
+        return $this->json($this->organizationPpsService->organizationPps((int)$request->get('orgId'), $year));
     }
 
 

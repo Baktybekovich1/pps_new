@@ -4,6 +4,7 @@ namespace App\Factory\Rating;
 
 use App\Dto\RatingDto\TeacherDto;
 use App\Entity\Teacher;
+use App\Entity\Years;
 use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\StageRepository;
 use App\Repository\TeacherAnswerRepository;
@@ -24,16 +25,16 @@ class TeacherDtoFactory
     {
     }
 
-    public function factory(Teacher $teacher): TeacherDto
+    public function factory(Teacher $teacher, ?Years $year = null): TeacherDto
     {
         $stages = $this->stageRepository->findAll();
         $awards = [];
         foreach ($stages as $stage) {
-            $awards[] = $this->awardDtoFactory->factory($stage, $teacher);
+            $awards[] = $this->awardDtoFactory->factory($stage, $teacher, $year);
         }
-        $currentYear = $this->yearsRepository->findCurrentYear();
-        $baseTotal = $this->teacherAnswerRepository->getTeacherPointsCount($teacher, $currentYear);
-        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $currentYear);
+        $selectedYear = $year ?? $this->yearsRepository->findCurrentYear();
+        $baseTotal = $this->teacherAnswerRepository->getTeacherPointsCount($teacher, $selectedYear);
+        $expertPoints = $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $selectedYear);
 
         return new TeacherDto(
             $teacher->getId(),

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\QuestionTitle;
 use App\Entity\Stage;
 use App\Entity\Teacher;
+use App\Entity\Years;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,11 +18,11 @@ class TeacherRepository extends ServiceEntityRepository
         parent::__construct($registry, Teacher::class);
     }
 
-    public function findTeacherTitlePointsTotal(Stage $stage, Teacher $teacher): int
+    public function findTeacherTitlePointsTotal(Stage $stage, Teacher $teacher, ?Years $currentYear = null): int
     {
         $qb = $this->createQueryBuilder('teacher');
 
-        $points = $qb
+        $qb
             ->select('COALESCE(SUM(subtitle.point), 0) AS points')
             ->innerJoin('teacher.teacherAnswers', 'answers')
             ->innerJoin('answers.subtitle', 'subtitle')
@@ -30,9 +31,15 @@ class TeacherRepository extends ServiceEntityRepository
             ->where('stage = :stage')
             ->andWhere('teacher = :teacher')
             ->setParameter('stage', $stage)
-            ->setParameter('teacher', $teacher)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->setParameter('teacher', $teacher);
+
+        if ($currentYear) {
+            $qb->andWhere('answers.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
+                ->setParameter('currentYear', $currentYear)
+                ->setParameter('isPermanent', true);
+        }
+
+        $points = $qb->getQuery()->getSingleScalarResult();
 
         return (int) $points;
     }

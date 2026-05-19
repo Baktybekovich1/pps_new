@@ -6,6 +6,7 @@ use App\Dto\RatingDto\AwardDto;
 use App\Entity\QuestionTitle;
 use App\Entity\Stage;
 use App\Entity\Teacher;
+use App\Entity\Years;
 use App\Repository\TeacherRepository;
 
 class AwardDtoFactory
@@ -16,13 +17,13 @@ class AwardDtoFactory
     {
     }
 
-    public function factory(Stage $stage, Teacher $teacher): AwardDto
+    public function factory(Stage $stage, Teacher $teacher, ?Years $year = null): AwardDto
     {
 
         $awardDto = new AwardDto(
             $stage->getId(),
             $stage->getName(),
-            $this->teacherRepository->findTeacherTitlePointsTotal($stage, $teacher)
+            $this->teacherRepository->findTeacherTitlePointsTotal($stage, $teacher, $year)
         );
         return $awardDto;
 
