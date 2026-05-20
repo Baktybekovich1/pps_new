@@ -119,6 +119,46 @@ class TeacherAnswerRepository extends ServiceEntityRepository
         ], $rows);
     }
 
+    public function getOrganizationTeacherPointsBySubtitle(
+        int $organizationId,
+        int $subtitleId,
+        ?\App\Entity\Years $currentYear = null
+    ): array {
+        $qb = $this->createQueryBuilder('answer')
+            ->select('teacher.id AS teacherId')
+            ->addSelect("CONCAT(COALESCE(teacher.lastName, ''), ' ', COALESCE(teacher.firstName, ''), ' ', COALESCE(teacher.middleName, '')) AS fullName")
+            ->addSelect('institute.name AS instituteName')
+            ->addSelect('COALESCE(SUM(subtitle.point), 0) AS points')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('teacher.teacherOrganizations', 'org')
+            ->innerJoin('org.institute', 'institute')
+            ->where('org.organization = :organizationId')
+            ->andWhere('org.regular = :regular')
+            ->andWhere('answer.active = :answerActive')
+            ->andWhere('subtitle.id = :subtitleId')
+            ->setParameter('organizationId', $organizationId)
+            ->setParameter('regular', true)
+            ->setParameter('answerActive', true)
+            ->setParameter('subtitleId', $subtitleId)
+            ->groupBy('teacher.id, institute.name')
+            ->orderBy('points', 'DESC');
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        $rows = $qb->getQuery()->getArrayResult();
+
+        return array_map(static fn(array $row) => [
+            'teacherId' => (int)$row['teacherId'],
+            'name' => trim((string)$row['fullName']),
+            'institute' => (string)$row['instituteName'],
+            'point' => (float)$row['points'],
+        ], $rows);
+    }
+
     public function findTeacherAnswersByStage(int $teacherId, int $stageId): array
     {
         return $this->createQueryBuilder('answer')

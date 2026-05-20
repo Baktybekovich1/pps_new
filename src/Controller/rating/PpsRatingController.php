@@ -8,6 +8,7 @@ use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\InstituteRepository;
 use App\Repository\InstituteAnswerRepository;
+use App\Repository\QuestionSubtitleRepository;
 use App\Service\Organization\OrganizationPpsService;
 use App\Service\UserPointsCountService;
 use App\Repository\YearsRepository;
@@ -28,7 +29,8 @@ class PpsRatingController extends AbstractController
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
         private readonly TeacherRepository            $teacherRepository,
         private readonly ExpertAdjustmentRepository    $expertAdjustmentRepository,
-        private readonly YearsRepository             $yearsRepository
+        private readonly YearsRepository             $yearsRepository,
+        private readonly QuestionSubtitleRepository  $questionSubtitleRepository
     )
     {
     }
@@ -201,6 +203,33 @@ class PpsRatingController extends AbstractController
                 'reduction' => $institute->getReduction(),
             ],
             'teachers' => $teachers,
+        ]);
+    }
+
+    #[Route('/organization/{orgId}/awards/{titleId}/{subId}/teachers', name: 'app_organization_awards_teachers_rating', methods: ['GET'])]
+    public function organization_award_teachers(
+        int $orgId,
+        int $titleId,
+        int $subId,
+        Request $request,
+        \App\Repository\TeacherAnswerRepository $teacherAnswerRepository
+    ): JsonResponse
+    {
+        $year = $this->resolveYear($request);
+        $subtitle = $this->questionSubtitleRepository->find($subId);
+        if (!$subtitle || $subtitle->getTitle()->getId() !== $titleId) {
+            throw new BadRequestHttpException('Invalid titleId/subId combination');
+        }
+
+        $rows = $teacherAnswerRepository->getOrganizationTeacherPointsBySubtitle($orgId, $subId, $year);
+        $filtered = array_values(array_filter($rows, static fn(array $row) => (float)$row['point'] > 0));
+
+        return $this->json([
+            'titleId' => $titleId,
+            'titleName' => $subtitle->getTitle()->getName(),
+            'subId' => $subId,
+            'subName' => $subtitle->getName(),
+            'teachers' => $filtered,
         ]);
     }
 
