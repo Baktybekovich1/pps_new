@@ -87,6 +87,38 @@ class TeacherAnswerRepository extends ServiceEntityRepository
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
+    public function getTeacherPointsForInstitute(\App\Entity\Institute $institute, ?\App\Entity\Years $currentYear = null): array
+    {
+        $qb = $this->createQueryBuilder('answer')
+            ->select('teacher.id AS teacherId')
+            ->addSelect("CONCAT(COALESCE(teacher.lastName, ''), ' ', COALESCE(teacher.firstName, ''), ' ', COALESCE(teacher.middleName, '')) AS fullName")
+            ->addSelect('COALESCE(SUM(subtitle.point), 0) AS points')
+            ->innerJoin('answer.teacher', 'teacher')
+            ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('teacher.teacherOrganizations', 'org')
+            ->where('org.institute = :institute')
+            ->andWhere('org.regular = :regular')
+            ->andWhere('answer.active = :answerActive')
+            ->setParameter('institute', $institute)
+            ->setParameter('regular', true)
+            ->setParameter('answerActive', true)
+            ->groupBy('teacher.id')
+            ->orderBy('points', 'DESC');
+
+        if ($currentYear) {
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
+        }
+
+        $rows = $qb->getQuery()->getArrayResult();
+
+        return array_map(static fn(array $row) => [
+            'teacherId' => (int)$row['teacherId'],
+            'fullName' => trim((string)$row['fullName']),
+            'points' => (float)$row['points'],
+        ], $rows);
+    }
+
     public function findTeacherAnswersByStage(int $teacherId, int $stageId): array
     {
         return $this->createQueryBuilder('answer')

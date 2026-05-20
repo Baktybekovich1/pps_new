@@ -156,4 +156,52 @@ class PpsRatingController extends AbstractController
         return $this->json(['institutes' => $result]);
     }
 
+    #[Route('/organization/{orgId}/institutes/{instituteId}/teachers', name: 'app_organization_institute_teachers_rating', methods: ['GET'])]
+    public function organization_institute_teachers(
+        int $orgId,
+        int $instituteId,
+        Request $request,
+        InstituteRepository $instituteRepository,
+        \App\Repository\TeacherAnswerRepository $teacherAnswerRepository
+    ): JsonResponse
+    {
+        $year = $this->resolveYear($request);
+        $institute = $instituteRepository->find($instituteId);
+        if (!$institute || !$institute->getOrganization() || $institute->getOrganization()->getId() !== $orgId) {
+            throw $this->createNotFoundException('Institute not found for organization');
+        }
+
+        $teacherRows = $teacherAnswerRepository->getTeacherPointsForInstitute($institute, $year);
+        $pointsByTeacher = [];
+        foreach ($teacherRows as $row) {
+            $pointsByTeacher[$row['teacherId']] = $row;
+        }
+
+        $teachers = [];
+        foreach ($institute->getTeacherOrganizations() as $teacherOrganization) {
+            if (!$teacherOrganization->getRegular()) {
+                continue;
+            }
+            $teacher = $teacherOrganization->getTeacher();
+            $teacherId = $teacher->getId();
+            $teachers[] = [
+                'teacherId' => $teacherId,
+                'fullName' => (string)$teacher,
+                'points' => $pointsByTeacher[$teacherId]['points'] ?? 0.0,
+                'hasPoints' => isset($pointsByTeacher[$teacherId]) && (float)$pointsByTeacher[$teacherId]['points'] > 0,
+            ];
+        }
+
+        usort($teachers, static fn($a, $b) => $b['points'] <=> $a['points']);
+
+        return $this->json([
+            'institute' => [
+                'id' => $institute->getId(),
+                'name' => $institute->getName(),
+                'reduction' => $institute->getReduction(),
+            ],
+            'teachers' => $teachers,
+        ]);
+    }
+
 }
