@@ -13,6 +13,7 @@ use App\Service\UserPointsCountService;
 use App\Repository\YearsRepository;
 use App\Repository\ExpertAdjustmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -39,7 +40,11 @@ class PpsRatingController extends AbstractController
     {
         $yearId = $request->query->get('yearId');
         if ($yearId) {
-            return $this->yearsRepository->find((int)$yearId);
+            $year = $this->yearsRepository->find((int)$yearId);
+            if (!$year) {
+                throw new BadRequestHttpException(sprintf('Invalid yearId: %s', $yearId));
+            }
+            return $year;
         }
         return $this->yearsRepository->findCurrentYear();
     }

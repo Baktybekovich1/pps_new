@@ -35,9 +35,8 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->setParameter('eteacher', $teacher);
 
         if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
-                ->setParameter('currentYear', $currentYear)
-                ->setParameter('isPermanent', true);
+            $qb->andWhere('answer.academicYear = :currentYear')
+                ->setParameter('currentYear', $currentYear);
         }
 
         return (int)$qb->getQuery()->getSingleScalarResult();
