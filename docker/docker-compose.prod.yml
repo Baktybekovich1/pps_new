@@ -31,9 +31,11 @@ services:
       #      - "./nginx/conf.d:/etc/nginx/conf.d"  # Используйте обычный конфиг, не .prod
       - "./nginx/conf.d.prod:/etc/nginx/conf.d"
       - "/etc/letsencrypt:/etc/letsencrypt:ro"  # Правильный путь к certbot
-    ports:
-      - "80:80"
-#      - "443:443"
+    # Порт на хост НЕ публикуем: перед стеком стоит общий контейнер `proxy`,
+    # он держит :80/:443 и разводит трафик по hostname между pps и pbuddy.
+    # Публикация 80:80 здесь конфликтовала бы с ним и с соседним проектом.
+    expose:
+      - 80
   #    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   #  certbot:
