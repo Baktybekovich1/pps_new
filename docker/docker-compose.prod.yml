@@ -4,6 +4,7 @@ services:
       context: ../
       dockerfile: docker/php/Dockerfile.prod
     container_name: ${PHP_CONTAINER_NAME}
+    restart: unless-stopped
     env_file: .env
     volumes:
       - ../:/app:cached
@@ -14,6 +15,7 @@ services:
     build:
       context: nginx
     container_name: ${NGINX_CONTAINER_NAME}
+    restart: unless-stopped
     depends_on:
       - php
     volumes:
@@ -48,6 +50,7 @@ services:
   db:
     build: ./db
     container_name: ${DB_CONTAINER_NAME}
+    restart: unless-stopped
     ports:
       - "${DB_EXTERNAL_PORT}:5432"
     volumes:
