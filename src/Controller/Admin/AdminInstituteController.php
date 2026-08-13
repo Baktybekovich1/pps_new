@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Institute;
+use App\Security\OrganizationVoter;
 use App\Repository\InstituteRepository;
 use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,6 +35,15 @@ class AdminInstituteController extends AbstractController
         $organization = $this->organizationRepository->find($data['organization_id']);
         if (!$organization) {
             return $this->json(['error' => 'Organization not found'], 404);
+        }
+
+        // The organization arrives in the payload, so OrganizationStamper never
+        // gets to fill it and nothing else would stop an admin from planting an
+        // institute inside someone else's organization. Editing and deleting are
+        // already covered: OrganizationFilter hides the rows, so the lookup by
+        // id simply finds nothing.
+        if (!$this->isGranted(OrganizationVoter::ACCESS, $organization)) {
+            return $this->json(['error' => 'Access denied'], 403);
         }
 
         $institute = new Institute();
