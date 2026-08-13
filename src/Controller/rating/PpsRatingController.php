@@ -10,7 +10,6 @@ use App\Repository\InstituteRepository;
 use App\Repository\InstituteAnswerRepository;
 use App\Repository\QuestionSubtitleRepository;
 use App\Service\Organization\OrganizationPpsService;
-use App\Service\UserPointsCountService;
 use App\Repository\YearsRepository;
 use App\Repository\ExpertAdjustmentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +23,6 @@ use OpenApi\Attributes as OA;
 class PpsRatingController extends AbstractController
 {
     public function __construct(
-        private UserPointsCountService               $userPointsCountService,
         private readonly OrganizationPpsService      $organizationPpsService,
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
         private readonly TeacherRepository            $teacherRepository,
@@ -51,13 +49,6 @@ class PpsRatingController extends AbstractController
         return $this->yearsRepository->findCurrentYear();
     }
 
-    #[Route('/pps', name: 'app_pps_rating', methods: ['GET'])]
-    public function index(): JsonResponse
-    {
-        $pps = $this->userPointsCountService->UserPointsCount();
-
-        return $this->json(['pps' => $pps]);
-    }
     #[Route('/organization/{orgId}/pps', name: 'app_organization_pps_rating', methods: ['GET'])]
     public function orgPps(Request $request): JsonResponse
     {

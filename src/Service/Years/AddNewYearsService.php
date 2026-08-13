@@ -9,16 +9,16 @@ use App\Repository\YearsRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\ResultsOfYearRepository;
-use App\Service\GetUserAllPointsSumService;
+use App\Repository\ExpertAdjustmentRepository;
 
 readonly class AddNewYearsService
 {
     public function __construct(
-        private YearsRepository            $yearsRepository,
-        private ResultsOfYearRepository    $resultsOfYearRepository,
-        private TeacherRepository          $teacherRepository,
-        private TeacherAnswerRepository    $teacherAnswerRepository,
-        private GetUserAllPointsSumService $getUserAllPointsSumService
+        private YearsRepository             $yearsRepository,
+        private ResultsOfYearRepository     $resultsOfYearRepository,
+        private TeacherRepository           $teacherRepository,
+        private TeacherAnswerRepository     $teacherAnswerRepository,
+        private ExpertAdjustmentRepository  $expertAdjustmentRepository
     )
     {
     }
@@ -52,7 +52,14 @@ readonly class AddNewYearsService
                 $results->setResearchPoints($this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 1, $currentYear));
                 $results->setInnovativePoints($this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 3, $currentYear));
                 $results->setSocialPoints($this->teacherAnswerRepository->getTeacherPointsCountByStage($teacher->getId(), 4, $currentYear));
-                $results->setSumPoints($this->getUserAllPointsSumService->getUserAllPointsSum($teacher->getId()));
+                // Scored against the year being archived. The service this
+                // replaced asked for the current year, which step 2 above has
+                // already moved on to, so the snapshot covered the wrong
+                // period. The offence term is gone with user_offence.
+                $results->setSumPoints(
+                    $this->teacherAnswerRepository->getTeacherPointsCountByTeacherId($teacher->getId(), $currentYear)
+                    + $this->expertAdjustmentRepository->getTeacherAdjustedPoints($teacher->getId(), $currentYear)
+                );
                 
                 $this->resultsOfYearRepository->save($results);
             }

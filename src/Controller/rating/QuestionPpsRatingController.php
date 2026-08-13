@@ -8,7 +8,6 @@ use App\Entity\Years;
 use App\Repository\QuestionSubtitleRepository;
 use App\Repository\QuestionTitleRepository;
 use App\Repository\TeacherAnswerRepository;
-use App\Repository\UserRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\YearsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

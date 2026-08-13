@@ -4,7 +4,6 @@ namespace App\Tenant;
 
 use App\Entity\Organization;
 use App\Entity\Teacher;
-use App\Entity\User;
 use App\Repository\DirectorRepository;
 use App\Repository\TeacherOrganizationRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -62,10 +61,6 @@ class OrganizationContext
     private function resolve(): ?Organization
     {
         $user = $this->security->getUser();
-
-        if ($user instanceof User) {
-            return $user->getOrganization();
-        }
 
         if (!$user instanceof Teacher) {
             return null;

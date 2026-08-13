@@ -2,11 +2,9 @@
 
 namespace App\Command;
 
-use App\Entity\User;
 use App\Repository\OrganizationRepository;
 use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
-use App\Repository\UserRepository;
 use App\Tenant\OrganizationContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -19,12 +17,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:admin:assign',
-    description: 'Bind an admin account to one organization, or let it administer all of them.',
+    description: 'Make a teacher the admin of one organization, or of all of them.',
 )]
 class AssignAdminOrganizationCommand extends Command
 {
     public function __construct(
-        private readonly UserRepository                $userRepository,
         private readonly TeacherRepository             $teacherRepository,
         private readonly OrganizationRepository        $organizationRepository,
         private readonly TeacherOrganizationRepository $teacherOrganizationRepository,
@@ -37,7 +34,7 @@ class AssignAdminOrganizationCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('username', InputArgument::REQUIRED, 'Username of the admin account')
+            ->addArgument('email', InputArgument::REQUIRED, 'Email of the teacher account')
             ->addArgument('organization', InputArgument::OPTIONAL, 'Organization id to bind the account to')
             ->addOption('super', null, InputOption::VALUE_NONE, 'Grant cross-organization access instead');
     }
@@ -46,29 +43,19 @@ class AssignAdminOrganizationCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $username = $input->getArgument('username');
-
-        // Two kinds of principal reach the API: User accounts from the form
-        // login, and Teacher accounts from Google OAuth. The React admin panel
-        // runs on the latter — GetRoleController reads teacher.roles — so both
-        // have to be assignable here.
-        $user = $this->userRepository->findOneBy(['username' => $username])
-            ?? $this->teacherRepository->findOneBy(['email' => $username]);
-
-        if (null === $user) {
-            $io->error(sprintf('No user or teacher named "%s".', $username));
+        $email = $input->getArgument('email');
+        $teacher = $this->teacherRepository->findOneBy(['email' => $email]);
+        if (null === $teacher) {
+            $io->error(sprintf('No teacher with email "%s".', $email));
 
             return Command::FAILURE;
         }
 
         if ($input->getOption('super')) {
-            $user->setRoles($this->withRole($user->getRoles(), OrganizationContext::ROLE_CROSS_ORGANIZATION));
-            if ($user instanceof User) {
-                $user->setOrganization(null);
-            }
+            $teacher->setRoles($this->withRole($teacher->getRoles(), OrganizationContext::ROLE_CROSS_ORGANIZATION));
             $this->entityManager->flush();
 
-            $io->success(sprintf('"%s" now administers every organization.', $username));
+            $io->success(sprintf('"%s" now administers every organization.', $email));
 
             return Command::SUCCESS;
         }
@@ -87,39 +74,34 @@ class AssignAdminOrganizationCommand extends Command
             return Command::FAILURE;
         }
 
-        $roles = array_values(array_diff($user->getRoles(), [OrganizationContext::ROLE_CROSS_ORGANIZATION]));
-        $user->setRoles($this->withRole($roles, 'ROLE_ADMIN'));
+        // The organization is not stored on the account: it already lives in
+        // teacher_organization, which OrganizationContext reads. Recording it
+        // twice would let the two answers drift apart.
+        $memberships = $this->teacherOrganizationRepository->findBy(['teacher' => $teacher]);
+        $organizations = array_map(
+            static fn ($membership) => $membership->getOrganization()->getId(),
+            $memberships
+        );
 
-        if ($user instanceof User) {
-            $user->setOrganization($organization);
-        } else {
-            // A teacher's organization already comes from teacher_organization,
-            // which OrganizationContext reads; assigning it here would give the
-            // same teacher two competing answers.
-            $memberships = $this->teacherOrganizationRepository->findBy(['teacher' => $user]);
-            $organizations = array_map(
-                static fn ($membership) => $membership->getOrganization()->getId(),
-                $memberships
-            );
+        if (!in_array($organization->getId(), $organizations, true)) {
+            $io->error(sprintf(
+                'Teacher "%s" does not work for "%s". Add the membership first — a teacher administers the organization they belong to.',
+                $email,
+                $organization->getName()
+            ));
 
-            if (!in_array($organization->getId(), $organizations, true)) {
-                $io->error(sprintf(
-                    'Teacher "%s" does not work for "%s". Add the membership first — a teacher administers the organization they belong to.',
-                    $username,
-                    $organization->getName()
-                ));
-
-                return Command::FAILURE;
-            }
-
-            if (count(array_unique($organizations)) > 1) {
-                $io->warning('This teacher belongs to several organizations, so their admin context stays ambiguous until that is resolved.');
-            }
+            return Command::FAILURE;
         }
 
+        $roles = array_values(array_diff($teacher->getRoles(), [OrganizationContext::ROLE_CROSS_ORGANIZATION]));
+        $teacher->setRoles($this->withRole($roles, 'ROLE_ADMIN'));
         $this->entityManager->flush();
 
-        $io->success(sprintf('"%s" now administers "%s" only.', $username, $organization->getName()));
+        if (count(array_unique($organizations)) > 1) {
+            $io->warning('This teacher belongs to several organizations, so their admin context stays ambiguous until that is resolved.');
+        }
+
+        $io->success(sprintf('"%s" now administers "%s" only.', $email, $organization->getName()));
 
         return Command::SUCCESS;
     }

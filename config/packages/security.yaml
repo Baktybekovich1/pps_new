@@ -4,17 +4,10 @@ security:
     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
   # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
   providers:
-    users:
-      entity:
-        class: App\Entity\User
-        property: username
     teachers:
       entity:
         class: App\Entity\Teacher
         property: email
-    app_user_provider:
-      chain:
-        providers: [ 'users', 'teachers' ]
     #  firewalls:
     #    dev:
     #      pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -57,45 +50,22 @@ security:
       stateless: true
       security: false
 
-    # API логин для User (обычный JSON логин)
-    api_login:
-      pattern: ^/api/login
-      stateless: true
-      provider: users
-      json_login:
-        check_path: /api/login
-        success_handler: lexik_jwt_authentication.handler.authentication_success
-        failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-    # API endpoints - для Teacher с JWT
+    # Teacher с JWT — единственный способ аутентификации
     api:
       pattern: ^/api
       stateless: true
-      provider: app_user_provider  # Для API используем Teacher провайдер
+      provider: teachers
       jwt: ~
-      # Исключаем из JWT защищенные пути
       entry_point: jwt
-      # Разрешаем анонимный доступ к некоторым API маршрутам
 
-    # Web интерфейс - для User с формой логина
     main:
       lazy: true
-      provider: users
-      form_login:
-        login_path: app_login
-        check_path: app_login
-        default_target_path: /choose-role
-        enable_csrf: false  # ← ОТКЛЮЧИТЬ CSRF
-      logout:
-        path: app_logout
-        target: app_login
+      provider: teachers
 
   access_control:
     - { path: ^/api/years$, roles: PUBLIC_ACCESS }
     - { path: ^/api/admin, roles: ROLE_ADMIN }
-    - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/director, roles: ROLE_DIRECTOR }
-  #    - { path: ^/api/user, roles: ROLE_USER }
 
   role_hierarchy:
     # Administers every organization; exempt from OrganizationFilter.

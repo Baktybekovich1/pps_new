@@ -12,7 +12,6 @@
     "doctrine/doctrine-bundle": "^2.11",
     "doctrine/doctrine-migrations-bundle": "^3.3",
     "doctrine/orm": "^3.0",
-    "easycorp/easyadmin-bundle": "^4.14",
     "league/oauth2-google": "^4.1",
     "lexik/jwt-authentication-bundle": "*",
     "nelmio/api-doc-bundle": "^4.23",

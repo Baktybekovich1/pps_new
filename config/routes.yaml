@@ -5,8 +5,6 @@ controllers:
   type: attribute
 
 
-api_login_check:
-  path: /api/login
 
 
 
@@ -35,10 +33,6 @@ rating_controllers:
   type: attribute
   prefix: /api/rating
 
-years_controllers:
-  resource: ../src/Controller/Years
-  type: attribute
-  prefix: /years
 
 expert_controllers:
   resource: ../src/Controller/Expert

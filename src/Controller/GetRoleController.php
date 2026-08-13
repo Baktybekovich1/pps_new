@@ -6,12 +6,9 @@ use App\Dto\UserInfoGetDto;
 use App\Entity\Teacher;
 use App\Repository\InstituteRepository;
 use App\Repository\PositionRepository;
-use App\Repository\UserOffenceRepository;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use OpenApi\Attributes as OA;
@@ -20,11 +17,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class GetRoleController extends AbstractController
 {
     public function __construct(
-        private readonly UserRepository                       $userRepository,
-        private readonly InstituteRepository                 $instituteRepository,
-        private readonly PositionRepository                   $positionsRepository,
-        private readonly UserOffenceRepository                $userOffenceRepository,
-        private readonly UserPasswordHasherInterface          $passwordHasher
+        private readonly InstituteRepository $instituteRepository,
+        private readonly PositionRepository  $positionsRepository,
     )
     {
     }
@@ -97,14 +91,6 @@ class GetRoleController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/change/pro/pass', name: 'change_pro_pass', methods: ['GET'])]
-    public function change_pro_pass(): JsonResponse
-    {
-        $user = $this->userRepository->find(66);
-        $user->setPassword($this->passwordHasher->hashPassword($user, 'marsel2013'));
-        $this->userRepository->save($user);
-        return $this->json('Success');
-    }
 
     function delete($awards, $repository)
     {
