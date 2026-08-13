@@ -6,6 +6,7 @@ use App\Dto\UserInfoGetDto;
 use App\Entity\Teacher;
 use App\Repository\InstituteRepository;
 use App\Repository\PositionRepository;
+use App\Tenant\OrganizationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ class GetRoleController extends AbstractController
     public function __construct(
         private readonly InstituteRepository $instituteRepository,
         private readonly PositionRepository  $positionsRepository,
+        private readonly OrganizationContext $organizationContext,
     )
     {
     }
@@ -66,7 +68,22 @@ class GetRoleController extends AbstractController
             $role = "visitor";
         }
 
-        return $this->json(['role' => $role]);
+        // The organization the caller acts for, so the UI can stop offering
+        // what OrganizationVoter would refuse. It is set whenever the account
+        // has an unambiguous membership, including for a super admin, whose
+        // reach is described by isSuperAdmin rather than by this field. Null
+        // means the membership itself is ambiguous — several organizations, or
+        // none.
+        $organization = $this->organizationContext->get();
+
+        return $this->json([
+            'role' => $role,
+            'isSuperAdmin' => $this->organizationContext->isCrossOrganization(),
+            'organization' => null === $organization ? null : [
+                'id' => $organization->getId(),
+                'name' => $organization->getName(),
+            ],
+        ]);
     }
 
 
