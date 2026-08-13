@@ -9,7 +9,9 @@ class InstituteInTeacherDto
         public string $organizationName,
         public int $instituteId,
         public string $instituteName,
-        public bool $isRegular,
+        // TeacherOrganization::$regular is nullable and starts out null, so a
+        // membership nobody has classified yet must not blow up the profile.
+        public ?bool $isRegular,
     )
     {
     }
