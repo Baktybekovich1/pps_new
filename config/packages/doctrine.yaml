@@ -22,6 +22,12 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+        filters:
+            # Switched on per request by App\Tenant\OrganizationFilterConfigurator,
+            # which is also what supplies organization_id.
+            organization:
+                class: App\Tenant\OrganizationFilter
+                enabled: false
 
 when@test:
     doctrine:
