@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Organization;
 use App\Repository\OrganizationRepository;
+use App\Security\OrganizationVoter;
+use App\Tenant\OrganizationContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,7 +23,9 @@ class AdminOrganizationController extends AbstractController
     #[Route('/organizations', name: 'api_admin_organization_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
+        // Bringing a new tenant into existence is not something the admin of an
+        // existing one gets to do.
+        if (!$this->isGranted(OrganizationContext::ROLE_CROSS_ORGANIZATION)) {
             return $this->json(['error' => 'Access denied'], 403);
         }
         $organization = new Organization();
@@ -46,12 +50,16 @@ class AdminOrganizationController extends AbstractController
     #[Route('/organizations/{id}', name: 'api_admin_organization_update', methods: ['POST', 'PUT'])]
     public function update(Request $request, int $id): JsonResponse
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            return $this->json(['error' => 'Access denied'], 403);
-        }
         $organization = $this->organizationRepository->find($id);
         if (!$organization) {
             return $this->json(['error' => 'Organization not found'], 404);
+        }
+
+        // Organization is the tenant itself, so OrganizationFilter never
+        // constrains it — an id pointing at someone else's organization has to
+        // be rejected here.
+        if (!$this->isGranted(OrganizationVoter::ACCESS, $organization)) {
+            return $this->json(['error' => 'Access denied'], 403);
         }
 
         $name = $request->request->get('name');
@@ -74,7 +82,8 @@ class AdminOrganizationController extends AbstractController
     #[Route('/organizations/{id}', name: 'api_admin_organization_delete', methods: ['DELETE'])]
     public function delete(int $id): JsonResponse
     {
-        if (!$this->isGranted('ROLE_ADMIN')) {
+        // Deleting an organization cascades away everything that belongs to it.
+        if (!$this->isGranted(OrganizationContext::ROLE_CROSS_ORGANIZATION)) {
             return $this->json(['error' => 'Access denied'], 403);
         }
         try {

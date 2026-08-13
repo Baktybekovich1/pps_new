@@ -98,6 +98,8 @@ security:
   #    - { path: ^/api/user, roles: ROLE_USER }
 
   role_hierarchy:
+    # Administers every organization; exempt from OrganizationFilter.
+    ROLE_SUPER_ADMIN: [ ROLE_ADMIN ]
     ROLE_ADMIN: ROLE_USER
     ROLE_DIRECTOR: ROLE_USER
     ROLE_EXPERT: ROLE_USER

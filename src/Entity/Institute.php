@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\InstituteRepository;
+use App\Tenant\OrganizationOwnedInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+// Carries its own organization mapping already, so it declares the interface
+// instead of using OrganizationOwnedTrait.
 #[ORM\Entity(repositoryClass: InstituteRepository::class)]
-class Institute
+class Institute implements OrganizationOwnedInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
