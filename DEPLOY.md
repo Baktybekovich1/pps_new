@@ -97,6 +97,19 @@ php bin/console app:admin:assign <email> --super
   `symfony/translation` и `symfony/ux-twig-component`. Если появится нужда в
   переводах, пакет придётся вернуть явно.
 
+## Тесты
+
+```bash
+php bin/console --env=test doctrine:database:create
+php bin/console --env=test doctrine:migrations:migrate --no-interaction
+php vendor/bin/simple-phpunit
+```
+
+`tests/Tenant/OrganizationIsolationTest.php` покрывает изоляцию организаций.
+Тесты создают свои данные сами — локальная база почти пуста, и полагаться на
+неё было бы бессмысленно. Прогоняйте их перед выкатом: именно они поймали
+дефект, из-за которого изоляция молча отключалась на весь запрос.
+
 ## Что ещё не сделано
 
 Анкета (`stage`, `question_title`, `question_subtitle`), анкета института и
