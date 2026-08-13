@@ -16,11 +16,6 @@ class InstituteQuestionController extends AbstractController
     {
     }
 
-    #[Route(path: '/question', name: 'institute_question', methods: ['GET'])]
-    public function question(): JsonResponse
-    {
-        return $this->json($this->instituteQuestionService->getInstituteQuestion());
-    }
 
     #[Route(path: '/question/title', name: 'question_title', methods: ['GET'])]
     public function getTitles(): JsonResponse

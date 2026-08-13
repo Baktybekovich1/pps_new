@@ -20,16 +20,6 @@ class InstituteQuestionService
     {
     }
 
-    public function getInstituteQuestion(): array
-    {
-        $questions = $this->instituteQuestionTitleRepository->findAll();
-        $result = [];
-        foreach ($questions as $question) {
-            $result[] = $this->dtoFactory->getName($question);
-        }
-        return $result;
-
-    }
 
     public function setInstituteQuestionTitle(SetInstituteQuestionTitleDto $dto): bool
     {

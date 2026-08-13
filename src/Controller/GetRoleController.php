@@ -87,26 +87,6 @@ class GetRoleController extends AbstractController
     }
 
 
-    #[Route('api/user/info', name: 'app_user_info', methods: ['GET'])]
-    public function user_info(): JsonResponse
-    {
-        $positions = $this->positionsRepository->findAll();
-        $institutes = $this->instituteRepository->findAll();
-        $university = ["МУИТ", "КИТЭ", "Комтехно"];
-        $post = [];
-//        foreach ($institutes as $institute) {
-//            $inst[] = $institute->getName();
-//        }
-        foreach ($positions as $position) {
-            $post[] = $position->getName();
-        }
-
-        return $this->json([
-            'university' => $university,
-            'institutes' => $institutes,
-            'position' => $post
-        ]);
-    }
 
 
     function delete($awards, $repository)
