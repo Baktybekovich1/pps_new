@@ -5,16 +5,18 @@ namespace App\Tenant;
 use App\Repository\OrganizationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Turns OrganizationFilter on for the organization the request is about.
  *
- * Runs after the firewall (priority below 8) so the authenticated principal is
- * already available.
+ * Hooked on kernel.controller: by the time a controller is picked the firewall
+ * and the access checks have both run, so the principal is settled. Argument
+ * resolution, including MapEntity lookups, happens after this, so entities
+ * fetched for the controller are already constrained.
  */
-#[AsEventListener(event: KernelEvents::REQUEST, priority: 4)]
+#[AsEventListener(event: KernelEvents::CONTROLLER)]
 class OrganizationFilterConfigurator
 {
     public const FILTER_NAME = 'organization';
@@ -27,7 +29,7 @@ class OrganizationFilterConfigurator
     {
     }
 
-    public function __invoke(RequestEvent $event): void
+    public function __invoke(ControllerEvent $event): void
     {
         if (!$event->isMainRequest()) {
             return;

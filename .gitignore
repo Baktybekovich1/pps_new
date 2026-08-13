@@ -17,3 +17,9 @@ public/uploads
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+###> phpunit ###
+/.phpunit.cache/
+/vendor/bin/.phpunit/
+###< phpunit ###
+/.phpunit.result.cache

@@ -41,12 +41,23 @@ class OrganizationContext
 
     public function get(): ?Organization
     {
-        if (!$this->resolved) {
-            $this->organization = $this->resolve();
+        if ($this->resolved) {
+            return $this->organization;
+        }
+
+        $organization = $this->resolve();
+
+        // The answer is only worth remembering once there is someone to answer
+        // for. Something may ask before authentication has run — a console
+        // command, or a flush during boot reaching OrganizationStamper — and
+        // caching that "no organization" would freeze it for the rest of the
+        // request, silently switching isolation off for everything after.
+        if (null !== $this->security->getUser()) {
+            $this->organization = $organization;
             $this->resolved = true;
         }
 
-        return $this->organization;
+        return $organization;
     }
 
     /**
