@@ -92,7 +92,7 @@ security:
 
   access_control:
     - { path: ^/api/years$, roles: PUBLIC_ACCESS }
-    - { path: ^/api/admin/years, roles: ROLE_ADMIN }
+    - { path: ^/api/admin, roles: ROLE_ADMIN }
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/director, roles: ROLE_DIRECTOR }
   #    - { path: ^/api/user, roles: ROLE_USER }
