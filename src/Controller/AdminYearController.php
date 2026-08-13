@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\admin;
+namespace App\Controller;
 
 use App\Entity\Years;
 use App\Repository\YearsRepository;
