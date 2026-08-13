@@ -6,10 +6,14 @@ use App\Repository\ExpertAdjustmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use App\Tenant\OrganizationOwnedInterface;
+use App\Tenant\OrganizationOwnedTrait;
 
 #[ORM\Entity(repositoryClass: ExpertAdjustmentRepository::class)]
-class ExpertAdjustment
+class ExpertAdjustment implements OrganizationOwnedInterface
 {
+    use OrganizationOwnedTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

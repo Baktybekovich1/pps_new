@@ -4,10 +4,14 @@ namespace App\Entity;
 
 use App\Repository\ResultsOfYearRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Tenant\OrganizationOwnedInterface;
+use App\Tenant\OrganizationOwnedTrait;
 
 #[ORM\Entity(repositoryClass: ResultsOfYearRepository::class)]
-class ResultsOfYear
+class ResultsOfYear implements OrganizationOwnedInterface
 {
+    use OrganizationOwnedTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -5,10 +5,14 @@ namespace App\Entity;
 use App\Repository\TeacherAnswerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Tenant\OrganizationOwnedInterface;
+use App\Tenant\OrganizationOwnedTrait;
 
 #[ORM\Entity(repositoryClass: TeacherAnswerRepository::class)]
-class TeacherAnswer
+class TeacherAnswer implements OrganizationOwnedInterface
 {
+    use OrganizationOwnedTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
