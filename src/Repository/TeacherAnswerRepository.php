@@ -6,6 +6,7 @@ use App\Entity\Teacher;
 use App\Entity\TeacherAnswer;
 use App\Entity\Years;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,6 +24,23 @@ class TeacherAnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, TeacherAnswer::class);
     }
 
+    /**
+     * The one rule for which answers score: active ones, given in the year
+     * asked about or for a stage that does not expire.
+     */
+    private function scoring(QueryBuilder $qb, ?Years $year): QueryBuilder
+    {
+        $qb->andWhere('answer.active = :scoringActive')->setParameter('scoringActive', true);
+
+        if ($year) {
+            $qb->andWhere('answer.academicYear = :scoringYear OR stage.isPermanent = :scoringPermanent')
+                ->setParameter('scoringYear', $year)
+                ->setParameter('scoringPermanent', true);
+        }
+
+        return $qb;
+    }
+
     public function getTeacherPointsCount(Teacher $teacher, ?\App\Entity\Years $currentYear = null): int
     {
         $qb = $this->createQueryBuilder('answer')
@@ -34,10 +52,7 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->where('teacher = :eteacher')
             ->setParameter('eteacher', $teacher);
 
-        if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear')
-                ->setParameter('currentYear', $currentYear);
-        }
+        $this->scoring($qb, $currentYear);
 
         return (int)$qb->getQuery()->getSingleScalarResult();
     }
@@ -53,11 +68,7 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->where('teacher.id = :teacherId')
             ->setParameter('teacherId', $teacherId);
 
-        if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
-                ->setParameter('currentYear', $currentYear)
-                ->setParameter('isPermanent', true);
-        }
+        $this->scoring($qb, $currentYear);
 
         return (int)$qb->getQuery()->getSingleScalarResult();
     }
@@ -73,16 +84,10 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->innerJoin('teacher.teacherOrganizations', 'org')
             ->where('org.institute = :institute')
             ->andWhere('org.regular = :regular')
-            ->andWhere('answer.active = :answerActive')
             ->setParameter('institute', $institute)
-            ->setParameter('regular', true)
-            ->setParameter('answerActive', true);
+            ->setParameter('regular', true);
 
-        if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
-                ->setParameter('currentYear', $currentYear)
-                ->setParameter('isPermanent', true);
-        }
+        $this->scoring($qb, $currentYear);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -95,20 +100,17 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->addSelect('COALESCE(SUM(subtitle.point), 0) AS points')
             ->innerJoin('answer.teacher', 'teacher')
             ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
             ->innerJoin('teacher.teacherOrganizations', 'org')
             ->where('org.institute = :institute')
             ->andWhere('org.regular = :regular')
-            ->andWhere('answer.active = :answerActive')
             ->setParameter('institute', $institute)
             ->setParameter('regular', true)
-            ->setParameter('answerActive', true)
             ->groupBy('teacher.id')
             ->orderBy('points', 'DESC');
 
-        if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear')
-                ->setParameter('currentYear', $currentYear);
-        }
+        $this->scoring($qb, $currentYear);
 
         $rows = $qb->getQuery()->getArrayResult();
 
@@ -131,23 +133,20 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->addSelect('COALESCE(SUM(subtitle.point), 0) AS points')
             ->innerJoin('answer.teacher', 'teacher')
             ->innerJoin('answer.subtitle', 'subtitle')
+            ->innerJoin('subtitle.title', 'title')
+            ->innerJoin('title.stage', 'stage')
             ->innerJoin('teacher.teacherOrganizations', 'org')
             ->innerJoin('org.institute', 'institute')
             ->where('org.organization = :organizationId')
             ->andWhere('org.regular = :regular')
-            ->andWhere('answer.active = :answerActive')
             ->andWhere('subtitle.id = :subtitleId')
             ->setParameter('organizationId', $organizationId)
             ->setParameter('regular', true)
-            ->setParameter('answerActive', true)
             ->setParameter('subtitleId', $subtitleId)
             ->groupBy('teacher.id, institute.name')
             ->orderBy('points', 'DESC');
 
-        if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear')
-                ->setParameter('currentYear', $currentYear);
-        }
+        $this->scoring($qb, $currentYear);
 
         $rows = $qb->getQuery()->getArrayResult();
 
@@ -254,11 +253,7 @@ class TeacherAnswerRepository extends ServiceEntityRepository
             ->setParameter('teacherId', $teacherId)
             ->setParameter('stageId', $stageId);
 
-        if ($currentYear) {
-            $qb->andWhere('answer.academicYear = :currentYear OR stage.isPermanent = :isPermanent')
-                ->setParameter('currentYear', $currentYear)
-                ->setParameter('isPermanent', true);
-        }
+        $this->scoring($qb, $currentYear);
 
         return (int)$qb->getQuery()->getSingleScalarResult();
     }

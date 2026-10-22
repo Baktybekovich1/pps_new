@@ -30,6 +30,7 @@ class TeacherRepository extends ServiceEntityRepository
             ->innerJoin('title.stage', 'stage')
             ->where('stage = :stage')
             ->andWhere('teacher = :teacher')
+            ->andWhere('answers.active = true')
             ->setParameter('stage', $stage)
             ->setParameter('teacher', $teacher);
 

@@ -9,7 +9,8 @@ class UserAwardsGetDto
         public string $name,
         public string $link,
         public string $stage,
-        public string $status
+        public string $status,
+        public ?string $stageName = null,
     )
     {
     }

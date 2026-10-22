@@ -162,6 +162,29 @@ class OrganizationIsolationTest extends WebTestCase
         self::assertSame(0, $this->ratingTotal($this->orgB, $this->teacherAB));
     }
 
+    public function testFrozenAwardStopsScoring(): void
+    {
+        $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionA->getId(), 'link' => 'x'], $this->orgA);
+        $answerId = $this->em->getConnection()->fetchOne('SELECT id FROM teacher_answer');
+
+        $this->request('PATCH', '/api/admin/teacher/answers/'.$answerId, $this->adminA, ['active' => false]);
+        self::assertResponseIsSuccessful();
+        self::assertSame(0, $this->ratingTotal($this->orgA, $this->teacherAB));
+
+        $this->request('PATCH', '/api/admin/teacher/answers/'.$answerId, $this->adminA, ['active' => true]);
+        self::assertSame(10, $this->ratingTotal($this->orgA, $this->teacherAB));
+    }
+
+    public function testAdminCannotModerateAnotherOrganizationsAward(): void
+    {
+        $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionB->getId(), 'link' => 'x'], $this->orgB);
+        $answerId = $this->em->getConnection()->fetchOne('SELECT id FROM teacher_answer');
+
+        $this->request('PATCH', '/api/admin/teacher/answers/'.$answerId, $this->adminA, ['active' => false]);
+        self::assertResponseStatusCodeSame(404);
+        self::assertTrue((bool) $this->em->getConnection()->fetchOne('SELECT active FROM teacher_answer'));
+    }
+
     public function testQuestionOfAnotherOrganizationCannotBeAnswered(): void
     {
         $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionB->getId(), 'link' => 'x'], $this->orgA);

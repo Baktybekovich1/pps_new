@@ -63,7 +63,8 @@ class UserAccountController extends AbstractController
                     $answer->getSubtitle()->getTitle()->getName() . ': ' . $answer->getSubtitle()->getName(),
                     $answer->getLink() ?? '',
                     (string)$answer->getSubtitle()->getTitle()->getStage()->getId(),
-                    $answer->isActive() ? 'active' : 'freeze'
+                    $answer->isActive() ? 'active' : 'freeze',
+                    $answer->getSubtitle()->getTitle()->getStage()->getName()
                 );
             }
 
