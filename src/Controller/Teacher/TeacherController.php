@@ -6,6 +6,7 @@ use App\Service\Teacher\TeacherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TeacherController extends AbstractController
 {
@@ -15,6 +16,7 @@ class TeacherController extends AbstractController
     {
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/', name: 'teachers_list', methods: ['GET'])]
     public function teachers(): JsonResponse
     {

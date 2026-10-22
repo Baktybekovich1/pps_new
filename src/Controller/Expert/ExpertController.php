@@ -93,7 +93,9 @@ class ExpertController extends AbstractController
         $targetInstitute = null;
 
         if ($targetType === 'teacher') {
-            $targetTeacher = $this->teacherRepository->find($targetId);
+            $targetTeacher = null === $expert->getOrganization()
+                ? null
+                : $this->teacherRepository->findOneWorkingFor((int) $targetId, $expert->getOrganization());
             if (!$targetTeacher) return $this->json(['error' => 'Teacher not found'], 404);
         } elseif ($targetType === 'institute') {
             $targetInstitute = $this->instituteRepository->find($targetId);
@@ -117,8 +119,14 @@ class ExpertController extends AbstractController
             return $this->json(['error' => 'Access denied'], 403);
         }
 
-        $teachers = $this->teacherRepository->findAll();
-        $institutes = $this->instituteRepository->findAll();
+        // An expert assesses within their own organization only.
+        $expert = $this->getExpert($this->getUser());
+        $teachers = null === $expert?->getOrganization()
+            ? []
+            : $this->teacherRepository->findWorkingFor($expert->getOrganization());
+        $institutes = null === $expert?->getOrganization()
+            ? []
+            : $this->instituteRepository->findByOrganization($expert->getOrganization()->getId());
 
         $teacherList = [];
         foreach ($teachers as $t) {

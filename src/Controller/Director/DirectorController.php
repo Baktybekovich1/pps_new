@@ -17,6 +17,7 @@ class DirectorController extends AbstractController
     }
 
     /** Public: used by AdminDirectors page to list all directors */
+    #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/', name: 'find_all', methods: ['GET'])]
     public function get_all(): JsonResponse
     {

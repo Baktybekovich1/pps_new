@@ -30,7 +30,11 @@ class DirectorService
 
     public function findAllDirectors(): array
     {
-        $directors = $this->directorRepository->findAll();
+        // Joining the institute applies the organization filter to it.
+        $directors = $this->directorRepository->createQueryBuilder('director')
+            ->innerJoin('director.institute', 'institute')
+            ->getQuery()
+            ->getResult();
         $result = [];
         foreach ($directors as $director) {
             $result[] = $this->directorNameDtoFactory->factory($director);

@@ -185,6 +185,31 @@ class OrganizationIsolationTest extends WebTestCase
         self::assertTrue((bool) $this->em->getConnection()->fetchOne('SELECT active FROM teacher_answer'));
     }
 
+    public function testTeacherListShowsOnlyTheAdminsOrganization(): void
+    {
+        $this->request('GET', '/api/teacher/', $this->adminA);
+        self::assertResponseIsSuccessful();
+        $ids = array_column(json_decode($this->client->getResponse()->getContent(), true), 'teacherId');
+        sort($ids);
+
+        $expected = [$this->teacherA->getId(), $this->adminA->getId(), $this->teacherAB->getId()];
+        sort($expected);
+        self::assertSame($expected, $ids);
+
+        $this->request('GET', '/api/teacher/', null);
+        self::assertResponseStatusCodeSame(401);
+    }
+
+    public function testAdminCannotAppointADirectorFromAnotherOrganization(): void
+    {
+        $this->request('POST', '/api/admin/director', $this->adminA, [
+            'teacherId' => $this->superAdmin->getId(),
+            'instituteId' => $this->em->getConnection()->fetchOne("SELECT id FROM institute WHERE name = 'Institute A'"),
+        ]);
+        self::assertSame('false', $this->client->getResponse()->getContent());
+        self::assertSame(0, (int) $this->em->getConnection()->fetchOne('SELECT count(*) FROM director'));
+    }
+
     public function testQuestionOfAnotherOrganizationCannotBeAnswered(): void
     {
         $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionB->getId(), 'link' => 'x'], $this->orgA);
@@ -440,7 +465,7 @@ class OrganizationIsolationTest extends WebTestCase
     {
         $connection = $this->em->getConnection();
         $connection->executeStatement(
-            'TRUNCATE teacher_answer, results_of_year, years, teacher_organization, question_subtitle,
+            'TRUNCATE director, teacher_answer, results_of_year, years, teacher_organization, question_subtitle,
              question_title, stage, institute, position, teacher, organization RESTART IDENTITY CASCADE'
         );
     }
