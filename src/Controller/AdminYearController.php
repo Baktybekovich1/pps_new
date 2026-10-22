@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Years;
 use App\Repository\YearsRepository;
 use App\Service\Years\AddNewYearsService;
+use App\Tenant\OrganizationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +18,20 @@ class AdminYearController extends AbstractController
 {
     public function __construct(
         private readonly YearsRepository $yearsRepository,
-        private readonly AddNewYearsService $addNewYearsService
+        private readonly AddNewYearsService $addNewYearsService,
+        private readonly OrganizationContext $organizationContext,
     ) {
+    }
+
+    /**
+     * Each organization keeps its own calendar, so changing which year is
+     * current only makes sense for a chosen organization.
+     */
+    private function organizationMissing(): ?JsonResponse
+    {
+        return null === $this->organizationContext->get()
+            ? $this->json(['error' => 'Выберите организацию'], 409)
+            : null;
     }
 
     /**
@@ -52,6 +65,10 @@ class AdminYearController extends AbstractController
     #[Route('', name: 'admin_years_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
+        if ($error = $this->organizationMissing()) {
+            return $error;
+        }
+
         $data = json_decode($request->getContent(), true);
         $name = $data['name'] ?? null;
 
@@ -74,6 +91,10 @@ class AdminYearController extends AbstractController
     #[Route('/{id}/set-current', name: 'admin_years_set_current', methods: ['PATCH'])]
     public function setCurrent(int $id): JsonResponse
     {
+        if ($error = $this->organizationMissing()) {
+            return $error;
+        }
+
         $year = $this->yearsRepository->find($id);
         if (!$year) {
             return $this->json(['error' => 'Year not found'], 404);

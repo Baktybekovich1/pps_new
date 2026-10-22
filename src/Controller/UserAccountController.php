@@ -9,6 +9,7 @@ use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\YearsRepository;
+use App\Tenant\OrganizationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,12 +21,19 @@ class UserAccountController extends AbstractController
         private readonly TeacherRepository                    $teacherRepository,
         private readonly TeacherAnswerRepository              $teacherAnswerRepository,
         private readonly ExpertAdjustmentRepository           $expertAdjustmentRepository,
-        private readonly YearsRepository                      $yearsRepository
+        private readonly YearsRepository                      $yearsRepository,
+        private readonly OrganizationContext                  $organizationContext,
     )
     {
     }
 
+    /**
+     * A teacher's awards exist only inside an organization, so the profile is
+     * shown for the organization in the URL, or for the one the signed-in
+     * viewer acts for.
+     */
     #[Route('api/user/account/{id}', name: 'app_user_account', methods: ['GET'])]
+    #[Route('api/organizations/{orgId}/user/account/{id}', name: 'app_organization_user_account', methods: ['GET'])]
     public function index(Request $request): JsonResponse
     {
         $id = $request->get('id');
@@ -33,7 +41,11 @@ class UserAccountController extends AbstractController
         $selectedYear = $yearId ? $this->yearsRepository->find($yearId) : $this->yearsRepository->findCurrentYear();
         $teacher = $this->teacherRepository->find($id);
         if ($teacher) {
-            $firstOrg = $teacher->getTeacherOrganizations()->first();
+            $organization = $this->organizationContext->get();
+            $memberships = $teacher->getTeacherOrganizations();
+            $firstOrg = $memberships->findFirst(
+                static fn ($key, $membership) => $membership->getOrganization()->getId() === $organization?->getId()
+            ) ?? $memberships->first() ?: null;
             $info = new UserInfoGetDto(
                 $teacher->getId(),
                 (string)$teacher,

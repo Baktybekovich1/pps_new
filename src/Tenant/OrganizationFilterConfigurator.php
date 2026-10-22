@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class OrganizationFilterConfigurator
 {
     public const FILTER_NAME = 'organization';
+    private const NO_ORGANIZATION = 0;
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -42,10 +43,43 @@ class OrganizationFilterConfigurator
             $this->context->set($this->organizationRepository->find($orgId));
         }
 
+        $this->apply();
+    }
+
+    /**
+     * Runs $callback with tenant isolation lifted, then restores it.
+     *
+     * For the few lookups that legitimately span organizations, such as a
+     * teacher choosing workplaces in organizations they do not belong to yet.
+     *
+     * @template T
+     * @param callable(): T $callback
+     * @return T
+     */
+    public function withoutIsolation(callable $callback): mixed
+    {
+        $filters = $this->entityManager->getFilters();
+        if (!$filters->isEnabled(self::FILTER_NAME)) {
+            return $callback();
+        }
+
+        $filters->disable(self::FILTER_NAME);
+        try {
+            return $callback();
+        } finally {
+            $this->apply();
+        }
+    }
+
+    private function apply(): void
+    {
         $filters = $this->entityManager->getFilters();
         $organization = $this->context->get();
 
-        if (null === $organization || $this->context->isCrossOrganization()) {
+        // Only a super admin who has not picked an organization looks across
+        // all of them. Anyone else without an organization sees no tenant
+        // data at all, rather than everyone's.
+        if (null === $organization && $this->context->isCrossOrganization()) {
             if ($filters->isEnabled(self::FILTER_NAME)) {
                 $filters->disable(self::FILTER_NAME);
             }
@@ -57,6 +91,6 @@ class OrganizationFilterConfigurator
             ? $filters->getFilter(self::FILTER_NAME)
             : $filters->enable(self::FILTER_NAME);
 
-        $filter->setParameter('organization_id', $organization->getId());
+        $filter->setParameter('organization_id', $organization?->getId() ?? self::NO_ORGANIZATION);
     }
 }

@@ -6,11 +6,12 @@ use App\Entity\ResultsOfYear;
 use App\Entity\Years;
 
 use App\Repository\YearsRepository;
-use App\Repository\TeacherRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\ResultsOfYearRepository;
 use App\Repository\ExpertAdjustmentRepository;
 use App\Repository\StageRepository;
+use App\Repository\TeacherOrganizationRepository;
+use App\Tenant\OrganizationContext;
 
 readonly class AddNewYearsService
 {
@@ -26,7 +27,8 @@ readonly class AddNewYearsService
     public function __construct(
         private YearsRepository             $yearsRepository,
         private ResultsOfYearRepository     $resultsOfYearRepository,
-        private TeacherRepository           $teacherRepository,
+        private TeacherOrganizationRepository $teacherOrganizationRepository,
+        private OrganizationContext         $organizationContext,
         private TeacherAnswerRepository     $teacherAnswerRepository,
         private ExpertAdjustmentRepository  $expertAdjustmentRepository,
         private StageRepository             $stageRepository
@@ -53,7 +55,10 @@ readonly class AddNewYearsService
 
         // 3. Snapshot results for the archiving year (if exists)
         if ($currentYear) {
-            $teachers = $this->teacherRepository->findAll();
+            $teachers = [];
+            foreach ($this->teacherOrganizationRepository->findBy(['organization' => $this->organizationContext->get()]) as $membership) {
+                $teachers[$membership->getTeacher()->getId()] = $membership->getTeacher();
+            }
             foreach ($teachers as $teacher) {
                 $results = new ResultsOfYear();
                 $results->setYear($currentYear);

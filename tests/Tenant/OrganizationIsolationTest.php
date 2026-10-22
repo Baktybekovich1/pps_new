@@ -4,7 +4,11 @@ namespace App\Tests\Tenant;
 
 use App\Entity\Institute;
 use App\Entity\Organization;
+use App\Entity\QuestionSubtitle;
+use App\Entity\QuestionTitle;
 use App\Entity\Stage;
+use App\Entity\TeacherAnswer;
+use App\Entity\Years;
 use App\Entity\Teacher;
 use App\Entity\TeacherOrganization;
 use App\Tenant\OrganizationContext;
@@ -18,8 +22,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  *
  * Every fact here was a real defect at some point: stages leaked because writes
  * were not attributed, a rating page returned the viewer's organization instead
- * of the one in the URL, and an admin could create an institute inside someone
- * else's organization.
+ * of the one in the URL, an admin could create an institute inside someone
+ * else's organization, and a teacher of two organizations had their awards
+ * counted in both.
  */
 class OrganizationIsolationTest extends WebTestCase
 {
@@ -29,10 +34,16 @@ class OrganizationIsolationTest extends WebTestCase
     private Organization $orgA;
     private Organization $orgB;
     private Teacher $teacherA;
+    private Teacher $teacherAB;
     private Teacher $adminA;
     private Teacher $superAdmin;
     private Stage $stageA;
     private Stage $stageB;
+    private QuestionSubtitle $questionA;
+    private QuestionSubtitle $questionB;
+    private Years $yearA;
+    private Years $yearB;
+    private \App\Entity\Institute $instituteB;
 
     protected function setUp(): void
     {
@@ -56,11 +67,24 @@ class OrganizationIsolationTest extends WebTestCase
             $instituteB
         );
 
+        $this->instituteB = $instituteB;
+        $this->teacherAB = $this->teacher('teacher-ab@example.test', ['ROLE_TEACHER'], $this->orgA, $instituteA);
+        $this->membership($this->teacherAB, $this->orgB, $instituteB);
+
         $this->stageA = $this->stage('Stage of Alpha', $this->orgA);
         $this->stageB = $this->stage('Stage of Beta', $this->orgB);
-        $this->stage('Shared stage', null);
+        $this->stage('Archived stage', null);
+
+        $this->questionA = $this->question('Question of Alpha', $this->stageA, 10);
+        $this->questionB = $this->question('Question of Beta', $this->stageB, 7);
+
+        $this->yearA = $this->year('2026 Alpha', $this->orgA);
+        $this->yearB = $this->year('2026 Beta', $this->orgB);
 
         $this->em->flush();
+        // The first request shares this entity manager; start it from the
+        // database rather than from half-linked objects built above.
+        $this->em->clear();
     }
 
     public function testTeacherDoesNotSeeAnotherOrganizationsStages(): void
@@ -71,11 +95,9 @@ class OrganizationIsolationTest extends WebTestCase
         self::assertNotContains('Stage of Beta', $names);
     }
 
-    public function testStagesWithoutAnOrganizationStayVisibleToEveryone(): void
+    public function testArchivedStagesAreHiddenFromEveryOrganization(): void
     {
-        // The questionnaire predates multi-tenancy and is still shared; hiding
-        // it would empty the rating for every organization at once.
-        self::assertContains('Shared stage', $this->stageNamesVisibleTo($this->adminA));
+        self::assertNotContains('Archived stage', $this->stageNamesVisibleTo($this->adminA));
     }
 
     public function testSuperAdminSeesEveryOrganization(): void
@@ -106,15 +128,108 @@ class OrganizationIsolationTest extends WebTestCase
         self::assertSame($this->orgA->getId(), $created->getOrganization()?->getId());
     }
 
-    public function testRowsCreatedBySuperAdminStayShared(): void
+    public function testSuperAdminMustPickAnOrganizationToCreate(): void
     {
-        // A super admin has not said which organization they are authoring for.
-        $this->request('POST', '/api/admin/teacher/questions/stages', $this->superAdmin, ['name' => 'Added by super']);
+        $this->request('POST', '/api/admin/teacher/questions/stages', $this->superAdmin, ['name' => 'Nowhere']);
+        self::assertResponseStatusCodeSame(409);
+
+        $this->request('POST', '/api/admin/teacher/questions/stages', $this->superAdmin, ['name' => 'For Alpha'], $this->orgA);
         self::assertResponseIsSuccessful();
 
-        $created = $this->em->getRepository(Stage::class)->findOneBy(['name' => 'Added by super']);
-        self::assertNotNull($created);
-        self::assertNull($created->getOrganization());
+        $created = $this->em->getRepository(Stage::class)->findOneBy(['name' => 'For Alpha']);
+        self::assertSame($this->orgA->getId(), $created?->getOrganization()?->getId());
+    }
+
+    public function testTeacherOfTwoOrganizationsMustSayWhichOneTheyActFor(): void
+    {
+        $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionA->getId(), 'link' => 'x']);
+        self::assertResponseStatusCodeSame(409);
+
+        self::assertSame([], $this->stageNamesInAwardsOf($this->teacherAB, null));
+        self::assertSame(['Stage of Beta'], $this->stageNamesInAwardsOf($this->teacherAB, $this->orgB));
+    }
+
+    public function testAwardCountsOnlyInTheOrganizationItWasGivenIn(): void
+    {
+        $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionA->getId(), 'link' => 'x'], $this->orgA);
+        self::assertResponseIsSuccessful();
+
+        $answer = $this->em->getRepository(TeacherAnswer::class)->findOneBy(['teacher' => $this->teacherAB]);
+        self::assertSame($this->orgA->getId(), $answer?->getOrganization()?->getId());
+        self::assertSame($this->yearA->getId(), $answer->getAcademicYear()?->getId());
+
+        self::assertSame(10, $this->ratingTotal($this->orgA, $this->teacherAB));
+        self::assertSame(0, $this->ratingTotal($this->orgB, $this->teacherAB));
+    }
+
+    public function testQuestionOfAnotherOrganizationCannotBeAnswered(): void
+    {
+        $this->request('POST', '/api/teacher/answer', $this->teacherAB, ['subtitleId' => $this->questionB->getId(), 'link' => 'x'], $this->orgA);
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testOrganizationOutsideTheMembershipIsRefused(): void
+    {
+        $this->request('GET', '/api/award/all', $this->teacherA, null, $this->orgB);
+        self::assertResponseStatusCodeSame(403);
+    }
+
+    public function testAdminQuestionListShowsOnlyTheirOrganization(): void
+    {
+        $this->request('GET', '/api/admin/teacher/questions/subtitles', $this->adminA);
+        self::assertResponseIsSuccessful();
+
+        $names = array_column(json_decode($this->client->getResponse()->getContent(), true), 'subtitleName');
+        self::assertSame(['Question of Alpha'], $names);
+    }
+
+    public function testEachOrganizationKeepsItsOwnCurrentYear(): void
+    {
+        $this->request('POST', '/api/admin/years', $this->adminA, ['name' => '2027 Alpha']);
+        self::assertResponseStatusCodeSame(201);
+
+        $current = $this->em->getConnection()->fetchFirstColumn('SELECT name FROM years WHERE is_current ORDER BY id');
+        self::assertSame(['2026 Beta', '2027 Alpha'], $current);
+
+        $this->request('GET', '/api/organizations/'.$this->orgB->getId().'/years', null);
+        $names = array_column(json_decode($this->client->getResponse()->getContent(), true), 'name');
+        self::assertSame(['2026 Beta'], $names);
+    }
+
+    public function testTeacherMayChooseWorkplacesInAnyOrganization(): void
+    {
+        $this->request('PUT', '/api/me/registration-step2', $this->teacherA, [
+            'firstName' => 'Test',
+            'lastName' => 'Person',
+            'middleName' => 'X',
+            'positionId' => $this->position()->getId(),
+            'workplaces' => [
+                ['organizationId' => $this->orgB->getId(), 'instituteId' => $this->instituteB->getId(), 'regular' => true],
+            ],
+        ]);
+        self::assertResponseIsSuccessful();
+
+        $this->em->clear();
+        $memberships = $this->em->getRepository(TeacherOrganization::class)->findBy(['teacher' => $this->teacherA->getId()]);
+        self::assertSame([$this->orgB->getId()], array_map(static fn ($m) => $m->getOrganization()->getId(), $memberships));
+    }
+
+    public function testProfileUpdateCannotTouchSomeoneElse(): void
+    {
+        $this->request('POST', '/api/teacher/profile/update', $this->teacherA, [
+            'id' => $this->adminA->getId(),
+            'firstName' => 'Hijacked',
+            'lastName' => 'Person',
+            'middleName' => 'X',
+            'email' => 'admin-a@example.test',
+            'positionId' => $this->position()->getId(),
+            'institutes' => [],
+        ]);
+        self::assertResponseIsSuccessful();
+
+        $this->em->clear();
+        self::assertSame('Test', $this->em->getRepository(Teacher::class)->find($this->adminA->getId())->getFirstName());
+        self::assertSame('Hijacked', $this->em->getRepository(Teacher::class)->find($this->teacherA->getId())->getFirstName());
     }
 
     public function testOnlySuperAdminMayCreateOrDeleteOrganizations(): void
@@ -182,12 +297,33 @@ class OrganizationIsolationTest extends WebTestCase
         return $this->client->getResponse()->getContent();
     }
 
-    private function request(string $method, string $path, ?Teacher $as, array $body = null): void
+    /**
+     * @return string[]
+     */
+    private function stageNamesInAwardsOf(Teacher $teacher, ?Organization $actingFor): array
+    {
+        $this->request('GET', '/api/award/all', $teacher, null, $actingFor);
+        self::assertResponseIsSuccessful();
+
+        return array_column(json_decode($this->client->getResponse()->getContent(), true)['stages'] ?? [], 'stageName');
+    }
+
+    private function ratingTotal(Organization $organization, Teacher $teacher): int
+    {
+        $rating = json_decode($this->ratingOf($organization, null), true);
+
+        return $rating[$teacher->getId()]['total'];
+    }
+
+    private function request(string $method, string $path, ?Teacher $as, ?array $body = null, ?Organization $actingFor = null): void
     {
         $headers = ['CONTENT_TYPE' => 'application/json'];
         if (null !== $as) {
             $jwt = static::getContainer()->get(JWTTokenManagerInterface::class)->create($as);
             $headers['HTTP_AUTHORIZATION'] = 'Bearer '.$jwt;
+        }
+        if (null !== $actingFor) {
+            $headers['HTTP_X_ORGANIZATION_ID'] = (string) $actingFor->getId();
         }
 
         $this->client->request($method, $path, [], [], $headers, null === $body ? null : json_encode($body));
@@ -221,27 +357,68 @@ class OrganizationIsolationTest extends WebTestCase
         $membership = (new TeacherOrganization())
             ->setTeacher($teacher)
             ->setOrganization($organization)
-            ->setInstitute($institute);
+            ->setInstitute($institute)
+            ->setRegular(true);
         $this->em->persist($membership);
 
         return $teacher;
     }
 
+    private function membership(Teacher $teacher, Organization $organization, Institute $institute): void
+    {
+        $this->em->persist((new TeacherOrganization())
+            ->setTeacher($teacher)
+            ->setOrganization($organization)
+            ->setInstitute($institute)
+            ->setRegular(true));
+    }
+
     private function stage(string $name, ?Organization $organization): Stage
     {
-        $stage = (new Stage())->setName($name);
+        $stage = (new Stage())->setName($name)->setActive(true);
         $stage->setOrganization($organization);
         $this->em->persist($stage);
 
         return $stage;
     }
 
+    private function question(string $name, Stage $stage, int $point): QuestionSubtitle
+    {
+        $title = (new QuestionTitle())->setName($name.' title')->setStage($stage);
+        $title->setOrganization($stage->getOrganization());
+        $this->em->persist($title);
+
+        $question = (new QuestionSubtitle())->setName($name)->setTitle($title)->setPoint($point);
+        $question->setOrganization($stage->getOrganization());
+        $this->em->persist($question);
+
+        return $question;
+    }
+
+    private function year(string $name, Organization $organization): Years
+    {
+        $year = (new Years())->setName($name)->setIsCurrent(true)->setIsLocked(false);
+        $year->setOrganization($organization);
+        $this->em->persist($year);
+
+        return $year;
+    }
+
+    private function position(): \App\Entity\Position
+    {
+        $position = (new \App\Entity\Position())->setName('Lecturer');
+        $this->em->persist($position);
+        $this->em->flush();
+
+        return $position;
+    }
+
     private function purge(): void
     {
         $connection = $this->em->getConnection();
         $connection->executeStatement(
-            'TRUNCATE teacher_answer, teacher_organization, question_subtitle, question_title,
-             stage, institute, teacher, organization RESTART IDENTITY CASCADE'
+            'TRUNCATE teacher_answer, results_of_year, years, teacher_organization, question_subtitle,
+             question_title, stage, institute, position, teacher, organization RESTART IDENTITY CASCADE'
         );
     }
 }

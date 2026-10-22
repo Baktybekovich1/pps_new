@@ -5,6 +5,7 @@ namespace App\Controller\Auth;
 use App\Model\Step2Request;
 use App\Repository\InstituteRepository;
 use App\Repository\PositionRepository;
+use App\Tenant\OrganizationFilterConfigurator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -17,7 +18,8 @@ class RegistrationStep2Action extends AbstractController
     public function __construct(
         private PositionRepository $positionRepo,
         private InstituteRepository $instituteRepo,
-        private EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private OrganizationFilterConfigurator $isolation,
     ) {}
 
     #[Route('/api/me/registration-step2', name: 'me_registration_step2', methods: ['PUT'])]
@@ -46,7 +48,7 @@ class RegistrationStep2Action extends AbstractController
 
         // 4. создаём новые
         foreach ($dto->workplaces as $wp) {
-            $institute = $this->instituteRepo->find($wp->instituteId);
+            $institute = $this->isolation->withoutIsolation(fn () => $this->instituteRepo->find($wp->instituteId));
             if (!$institute || $institute->getOrganization()->getId() !== $wp->organizationId) {
                 return $this->json(['error' => 'Институт не принадлежит организации'], 422);
             }

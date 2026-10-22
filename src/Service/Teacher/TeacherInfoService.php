@@ -7,7 +7,8 @@ use App\Entity\Teacher;
 use App\Entity\TeacherOrganization;
 use App\Factory\Teacher\TeacherInfoDtoFactory;
 use App\Repository\InstituteRepository;
-use App\Repository\OrganizationRepository;
+use App\Tenant\OrganizationFilterConfigurator;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use App\Repository\PositionRepository;
 use App\Repository\TeacherOrganizationRepository;
 use App\Repository\TeacherRepository;
@@ -18,7 +19,7 @@ class TeacherInfoService
 
     public function __construct(
         private TeacherRepository     $teacherRepository,
-        private TeacherInfoDtoFactory $teacherInfoDtoFactory, private readonly TeacherOrganizationRepository $teacherOrganizationRepository, private readonly OrganizationRepository $organizationRepository, private readonly InstituteRepository $instituteRepository, private readonly PositionRepository $positionRepository,
+        private TeacherInfoDtoFactory $teacherInfoDtoFactory, private readonly TeacherOrganizationRepository $teacherOrganizationRepository, private readonly InstituteRepository $instituteRepository, private readonly PositionRepository $positionRepository, private readonly OrganizationFilterConfigurator $isolation,
     )
     {
     }
@@ -29,28 +30,42 @@ class TeacherInfoService
         return $this->teacherInfoDtoFactory->factory($teacher);
     }
 
-    public function update(TeacherInfoDto $dto): bool
+    public function update(string $email, TeacherInfoDto $dto): bool
     {
-        $teacher = $this->teacherRepository->find($dto->id)
+        // The account is the caller's own; the id in the payload is ignored so
+        // nobody can rewrite another teacher's workplaces.
+        $teacher = $this->teacherRepository->findOneBy(['email' => $email])
             ?? throw new NotFoundHttpException('Teacher not found');
+
+        $workplaces = [];
+        foreach ($dto->institutes as $institute) {
+            $workplace = $this->isolation->withoutIsolation(fn () => $this->instituteRepository->find($institute->instituteId));
+            if (null === $workplace || $workplace->getOrganization()->getId() !== $institute->organizationId) {
+                throw new UnprocessableEntityHttpException('Институт не принадлежит организации');
+            }
+            $workplaces[] = [$workplace, $institute->isRegular];
+        }
+
         $teacher->setFirstName($dto->firstName)
             ->setLastName($dto->lastName)
             ->setMiddleName($dto->middleName)
             ->setPosition($this->positionRepository->find($dto->positionId));
-        if ($this->teacherRepository->save($teacher)) {
-            $this->teacherOrganizationRepository->deleteByTeacher($teacher);
-            foreach ($dto->institutes as $institute) {
-                $org = new TeacherOrganization();
-                $org->setOrganization($this->organizationRepository->find($institute->organizationId))
-                    ->setInstitute($this->instituteRepository->find($institute->instituteId))
-                    ->setTeacher($teacher)
-                    ->setActive(true)
-                    ->setRegular($institute->isRegular);
-                $this->teacherOrganizationRepository->save($org);
-            }
-            return true;
+        if (!$this->teacherRepository->save($teacher)) {
+            return false;
         }
-        else return false;
+
+        $this->teacherOrganizationRepository->deleteByTeacher($teacher);
+        foreach ($workplaces as [$workplace, $isRegular]) {
+            $org = new TeacherOrganization();
+            $org->setOrganization($workplace->getOrganization())
+                ->setInstitute($workplace)
+                ->setTeacher($teacher)
+                ->setActive(true)
+                ->setRegular($isRegular);
+            $this->teacherOrganizationRepository->save($org);
+        }
+
+        return true;
     }
 
 }

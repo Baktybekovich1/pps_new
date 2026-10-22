@@ -39,9 +39,9 @@ class TeacherInfoController extends AbstractController
     }
 
     #[Route(path: '/profile/update', name: 'teacher_profile_update', methods: ['POST'])]
-    public function teacher_profile_update(#[MapRequestPayload] TeacherInfoDto $dto): JsonResponse
+    public function teacher_profile_update(UserInterface $user, #[MapRequestPayload] TeacherInfoDto $dto): JsonResponse
     {
-        return $this->json($this->teacherInfoService->update($dto));
+        return $this->json($this->teacherInfoService->update($user->getUserIdentifier(), $dto));
     }
     
 }

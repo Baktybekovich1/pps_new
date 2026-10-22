@@ -68,21 +68,17 @@ class GetRoleController extends AbstractController
             $role = "visitor";
         }
 
-        // The organization the caller acts for, so the UI can stop offering
-        // what OrganizationVoter would refuse. It is set whenever the account
-        // has an unambiguous membership, including for a super admin, whose
-        // reach is described by isSuperAdmin rather than by this field. Null
-        // means the membership itself is ambiguous — several organizations, or
-        // none.
+        // The organization the caller acts for — named by the X-Organization-Id
+        // header, or implied by a single membership — and the ones they may
+        // switch to. Null means nothing is chosen yet.
         $organization = $this->organizationContext->get();
+        $describe = static fn ($o) => ['id' => $o->getId(), 'name' => $o->getName()];
 
         return $this->json([
             'role' => $role,
             'isSuperAdmin' => $this->organizationContext->isCrossOrganization(),
-            'organization' => null === $organization ? null : [
-                'id' => $organization->getId(),
-                'name' => $organization->getName(),
-            ],
+            'organization' => null === $organization ? null : $describe($organization),
+            'organizations' => array_values(array_map($describe, $this->organizationContext->available())),
         ]);
     }
 

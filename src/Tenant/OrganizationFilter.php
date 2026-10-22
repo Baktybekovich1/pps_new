@@ -28,14 +28,8 @@ class OrganizationFilter extends SQLFilter
             return '';
         }
 
-        // TODO: drop the IS NULL branch once the questionnaire and the year
-        // calendar are split per organization and the column becomes NOT NULL.
-        // Until then rows that predate multi-tenancy are still shared, and
-        // hiding them would empty out the questionnaire for everyone.
-        return sprintf(
-            '(%1$s.organization_id = %2$s OR %1$s.organization_id IS NULL)',
-            $targetTableAlias,
-            $organizationId
-        );
+        // Rows without an organization predate the split into independent
+        // organizations. They are kept as an archive and belong to nobody.
+        return sprintf('%s.organization_id = %s', $targetTableAlias, $organizationId);
     }
 }

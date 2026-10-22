@@ -42,12 +42,7 @@ class OrganizationVoter extends Voter
 
         $target = $subject instanceof Organization ? $subject : $subject->getOrganization();
 
-        // Rows that predate multi-tenancy are not assigned yet and stay
-        // readable; see the matching note in OrganizationFilter.
-        if (null === $target) {
-            return true;
-        }
-
-        return $target->getId() === $current->getId();
+        // Archived rows from before the split belong to no organization.
+        return null !== $target && $target->getId() === $current->getId();
     }
 }

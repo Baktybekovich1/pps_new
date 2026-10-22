@@ -12,7 +12,6 @@ use OpenApi\Attributes as OA;
 /**
  * Публичный контроллер для получения списка годов (фронт использует для переключения)
  */
-#[Route('/api/years')]
 #[OA\Tag(name: 'Years')]
 class PublicYearsController extends AbstractController
 {
@@ -22,9 +21,11 @@ class PublicYearsController extends AbstractController
     }
 
     /**
-     * Список всех годов (публичный, без авторизации)
+     * Годы организации: из URL для публичных страниц рейтинга, иначе — той,
+     * за которую действует вошедший пользователь.
      */
-    #[Route('', name: 'public_years_list', methods: ['GET'])]
+    #[Route('/api/years', name: 'public_years_list', methods: ['GET'])]
+    #[Route('/api/organizations/{orgId}/years', name: 'organization_years_list', methods: ['GET'])]
     public function list(): JsonResponse
     {
         $years = $this->yearsRepository->findAll();

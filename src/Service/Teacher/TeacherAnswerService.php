@@ -11,6 +11,7 @@ use App\Repository\StageRepository;
 use App\Repository\TeacherAnswerRepository;
 use App\Repository\TeacherRepository;
 use App\Repository\YearsRepository;
+use App\Tenant\OrganizationContext;
 
 class TeacherAnswerService
 {
@@ -21,6 +22,7 @@ class TeacherAnswerService
         private readonly StageDtoFactory            $stageDtoFactory,
         private readonly StageRepository            $stageRepository,
         private readonly YearsRepository            $yearsRepository,
+        private readonly OrganizationContext        $organizationContext,
     )
     {
     }
@@ -34,6 +36,16 @@ class TeacherAnswerService
      */
     public function save($email, SetAwardDto $dto): bool
     {
+        $organization = $this->organizationContext->get();
+        if (null === $organization) {
+            throw new \RuntimeException('Выберите организацию, в которую добавляется награда.', 409);
+        }
+
+        $subtitle = $this->questionSubtitleRepository->find($dto->subtitleId);
+        if ($subtitle?->getOrganization()?->getId() !== $organization->getId()) {
+            throw new \RuntimeException('Вопрос не найден в этой организации.', 404);
+        }
+
         $currentYear = $this->yearsRepository->findCurrentYear();
         if (!$currentYear) {
             throw new \RuntimeException('Текущий год не установлен. Обратитесь к администратору.', 409);
@@ -47,7 +59,8 @@ class TeacherAnswerService
         $answer = new TeacherAnswer();
         $answer->setTeacher($teacher);
         $answer->setActive(true);
-        $answer->setSubtitle($this->questionSubtitleRepository->find($dto->subtitleId));
+        $answer->setOrganization($organization);
+        $answer->setSubtitle($subtitle);
         $answer->setLink($dto->link);
         // Привязываем к текущему году
         $answer->setAcademicYear($currentYear);

@@ -6,10 +6,14 @@ use App\Repository\QuestionTitleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Tenant\OrganizationOwnedInterface;
+use App\Tenant\OrganizationOwnedTrait;
 
 #[ORM\Entity(repositoryClass: QuestionTitleRepository::class)]
-class QuestionTitle
+class QuestionTitle implements OrganizationOwnedInterface
 {
+    use OrganizationOwnedTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
