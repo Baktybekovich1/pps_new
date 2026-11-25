@@ -2,49 +2,20 @@
 
 namespace App\Controller;
 
-use App\Dto\UserInfoGetDto;
 use App\Entity\Teacher;
-use App\Repository\InstituteRepository;
-use App\Repository\PositionRepository;
 use App\Tenant\OrganizationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\User\UserInterface;
-use OpenApi\Attributes as OA;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class GetRoleController extends AbstractController
 {
     public function __construct(
-        private readonly InstituteRepository $instituteRepository,
-        private readonly PositionRepository  $positionsRepository,
         private readonly OrganizationContext $organizationContext,
-    )
-    {
+    ) {
     }
 
-//    #[Route('/api/get/role', name: 'app_get_role', methods: ['GET'])]
-//    public function index(UserInterface $userStorage): JsonResponse
-//    {
-//        if ($userStorage->getUserIdentifier() != null) {
-//            $user = $this->userRepository->find($userStorage->getUserIdentifier());
-//            $role = $user->getRoles();
-//            if (count($role) > 1) {
-//                $get = 'admin';
-//            } else {
-//                $get = 'user';
-//            }
-//            return $this->json([
-//                'role' => $get
-//            ]);
-//        } else {
-//            return $this->json([
-//                'role' => 'visitor'
-//            ]);
-//        }
-//    }
     #[Route('/api/get/role', name: 'app_get_role', methods: ['GET'])]
     public function index(#[CurrentUser] ?Teacher $teacher): JsonResponse
     {
@@ -52,8 +23,6 @@ class GetRoleController extends AbstractController
             return $this->json(['role' => 'visitor']);
         }
 
-        // у Teacher роль всегда 1 элемент (ROLE_TEACHER)
-        // если нужно «admin» — добавьте поле/флаг
         $roles = $teacher->getRoles();
 
         if (in_array("ROLE_ADMIN", $roles)) {
@@ -80,15 +49,5 @@ class GetRoleController extends AbstractController
             'organization' => null === $organization ? null : $describe($organization),
             'organizations' => array_values(array_map($describe, $this->organizationContext->available())),
         ]);
-    }
-
-
-
-
-    function delete($awards, $repository)
-    {
-        foreach ($awards as $award) {
-            $repository->remove($award);
-        }
     }
 }

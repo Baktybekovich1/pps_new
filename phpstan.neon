@@ -1,0 +1,17 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - tests
+    bootstrapFiles:
+        - vendor/bin/.phpunit/phpunit-9.6-0/vendor/autoload.php
+    doctrine:
+        objectManagerLoader: tests/object-manager.php
+    ignoreErrors:
+        - '#Property .+ is never read, only written#'

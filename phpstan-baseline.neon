@@ -1,0 +1,397 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to protected method getEntityManager\(\) of class Doctrine\\ORM\\EntityRepository\<App\\Entity\\QuestionSubtitle\>\.$#'
+			identifier: method.protected
+			count: 3
+			path: src/Controller/Admin/AdminTeacherQuestionsController.php
+
+		-
+			message: '#^Call to protected method getEntityManager\(\) of class Doctrine\\ORM\\EntityRepository\<App\\Entity\\QuestionTitle\>\.$#'
+			identifier: method.protected
+			count: 3
+			path: src/Controller/Admin/AdminTeacherQuestionsController.php
+
+		-
+			message: '#^Call to protected method getEntityManager\(\) of class Doctrine\\ORM\\EntityRepository\<App\\Entity\\Stage\>\.$#'
+			identifier: method.protected
+			count: 3
+			path: src/Controller/Admin/AdminTeacherQuestionsController.php
+
+		-
+			message: '#^Call to an undefined method League\\OAuth2\\Client\\Provider\\ResourceOwnerInterface\:\:getEmail\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/Auth/GoogleController.php
+
+		-
+			message: '#^Call to an undefined method League\\OAuth2\\Client\\Provider\\ResourceOwnerInterface\:\:getFirstName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/Auth/GoogleController.php
+
+		-
+			message: '#^Call to an undefined method League\\OAuth2\\Client\\Provider\\ResourceOwnerInterface\:\:getLastName\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Controller/Auth/GoogleController.php
+
+		-
+			message: '#^Parameter \#1 \$token of method League\\OAuth2\\Client\\Provider\\AbstractProvider\:\:getResourceOwner\(\) expects League\\OAuth2\\Client\\Token\\AccessToken, League\\OAuth2\\Client\\Token\\AccessTokenInterface given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Controller/Auth/GoogleController.php
+
+		-
+			message: '#^Cannot cast Symfony\\Component\\Security\\Core\\User\\UserInterface to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: src/Controller/Expert/ExpertController.php
+
+		-
+			message: '#^Call to method setName\(\) on an unknown class App\\Entity\\InstQoutLink\.$#'
+			identifier: class.notFound
+			count: 6
+			path: src/DataFixtures/InstitutionsQuestions/InstQoutLinkFixtures.php
+
+		-
+			message: '#^Instantiated class App\\Entity\\InstQoutLink not found\.$#'
+			identifier: class.notFound
+			count: 6
+			path: src/DataFixtures/InstitutionsQuestions/InstQoutLinkFixtures.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: src/Entity/QuestionSubtitle.php
+
+		-
+			message: '#^Class App\\Entity\\Name not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/NameRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\Name\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/NameRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\NameRepository\:\:find\(\) return type contains unknown class App\\Entity\\Name\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/NameRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\NameRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\Name\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/NameRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\NameRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\Name\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/NameRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\NameRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\Name\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/NameRepository.php
+
+		-
+			message: '#^Class App\\Entity\\PersonalAwards not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsRepository\:\:find\(\) return type contains unknown class App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^Parameter \$award of method App\\Repository\\PersonalAwardsRepository\:\:save\(\) has invalid type App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^Parameter \$awards of method App\\Repository\\PersonalAwardsRepository\:\:remove\(\) has invalid type App\\Entity\\PersonalAwards\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsRepository.php
+
+		-
+			message: '#^Class App\\Entity\\PersonalAwardsSubtitle not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\PersonalAwardsSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsSubtitleRepository\:\:find\(\) return type contains unknown class App\\Entity\\PersonalAwardsSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsSubtitleRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\PersonalAwardsSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsSubtitleRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\PersonalAwardsSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\PersonalAwardsSubtitleRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\PersonalAwardsSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^Parameter \$personalAwardsSubtitle of method App\\Repository\\PersonalAwardsSubtitleRepository\:\:remove\(\) has invalid type App\\Entity\\PersonalAwardsSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/PersonalAwardsSubtitleRepository.php
+
+		-
+			message: '#^Class App\\Entity\\ResearchActivitiesList not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesListRepository\:\:find\(\) return type contains unknown class App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesListRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesListRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesListRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^Parameter \$award of method App\\Repository\\ResearchActivitiesListRepository\:\:save\(\) has invalid type App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^Parameter \$awards of method App\\Repository\\ResearchActivitiesListRepository\:\:remove\(\) has invalid type App\\Entity\\ResearchActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesListRepository.php
+
+		-
+			message: '#^Class App\\Entity\\ResearchActivitiesSubtitle not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\ResearchActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesSubtitleRepository\:\:find\(\) return type contains unknown class App\\Entity\\ResearchActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesSubtitleRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\ResearchActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesSubtitleRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\ResearchActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\ResearchActivitiesSubtitleRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\ResearchActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^Parameter \$obj of method App\\Repository\\ResearchActivitiesSubtitleRepository\:\:remove\(\) has invalid type App\\Entity\\ResearchActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/ResearchActivitiesSubtitleRepository.php
+
+		-
+			message: '#^Class App\\Entity\\SocialActivitiesList not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesListRepository\:\:find\(\) return type contains unknown class App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesListRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesListRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesListRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^Parameter \$activitiesList of method App\\Repository\\SocialActivitiesListRepository\:\:save\(\) has invalid type App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^Parameter \$awards of method App\\Repository\\SocialActivitiesListRepository\:\:remove\(\) has invalid type App\\Entity\\SocialActivitiesList\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesListRepository.php
+
+		-
+			message: '#^Class App\\Entity\\SocialActivitiesSubtitle not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @extends has invalid type App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesSubtitleRepository\:\:find\(\) return type contains unknown class App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesSubtitleRepository\:\:findAll\(\) return type contains unknown class App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesSubtitleRepository\:\:findBy\(\) return type contains unknown class App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^PHPDoc tag @method for method App\\Repository\\SocialActivitiesSubtitleRepository\:\:findOneBy\(\) return type contains unknown class App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^Parameter \$activitiesSubtitle of method App\\Repository\\SocialActivitiesSubtitleRepository\:\:save\(\) has invalid type App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^Parameter \$obj of method App\\Repository\\SocialActivitiesSubtitleRepository\:\:remove\(\) has invalid type App\\Entity\\SocialActivitiesSubtitle\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Repository/SocialActivitiesSubtitleRepository.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: src/Service/Director/DirectorService.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: src/Service/Teacher/TeacherAnswerService.php
+
+		-
+			message: '#^Call to function method_exists\(\) with ''Symfony\\\\Component\\\\Dotenv\\\\Dotenv'' and ''bootEnv'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/bootstrap.php
