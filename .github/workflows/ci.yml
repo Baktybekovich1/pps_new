@@ -1,0 +1,106 @@
+name: CI Backend
+
+on:
+  push:
+    branches: [ dev, master ]
+  pull_request:
+    branches: [ dev, master ]
+
+jobs:
+  tests:
+    name: Tests & Static Analysis
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: pps
+          POSTGRES_PASSWORD: pps
+          POSTGRES_DB: pps_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_pgsql, pgsql, intl, zip, mbstring
+          coverage: none
+          tools: composer:v2
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Generate JWT keypair for tests
+        run: |
+          mkdir -p config/jwt
+          php bin/console lexik:jwt:generate-keypair --skip-if-exists
+        env:
+          APP_ENV: test
+          JWT_PASSPHRASE: citestpassphrase
+
+      - name: Setup test database
+        run: |
+          php bin/console --env=test doctrine:database:create --if-not-exists
+          php bin/console --env=test doctrine:migrations:migrate --no-interaction
+        env:
+          APP_ENV: test
+          DATABASE_URL: "postgresql://pps:pps@127.0.0.1:5432/pps_test?serverVersion=16&charset=utf8"
+          JWT_PASSPHRASE: citestpassphrase
+
+      - name: Run PHPUnit tests
+        run: php vendor/bin/simple-phpunit
+        env:
+          APP_ENV: test
+          DATABASE_URL: "postgresql://pps:pps@127.0.0.1:5432/pps_test?serverVersion=16&charset=utf8"
+          JWT_PASSPHRASE: citestpassphrase
+
+      - name: Lint Symfony container
+        run: php bin/console lint:container
+        env:
+          APP_ENV: test
+          DATABASE_URL: "postgresql://pps:pps@127.0.0.1:5432/pps_test?serverVersion=16&charset=utf8"
+          JWT_PASSPHRASE: citestpassphrase
+
+      - name: Run PHPStan static analysis
+        run: vendor/bin/phpstan analyse --memory-limit=1G
+        env:
+          APP_ENV: test
+          DATABASE_URL: "postgresql://pps:pps@127.0.0.1:5432/pps_test?serverVersion=16&charset=utf8"
+          JWT_PASSPHRASE: citestpassphrase
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
