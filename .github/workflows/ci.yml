@@ -78,6 +78,7 @@ jobs:
           APP_ENV: test
           DATABASE_URL: "postgresql://pps:pps@127.0.0.1:5432/pps_test?serverVersion=16&charset=utf8"
           JWT_PASSPHRASE: citestpassphrase
+          SYMFONY_DEPRECATIONS_HELPER: weak
 
       - name: Lint Symfony container
         run: php bin/console lint:container
