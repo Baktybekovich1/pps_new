@@ -5,6 +5,13 @@
 # Запуск с сервера, из корня репозитория:
 #   ./bin/deploy-prod.sh
 #
+# Либо копией, лежащей вне репозитория, с путём к нему аргументом:
+#   /root/deploy-prod.sh /root/backend/test/pps_new
+#
+# Второй способ нужен для первого деплоя: если положить скрипт внутрь
+# репозитория до обновления кода, git откажется делать merge, потому что
+# этот же файл приходит из origin/master и перезатёрся бы.
+#
 # Что делает, по порядку, останавливаясь на первой же ошибке:
 #   1. снимает дамп БД и бэкап JWT-ключей и docker/.env ВНЕ репозитория;
 #   2. обновляет код из origin/master;
@@ -21,7 +28,14 @@
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [ -n "${1:-}" ]; then
+  REPO_ROOT="$(cd "$1" 2>/dev/null && pwd)" \
+    || { printf '\n\033[1;31m!! Путь "%s" не существует.\033[0m\n' "$1" >&2; exit 1; }
+elif git -C . rev-parse --show-toplevel >/dev/null 2>&1; then
+  REPO_ROOT="$(git -C . rev-parse --show-toplevel)"
+else
+  REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
 cd "$REPO_ROOT"
 
 BRANCH="${DEPLOY_BRANCH:-master}"
@@ -34,7 +48,9 @@ die()  { printf '\n\033[1;31m!! %s\033[0m\n' "$*" >&2; exit 1; }
 
 # --- 0. окружение ------------------------------------------------------------
 
-[ -f docker/docker-compose.prod.yml ] || die "docker/docker-compose.prod.yml не найден — скрипт запущен не из корня репозитория?"
+[ -f docker/docker-compose.prod.yml ] || die "В '$REPO_ROOT' нет docker/docker-compose.prod.yml.
+Запустите скрипт из корня репозитория или передайте путь к нему аргументом:
+    $0 /root/backend/test/pps_new"
 [ -f docker/.env ] || die "docker/.env не найден. Без него compose не знает имён контейнеров и доступов к БД."
 
 set -a
