@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+#
+# Деплой prod-стека PPS.
+#
+# Запуск с сервера, из корня репозитория:
+#   ./bin/deploy-prod.sh
+#
+# Что делает, по порядку, останавливаясь на первой же ошибке:
+#   1. снимает дамп БД и бэкап JWT-ключей и docker/.env ВНЕ репозитория;
+#   2. обновляет код из origin/master;
+#   3. возвращает JWT-ключи, если git их удалил (они больше не в индексе);
+#   4. пересобирает и пересоздаёт контейнеры;
+#   5. применяет миграции Doctrine;
+#   6. печатает проверку состояния.
+#
+# Повторный запуск безопасен: применённые миграции Doctrine пропускает.
+#
+# ВНИМАНИЕ: среди миграций есть Version20260813120000 — она удаляет таблицы
+# "user" и user_offence (авторизация переведена на Teacher). Данные этих таблиц
+# восстанавливаются только из дампа, который снимается на шаге 1.
+
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
+BRANCH="${DEPLOY_BRANCH:-master}"
+BACKUP_DIR="${DEPLOY_BACKUP_DIR:-/root/pps-backup-$(date +%F-%H%M%S)}"
+MIN_DUMP_BYTES=10240
+
+log()  { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
+ok()   { printf '    \033[1;32m✓\033[0m %s\n' "$*"; }
+die()  { printf '\n\033[1;31m!! %s\033[0m\n' "$*" >&2; exit 1; }
+
+# --- 0. окружение ------------------------------------------------------------
+
+[ -f docker/docker-compose.prod.yml ] || die "docker/docker-compose.prod.yml не найден — скрипт запущен не из корня репозитория?"
+[ -f docker/.env ] || die "docker/.env не найден. Без него compose не знает имён контейнеров и доступов к БД."
+
+set -a
+# shellcheck disable=SC1091
+. docker/.env
+set +a
+
+for var in PHP_CONTAINER_NAME NGINX_CONTAINER_NAME DB_CONTAINER_NAME DB_USER DB_NAME; do
+  [ -n "${!var:-}" ] || die "В docker/.env не задана переменная $var."
+done
+
+COMPOSE=(docker compose -f docker-compose.prod.yml)
+
+log "Деплой ветки '$BRANCH' в $REPO_ROOT"
+ok "контейнеры: $PHP_CONTAINER_NAME / $NGINX_CONTAINER_NAME / $DB_CONTAINER_NAME"
+ok "бэкап в: $BACKUP_DIR"
+
+# --- 1. бэкап ----------------------------------------------------------------
+
+log "1/6 Дамп БД и бэкап секретов"
+mkdir -p "$BACKUP_DIR"
+
+docker inspect -f '{{.State.Running}}' "$DB_CONTAINER_NAME" >/dev/null 2>&1 \
+  || die "Контейнер БД '$DB_CONTAINER_NAME' не найден. Поднимите стек, прежде чем деплоить."
+
+if [ "$(docker inspect -f '{{.State.Running}}' "$DB_CONTAINER_NAME")" != "true" ]; then
+  log "БД не запущена — поднимаю только её, чтобы снять дамп"
+  (cd docker && "${COMPOSE[@]}" up -d db)
+  for _ in $(seq 1 30); do
+    docker exec "$DB_CONTAINER_NAME" pg_isready -U "$DB_USER" -d "$DB_NAME" >/dev/null 2>&1 && break
+    sleep 2
+  done
+fi
+
+docker exec "$DB_CONTAINER_NAME" pg_isready -U "$DB_USER" -d "$DB_NAME" >/dev/null 2>&1 \
+  || die "БД не отвечает на pg_isready. Дамп не снят, деплой прерван."
+
+docker exec -t "$DB_CONTAINER_NAME" pg_dump -U "$DB_USER" -d "$DB_NAME" > "$BACKUP_DIR/pps.sql" \
+  || die "pg_dump упал. Деплой прерван, ничего не изменено."
+
+DUMP_BYTES=$(wc -c < "$BACKUP_DIR/pps.sql")
+[ "$DUMP_BYTES" -ge "$MIN_DUMP_BYTES" ] \
+  || die "Дамп подозрительно мал ($DUMP_BYTES байт, порог $MIN_DUMP_BYTES). Деплой прерван: миграции удаляют таблицу \"user\" безвозвратно."
+ok "дамп снят: $DUMP_BYTES байт"
+
+[ -d config/jwt ] && cp -a config/jwt "$BACKUP_DIR/jwt" && ok "JWT-ключи сохранены"
+cp -a docker/.env "$BACKUP_DIR/docker.env" && ok "docker/.env сохранён"
+
+# --- 2. код ------------------------------------------------------------------
+
+log "2/6 Обновление кода из origin/$BRANCH"
+
+if ! git diff-index --quiet HEAD -- 2>/dev/null; then
+  git status --short
+  die "В рабочем дереве есть незакоммиченные изменения (список выше). Разберитесь с ними, затем запустите скрипт снова."
+fi
+
+git fetch origin "$BRANCH" || die "git fetch не прошёл. Если причина в доступе по SSH, переключите remote на HTTPS:
+    git remote set-url origin https://github.com/Baktybekovich1/pps_new.git"
+
+git checkout "$BRANCH"
+git merge --ff-only "origin/$BRANCH" || die "Не получился fast-forward: локальная ветка разошлась с origin/$BRANCH."
+ok "код на $(git rev-parse --short HEAD)"
+
+# --- 3. вернуть ключи --------------------------------------------------------
+
+log "3/6 Проверка JWT-ключей"
+if ! compgen -G 'config/jwt/*.pem' >/dev/null; then
+  [ -d "$BACKUP_DIR/jwt" ] || die "JWT-ключей нет ни в репозитории, ни в бэкапе. Авторизация не заработает.
+Сгенерировать новую пару (это разлогинит всех):
+    docker exec -it $PHP_CONTAINER_NAME php bin/console lexik:jwt:generate-keypair"
+  mkdir -p config/jwt
+  cp -a "$BACKUP_DIR/jwt/." config/jwt/
+  ok "ключи восстановлены из бэкапа (git удалил их: теперь они в .gitignore)"
+else
+  ok "ключи на месте"
+fi
+
+# --- 4. контейнеры -----------------------------------------------------------
+
+log "4/6 Пересборка и пересоздание контейнеров"
+(cd docker && "${COMPOSE[@]}" up -d --build)
+ok "стек поднят"
+
+# --- 5. миграции -------------------------------------------------------------
+
+log "5/6 Миграции Doctrine"
+printf '    Дамп для откатa: %s/pps.sql\n' "$BACKUP_DIR"
+docker exec "$PHP_CONTAINER_NAME" php bin/console doctrine:migrations:migrate --no-interaction
+ok "миграции применены"
+
+# --- 6. проверка -------------------------------------------------------------
+
+log "6/6 Проверка"
+(cd docker && "${COMPOSE[@]}" ps)
+
+printf '\n    restart-политики и привязка портов:\n'
+docker inspect -f '      {{.Name}} restart={{.HostConfig.RestartPolicy.Name}} ports={{.HostConfig.PortBindings}}' \
+  "$PHP_CONTAINER_NAME" "$NGINX_CONTAINER_NAME" "$DB_CONTAINER_NAME"
+
+printf '\n    ответ приложения через локальный nginx:\n'
+docker exec "$NGINX_CONTAINER_NAME" sh -c \
+  'wget -S -q -O /dev/null --header="Host: api.pps.makalabox.com" http://127.0.0.1/ 2>&1 | head -3' \
+  || printf '      (проверьте вручную: curl -I -H "Host: api.pps.makalabox.com" http://127.0.0.1/)\n'
+
+log "Готово"
+cat <<EOF
+    Бэкап: $BACKUP_DIR
+      pps.sql      — дамп БД до миграций
+      jwt/         — ключи подписи JWT
+      docker.env   — docker/.env
+
+    Откат схемы БД, если что-то пошло не так:
+      docker exec -i $DB_CONTAINER_NAME psql -U $DB_USER -d $DB_NAME < $BACKUP_DIR/pps.sql
+
+    Снаружи проверяется так:
+      curl -I https://api.pps.makalabox.com/
+EOF
