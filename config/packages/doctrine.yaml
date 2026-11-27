@@ -8,9 +8,6 @@ doctrine:
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
-        # Служебная таблица doctrine-migrations не описана в маппинге; без фильтра
-        # doctrine:schema:validate считает схему рассинхронизированной и предлагает её удалить.
-        schema_filter: ~^(?!doctrine_migration_versions$)~
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
