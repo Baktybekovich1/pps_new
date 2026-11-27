@@ -42,6 +42,9 @@ cd "$REPO_ROOT"
 BRANCH="${DEPLOY_BRANCH:-master}"
 BACKUP_DIR="${DEPLOY_BACKUP_DIR:-/root/pps-backup-$(date +%F-%H%M%S)}"
 MIN_DUMP_BYTES=10240
+# Сколько последних папок /root/pps-backup-* хранить (старые удаляются после
+# успешного деплоя). Ежедневные дампы лежат отдельно, в /root/pps-db-backups.
+KEEP_DEPLOY_BACKUPS="${DEPLOY_KEEP_BACKUPS:-10}"
 # Общий обратный прокси на хосте (отдельный контейнер, не из этого compose).
 # Он резолвит апстрим один раз при старте, поэтому после пересоздания
 # контейнера nginx его нужно перезагрузить, иначе снаружи будет 502.
@@ -198,6 +201,15 @@ case "$CODE" in
 Логи: docker logs $PROXY_CONTAINER --tail 20; docker logs $NGINX_CONTAINER_NAME --tail 20
 Дамп для отката: $BACKUP_DIR/pps.sql" ;;
 esac
+
+# Ротация: только папки с именем по умолчанию, текущую не трогаем.
+if [ -z "${DEPLOY_BACKUP_DIR:-}" ]; then
+  mapfile -t OLD_BACKUPS < <(ls -1dt /root/pps-backup-????-??-??-?????? 2>/dev/null | tail -n +"$((KEEP_DEPLOY_BACKUPS + 1))")
+  for d in "${OLD_BACKUPS[@]}"; do
+    [ "$d" != "$BACKUP_DIR" ] && rm -rf -- "$d"
+  done
+  [ "${#OLD_BACKUPS[@]}" -eq 0 ] || ok "удалено старых бэкапов деплоя: ${#OLD_BACKUPS[@]} (храним $KEEP_DEPLOY_BACKUPS)"
+fi
 
 log "Готово"
 cat <<EOF
