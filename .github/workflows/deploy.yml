@@ -1,0 +1,128 @@
+name: Deploy to production
+
+# Только ручной запуск. На push намеренно не вешается: деплой применяет
+# миграции, среди которых есть безвозвратно удаляющие данные.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Подтверждение: введите ровно "deploy"'
+        required: true
+        type: string
+      branch:
+        description: 'Ветка, которую развернуть'
+        required: true
+        default: master
+        type: string
+      repo_path:
+        description: 'Путь к репозиторию на сервере'
+        required: true
+        default: /root/backend/test/pps_new
+        type: string
+
+# Два деплоя одновременно не пускаем, и текущий не обрываем на полпути.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Проверить подтверждение
+        env:
+          CONFIRM: ${{ github.event.inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "deploy" ]; then
+            echo "::error::Запуск не подтверждён: в поле confirm нужно ввести ровно 'deploy'."
+            exit 1
+          fi
+
+      - name: Проверить вид аргументов
+        env:
+          BRANCH: ${{ github.event.inputs.branch }}
+          REPO_PATH: ${{ github.event.inputs.repo_path }}
+        run: |
+          case "$BRANCH" in
+            *[!A-Za-z0-9._/-]*|''|-*|*..*)
+              echo "::error::Недопустимое имя ветки: '$BRANCH'."; exit 1 ;;
+          esac
+          case "$REPO_PATH" in
+            /*) : ;;
+            *) echo "::error::Путь должен быть абсолютным: '$REPO_PATH'."; exit 1 ;;
+          esac
+          case "$REPO_PATH" in
+            *[!A-Za-z0-9._/-]*|*..*)
+              echo "::error::Недопустимый путь: '$REPO_PATH'."; exit 1 ;;
+          esac
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Подготовить SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          REMOTE_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          missing=''
+          [ -n "$SSH_KEY" ]     || missing="$missing DEPLOY_SSH_KEY"
+          [ -n "$KNOWN_HOSTS" ] || missing="$missing DEPLOY_KNOWN_HOSTS"
+          [ -n "$HOST" ]        || missing="$missing DEPLOY_HOST"
+          [ -n "$REMOTE_USER" ] || missing="$missing DEPLOY_USER"
+          if [ -n "$missing" ]; then
+            echo "::error::Не заданы секреты репозитория:$missing"
+            exit 1
+          fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          # Проверяем ключ хоста по known_hosts: подставлять
+          # StrictHostKeyChecking=no нельзя — это root-доступ к проду.
+          cat > ~/.ssh/config <<'CFG'
+          Host deploy-target
+            IdentityFile ~/.ssh/id_deploy
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile ~/.ssh/known_hosts
+            ConnectTimeout 20
+            ServerAliveInterval 30
+            BatchMode yes
+          CFG
+          {
+            echo "  HostName $HOST"
+            echo "  User $REMOTE_USER"
+          } >> ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Проверить связь с сервером
+        run: |
+          ssh deploy-target 'echo "связь есть, хост $(hostname)"'
+
+      - name: Доставить деплой-скрипт
+        # Скрипт кладётся вне репозитория: внутри он заблокировал бы merge,
+        # потому что тот же файл приходит из ветки.
+        run: |
+          scp bin/deploy-prod.sh deploy-target:/tmp/pps-deploy.sh
+          ssh deploy-target 'chmod +x /tmp/pps-deploy.sh'
+
+      - name: Выполнить деплой
+        env:
+          BRANCH: ${{ github.event.inputs.branch }}
+          REPO_PATH: ${{ github.event.inputs.repo_path }}
+        run: |
+          # Кавычки и обратные слэши отсеяны проверкой выше, поэтому
+          # одинарных кавычек на удалённой стороне достаточно.
+          ssh deploy-target \
+            "DEPLOY_BRANCH='$BRANCH' /tmp/pps-deploy.sh '$REPO_PATH'"
+
+      - name: Убрать ключ
+        if: always()
+        run: rm -f ~/.ssh/id_deploy ~/.ssh/config
